@@ -1,6 +1,6 @@
 ﻿namespace KioscoApp
 {
-    partial class FrmEstadisticas
+    partial class UcEstadisticas
     {
         private System.ComponentModel.IContainer components = null;
         protected override void Dispose(bool disposing) { if (disposing && (components != null)) { components.Dispose(); } base.Dispose(disposing); }
@@ -26,12 +26,12 @@
             this.dgvHistorico.Location = new System.Drawing.Point(30, 150);
             this.dgvHistorico.Size = new System.Drawing.Size(500, 200);
 
-            this.ClientSize = new System.Drawing.Size(600, 400);
+            
             this.Controls.Add(this.dgvHistorico);
             this.Controls.Add(this.lblProdMasVendido);
             this.Controls.Add(this.lblVentasHoy);
-            this.Text = "Estadísticas";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            
+            
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistorico)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -41,3 +41,4 @@
         private System.Windows.Forms.DataGridView dgvHistorico;
     }
 }
+

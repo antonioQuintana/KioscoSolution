@@ -13,19 +13,10 @@ namespace KioscoApp
 
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
-            // Login rápido mockeado para la navegación
-            if (txtUsuario.Text.ToLower() == "admin")
-            {
-                FrmAdminDashboard adminDash = new FrmAdminDashboard();
-                adminDash.Show();
-                this.Hide();
-            }
-            else
-            {
-                FrmVendedorDashboard vendDash = new FrmVendedorDashboard();
-                vendDash.Show();
-                this.Hide();
-            }
+            string rol = txtUsuario.Text.ToLower() == "admin" ? "admin" : "vendedor";
+            FrmPrincipal frm = new FrmPrincipal(rol);
+            frm.Show();
+            this.Hide();
         }
     }
 }

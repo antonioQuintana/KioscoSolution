@@ -5,14 +5,14 @@ using Microsoft.Data.SqlClient;
 
 namespace KioscoApp
 {
-    public partial class FrmGestionUsuarios : Form
+    public partial class UcABMUsuarios : UserControl
     {
         private int usuarioIdSeleccionado = 0;
 
-        public FrmGestionUsuarios()
+        public UcABMUsuarios()
         {
             InitializeComponent();
-            ThemeHelper.ApplyTheme(this);
+            
         }
 
         private void FrmGestionUsuarios_Load(object sender, EventArgs e)
@@ -149,3 +149,4 @@ namespace KioscoApp
         }
     }
 }
+

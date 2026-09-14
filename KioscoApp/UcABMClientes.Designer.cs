@@ -1,6 +1,6 @@
 ﻿namespace KioscoApp
 {
-    partial class FrmABMClientes
+    partial class UcABMClientes
     {
         private System.ComponentModel.IContainer components = null;
         protected override void Dispose(bool disposing) { if (disposing && (components != null)) { components.Dispose(); } base.Dispose(disposing); }
@@ -45,7 +45,7 @@
             this.btnEliminar.Size = new System.Drawing.Size(95, 30);
             this.btnEliminar.Text = "Eliminar";
 
-            this.ClientSize = new System.Drawing.Size(700, 350);
+            
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.txtTel);
@@ -55,8 +55,8 @@
             this.Controls.Add(this.txtDNI);
             this.Controls.Add(this.lblDNI);
             this.Controls.Add(this.dgvClientes);
-            this.Text = "Gestión de Clientes";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            
+            
             ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -72,3 +72,4 @@
         private System.Windows.Forms.Button btnEliminar;
     }
 }
+

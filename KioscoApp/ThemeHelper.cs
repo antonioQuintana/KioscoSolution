@@ -5,7 +5,6 @@ namespace KioscoApp
 {
     public static class ThemeHelper
     {
-        // Colores del Tema Oscuro
         public static Color BackgroundColor = Color.FromArgb(30, 30, 30);
         public static Color ForegroundColor = Color.White;
         public static Color TextBoxColor = Color.FromArgb(45, 45, 48);
@@ -16,11 +15,17 @@ namespace KioscoApp
         {
             form.BackColor = BackgroundColor;
             form.ForeColor = ForegroundColor;
-
             ApplyThemeToControls(form.Controls);
         }
+        
+        public static void ApplyTheme(UserControl uc)
+        {
+            uc.BackColor = BackgroundColor;
+            uc.ForeColor = ForegroundColor;
+            ApplyThemeToControls(uc.Controls);
+        }
 
-        private static void ApplyThemeToControls(Control.ControlCollection controls)
+        public static void ApplyThemeToControls(Control.ControlCollection controls)
         {
             foreach (Control control in controls)
             {
@@ -44,7 +49,6 @@ namespace KioscoApp
                     btn.FlatAppearance.BorderSize = 0;
                     btn.Cursor = Cursors.Hand;
                     
-                    // Colorear botones especiales por su texto
                     if (btn.Text.ToLower().Contains("guardar") || btn.Text.ToLower().Contains("cobrar") || btn.Text.ToLower().Contains("agregar"))
                     {
                         btn.BackColor = ButtonAccentColor;
@@ -57,7 +61,7 @@ namespace KioscoApp
                 else if (control is DataGridView dgv)
                 {
                     dgv.BackgroundColor = TextBoxColor;
-                    dgv.ForeColor = Color.Black; // DataGridView rows usually better readable in black or specific dark theme
+                    dgv.ForeColor = Color.Black;
                     dgv.DefaultCellStyle.BackColor = Color.White;
                     dgv.DefaultCellStyle.ForeColor = Color.Black;
                     dgv.ColumnHeadersDefaultCellStyle.BackColor = ButtonColor;
@@ -69,7 +73,6 @@ namespace KioscoApp
                     lbl.ForeColor = ForegroundColor;
                 }
 
-                // Recursivo para controles dentro de paneles, groupboxes, etc.
                 if (control.HasChildren)
                 {
                     ApplyThemeToControls(control.Controls);

@@ -1,6 +1,6 @@
 ﻿namespace KioscoApp
 {
-    partial class FrmVenta
+    partial class UcVenta
     {
         private System.ComponentModel.IContainer components = null;
         protected override void Dispose(bool disposing) { if (disposing && (components != null)) { components.Dispose(); } base.Dispose(disposing); }
@@ -36,14 +36,14 @@
             this.btnCobrar.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.btnCobrar.BackColor = System.Drawing.Color.LightGreen;
 
-            this.ClientSize = new System.Drawing.Size(850, 500);
+            
             this.Controls.Add(this.btnCobrar);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.dgvCarrito);
             this.Controls.Add(this.txtScanner);
             this.Controls.Add(this.lblScanner);
-            this.Text = "Punto de Venta";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            
+            
             ((System.ComponentModel.ISupportInitialize)(this.dgvCarrito)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -55,3 +55,4 @@
         private System.Windows.Forms.Button btnCobrar;
     }
 }
+

@@ -1,6 +1,6 @@
 ﻿namespace KioscoApp
 {
-    partial class FrmMovimientosStock
+    partial class UcMovimientosStock
     {
         private System.ComponentModel.IContainer components = null;
         protected override void Dispose(bool disposing) { if (disposing && (components != null)) { components.Dispose(); } base.Dispose(disposing); }
@@ -33,15 +33,15 @@
             this.btnIngresar.Size = new System.Drawing.Size(200, 40);
             this.btnIngresar.Text = "Registrar Ingreso de Stock";
 
-            this.ClientSize = new System.Drawing.Size(780, 450);
+            
             this.Controls.Add(this.btnIngresar);
             this.Controls.Add(this.txtCantidad);
             this.Controls.Add(this.lblCantidad);
             this.Controls.Add(this.txtProducto);
             this.Controls.Add(this.lblProducto);
             this.Controls.Add(this.dgvStock);
-            this.Text = "Movimientos de Stock";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            
+            
             ((System.ComponentModel.ISupportInitialize)(this.dgvStock)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -54,3 +54,4 @@
         private System.Windows.Forms.Button btnIngresar;
     }
 }
+

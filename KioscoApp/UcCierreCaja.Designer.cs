@@ -1,6 +1,6 @@
 ﻿namespace KioscoApp
 {
-    partial class FrmCierreCaja
+    partial class UcCierreCaja
     {
         private System.ComponentModel.IContainer components = null;
         protected override void Dispose(bool disposing) { if (disposing && (components != null)) { components.Dispose(); } base.Dispose(disposing); }
@@ -62,7 +62,7 @@
             this.btnCerrar.Size = new System.Drawing.Size(200, 40);
             this.btnCerrar.Text = "Confirmar Cierre de Caja";
 
-            this.ClientSize = new System.Drawing.Size(600, 300);
+            
             this.Controls.Add(this.btnCerrar);
             this.Controls.Add(this.lblDiferencia);
             this.Controls.Add(this.lblCalculado);
@@ -74,8 +74,8 @@
             this.Controls.Add(this.txtBilletes1000);
             this.Controls.Add(this.lblBilletes1000);
             this.Controls.Add(this.lblTitulo);
-            this.Text = "Cierre de Caja";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            
+            
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -92,3 +92,4 @@
         private System.Windows.Forms.Button btnCerrar;
     }
 }
+

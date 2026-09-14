@@ -1,6 +1,6 @@
 ﻿namespace KioscoApp
 {
-    partial class FrmABMCategorias
+    partial class UcABMCategorias
     {
         private System.ComponentModel.IContainer components = null;
         protected override void Dispose(bool disposing) { if (disposing && (components != null)) { components.Dispose(); } base.Dispose(disposing); }
@@ -31,14 +31,14 @@
             this.btnEliminar.Size = new System.Drawing.Size(95, 30);
             this.btnEliminar.Text = "Eliminar";
 
-            this.ClientSize = new System.Drawing.Size(580, 350);
+            
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.txtNombre);
             this.Controls.Add(this.lblNombre);
             this.Controls.Add(this.dgvCategorias);
-            this.Text = "Categorías";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            
+            
             ((System.ComponentModel.ISupportInitialize)(this.dgvCategorias)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -50,3 +50,4 @@
         private System.Windows.Forms.Button btnEliminar;
     }
 }
+

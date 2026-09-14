@@ -3,12 +3,13 @@ using System.Windows.Forms;
 
 namespace KioscoApp
 {
-    public partial class FrmABMProveedores : Form
+    public partial class UcCierreCaja : UserControl
     {
-        public FrmABMProveedores()
+        public UcCierreCaja()
         {
             InitializeComponent();
-            ThemeHelper.ApplyTheme(this);
+            
         }
     }
 }
+

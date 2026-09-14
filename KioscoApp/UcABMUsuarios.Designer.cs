@@ -1,6 +1,6 @@
 ﻿namespace KioscoApp
 {
-    partial class FrmGestionUsuarios
+    partial class UcABMUsuarios
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -157,7 +157,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 500);
+            
             this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnEditar);
@@ -172,10 +172,10 @@
             this.Controls.Add(this.lblNombre);
             this.Controls.Add(this.dgvUsuarios);
             this.Name = "FrmGestionUsuarios";
-            this.Text = "Gestión de Usuarios";
+            
             this.Load += new System.EventHandler(this.FrmGestionUsuarios_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).EndInit();
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -198,3 +198,4 @@
         private System.Windows.Forms.Button btnLimpiar;
     }
 }
+
