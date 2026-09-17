@@ -7,89 +7,178 @@
 
         private void InitializeComponent()
         {
-            this.pnlMenu = new System.Windows.Forms.Panel();
-            this.btnUsuarios = new System.Windows.Forms.Button();
-            this.btnProductos = new System.Windows.Forms.Button();
-            this.btnCategorias = new System.Windows.Forms.Button();
-            this.btnProveedores = new System.Windows.Forms.Button();
-            this.btnStock = new System.Windows.Forms.Button();
-            this.btnEstadisticas = new System.Windows.Forms.Button();
-            this.btnVenta = new System.Windows.Forms.Button();
-            this.btnClientes = new System.Windows.Forms.Button();
-            this.btnCierreCaja = new System.Windows.Forms.Button();
-            this.btnCerrarSesion = new System.Windows.Forms.Button();
-            this.pnlContent = new System.Windows.Forms.Panel();
-            this.pnlMenu.SuspendLayout();
-            this.SuspendLayout();
-            
+            pnlMenu = new Panel();
+            BCierreCaja = new Button();
+            btnCerrarSesion = new Button();
+            BEstadisticas = new Button();
+            BUsuarios = new Button();
+            BProveedores = new Button();
+            BClientes = new Button();
+            BStock = new Button();
+            BProductos = new Button();
+            BCategorias = new Button();
+            BVenta = new Button();
+            pnlContent = new Panel();
+            pnlMenu.SuspendLayout();
+            SuspendLayout();
+            // 
             // pnlMenu
-            this.pnlMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlMenu.Location = new System.Drawing.Point(0, 0);
-            this.pnlMenu.Size = new System.Drawing.Size(250, 700);
-            
-            // Botones
-            int yPos = 20;
-            System.Windows.Forms.Button[] btns = { btnVenta, btnCierreCaja, btnClientes, btnUsuarios, btnProductos, btnCategorias, btnProveedores, btnStock, btnEstadisticas };
-            String[] texts = { "Punto de Venta", "Cierre de Caja", "Clientes", "Usuarios (Admin)", "Productos (Admin)", "Categorías (Admin)", "Proveedores (Admin)", "Stock (Admin)", "Estadísticas (Admin)" };
-            
-            for(int i = 0; i < btns.Length; i++) {
-                btns[i].Location = new System.Drawing.Point(10, yPos);
-                btns[i].Size = new System.Drawing.Size(230, 45);
-                btns[i].Text = texts[i];
-                btns[i].FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-                btns[i].ForeColor = System.Drawing.Color.White;
-                this.pnlMenu.Controls.Add(btns[i]);
-                yPos += 55;
-            }
-            
-            this.btnUsuarios.Click += new System.EventHandler(this.btnUsuarios_Click);
-            this.btnProductos.Click += new System.EventHandler(this.btnProductos_Click);
-            this.btnCategorias.Click += new System.EventHandler(this.btnCategorias_Click);
-            this.btnProveedores.Click += new System.EventHandler(this.btnProveedores_Click);
-            this.btnStock.Click += new System.EventHandler(this.btnStock_Click);
-            this.btnEstadisticas.Click += new System.EventHandler(this.btnEstadisticas_Click);
-            this.btnVenta.Click += new System.EventHandler(this.btnVenta_Click);
-            this.btnClientes.Click += new System.EventHandler(this.btnClientes_Click);
-            this.btnCierreCaja.Click += new System.EventHandler(this.btnCierreCaja_Click);
-            
+            // 
+            pnlMenu.BackColor = Color.FromArgb(45, 45, 48);
+            pnlMenu.Controls.Add(BCierreCaja);
+            pnlMenu.Controls.Add(btnCerrarSesion);
+            pnlMenu.Controls.Add(BEstadisticas);
+            pnlMenu.Controls.Add(BUsuarios);
+            pnlMenu.Controls.Add(BProveedores);
+            pnlMenu.Controls.Add(BClientes);
+            pnlMenu.Controls.Add(BStock);
+            pnlMenu.Controls.Add(BProductos);
+            pnlMenu.Controls.Add(BCategorias);
+            pnlMenu.Controls.Add(BVenta);
+            pnlMenu.Dock = DockStyle.Left;
+            pnlMenu.Location = new Point(0, 0);
+            pnlMenu.Name = "pnlMenu";
+            pnlMenu.Size = new Size(250, 700);
+            pnlMenu.TabIndex = 1;
+            // 
+            // BCierreCaja
+            // 
+            BCierreCaja.Location = new Point(12, 520);
+            BCierreCaja.Name = "BCierreCaja";
+            BCierreCaja.Size = new Size(230, 45);
+            BCierreCaja.TabIndex = 9;
+            BCierreCaja.Text = "Cierre de Caja";
+            BCierreCaja.UseVisualStyleBackColor = true;
+            BCierreCaja.Click += BCierreCaja_Click;
+            // 
             // btnCerrarSesion
-            this.btnCerrarSesion.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnCerrarSesion.Size = new System.Drawing.Size(250, 50);
-            this.btnCerrarSesion.Text = "Cerrar Sesión";
-            this.btnCerrarSesion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCerrarSesion.ForeColor = System.Drawing.Color.White;
-            this.btnCerrarSesion.BackColor = System.Drawing.Color.IndianRed;
-            this.btnCerrarSesion.Click += new System.EventHandler(this.btnCerrarSesion_Click);
-            this.pnlMenu.Controls.Add(this.btnCerrarSesion);
-            
+            // 
+            btnCerrarSesion.BackColor = Color.IndianRed;
+            btnCerrarSesion.Dock = DockStyle.Bottom;
+            btnCerrarSesion.FlatStyle = FlatStyle.Flat;
+            btnCerrarSesion.ForeColor = Color.White;
+            btnCerrarSesion.Location = new Point(0, 650);
+            btnCerrarSesion.Name = "btnCerrarSesion";
+            btnCerrarSesion.Size = new Size(250, 50);
+            btnCerrarSesion.TabIndex = 0;
+            btnCerrarSesion.Text = "Cerrar Sesión";
+            btnCerrarSesion.UseVisualStyleBackColor = false;
+            btnCerrarSesion.Click += btnCerrarSesion_Click;
+            // 
+            // BEstadisticas
+            // 
+            BEstadisticas.Location = new Point(12, 340);
+            BEstadisticas.Name = "BEstadisticas";
+            BEstadisticas.Size = new Size(230, 45);
+            BEstadisticas.TabIndex = 3;
+            BEstadisticas.Text = "Estadisticas";
+            BEstadisticas.UseVisualStyleBackColor = true;
+            BEstadisticas.Click += BEstadisticas_Click;
+            // 
+            // BUsuarios
+            // 
+            BUsuarios.Location = new Point(12, 40);
+            BUsuarios.Name = "BUsuarios";
+            BUsuarios.Size = new Size(230, 45);
+            BUsuarios.TabIndex = 8;
+            BUsuarios.Text = "Usuarios";
+            BUsuarios.UseVisualStyleBackColor = true;
+            BUsuarios.Click += BUsuarios_Click_1;
+            // 
+            // BProveedores
+            // 
+            BProveedores.Location = new Point(12, 220);
+            BProveedores.Name = "BProveedores";
+            BProveedores.Size = new Size(230, 45);
+            BProveedores.TabIndex = 5;
+            BProveedores.Text = "Proveedores";
+            BProveedores.UseVisualStyleBackColor = true;
+            BProveedores.Click += BProveedores_Click;
+            // 
+            // BClientes
+            // 
+            BClientes.Location = new Point(12, 460);
+            BClientes.Name = "BClientes";
+            BClientes.Size = new Size(230, 45);
+            BClientes.TabIndex = 1;
+            BClientes.Text = "Clientes";
+            BClientes.UseVisualStyleBackColor = true;
+            BClientes.Click += BClientes_Click;
+            // 
+            // BStock
+            // 
+            BStock.Location = new Point(12, 280);
+            BStock.Name = "BStock";
+            BStock.Size = new Size(230, 45);
+            BStock.TabIndex = 4;
+            BStock.Text = "Stock";
+            BStock.UseVisualStyleBackColor = true;
+            BStock.Click += BStock_Click;
+            // 
+            // BProductos
+            // 
+            BProductos.Location = new Point(12, 100);
+            BProductos.Name = "BProductos";
+            BProductos.Size = new Size(230, 45);
+            BProductos.TabIndex = 7;
+            BProductos.Text = "Productos";
+            BProductos.UseVisualStyleBackColor = true;
+            BProductos.Click += BProductos_Click;
+            // 
+            // BCategorias
+            // 
+            BCategorias.Location = new Point(12, 160);
+            BCategorias.Name = "BCategorias";
+            BCategorias.Size = new Size(230, 45);
+            BCategorias.TabIndex = 6;
+            BCategorias.Text = "Categorias";
+            BCategorias.UseVisualStyleBackColor = true;
+            BCategorias.Click += BCategorias_Click;
+            // 
+            // BVenta
+            // 
+            BVenta.Location = new Point(12, 400);
+            BVenta.Name = "BVenta";
+            BVenta.Size = new Size(230, 45);
+            BVenta.TabIndex = 2;
+            BVenta.Text = "Venta";
+            BVenta.UseVisualStyleBackColor = true;
+            BVenta.Click += BVenta_Click;
+            // 
             // pnlContent
-            this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlContent.Location = new System.Drawing.Point(250, 0);
-            
+            // 
+            pnlContent.Dock = DockStyle.Fill;
+            pnlContent.Location = new Point(250, 0);
+            pnlContent.Name = "pnlContent";
+            pnlContent.Size = new Size(850, 700);
+            pnlContent.TabIndex = 0;
+            pnlContent.Paint += pnlContent_Paint;
+            // 
             // FrmPrincipal
-            this.ClientSize = new System.Drawing.Size(1100, 700);
-            this.Controls.Add(this.pnlContent);
-            this.Controls.Add(this.pnlMenu);
-            this.Name = "FrmPrincipal";
-            this.Text = "Sistema Kiosco";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmPrincipal_FormClosed);
-            this.pnlMenu.ResumeLayout(false);
-            this.ResumeLayout(false);
+            // 
+            ClientSize = new Size(1100, 700);
+            Controls.Add(pnlContent);
+            Controls.Add(pnlMenu);
+            Name = "FrmPrincipal";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Sistema Kiosco";
+            FormClosed += FrmPrincipal_FormClosed;
+            pnlMenu.ResumeLayout(false);
+            ResumeLayout(false);
         }
+
+        private Panel pnlMenu;
+        private Panel pnlContent;
         
-        private System.Windows.Forms.Panel pnlMenu;
-        private System.Windows.Forms.Panel pnlContent;
-        private System.Windows.Forms.Button btnUsuarios;
-        private System.Windows.Forms.Button btnProductos;
-        private System.Windows.Forms.Button btnCategorias;
-        private System.Windows.Forms.Button btnProveedores;
-        private System.Windows.Forms.Button btnStock;
-        private System.Windows.Forms.Button btnEstadisticas;
-        private System.Windows.Forms.Button btnVenta;
-        private System.Windows.Forms.Button btnClientes;
-        private System.Windows.Forms.Button btnCierreCaja;
-        private System.Windows.Forms.Button btnCerrarSesion;
+        private Button btnCerrarSesion;
+        private Button BUsuarios;
+        private Button BProductos;
+        private Button BCategorias;
+        private Button BProveedores;
+        private Button BStock;
+        private Button BEstadisticas;
+        private Button BVenta;
+        private Button BClientes;
+        private Button BCierreCaja;
     }
 }

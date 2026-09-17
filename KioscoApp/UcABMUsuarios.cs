@@ -63,9 +63,11 @@ namespace KioscoApp
                     string query = "INSERT INTO Usuarios (Nombre, Usuario, Contrasena, Rol) VALUES (@Nombre, @Usuario, @Contrasena, @Rol)";
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
+                        string hashPassword = BCrypt.Net.BCrypt.HashPassword(txtContrasena.Text);
+
                         cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text);
                         cmd.Parameters.AddWithValue("@Usuario", txtUsuario.Text);
-                        cmd.Parameters.AddWithValue("@Contrasena", txtContrasena.Text);
+                        cmd.Parameters.AddWithValue("@Contrasena", hashPassword);
                         cmd.Parameters.AddWithValue("@Rol", cmbRol.SelectedItem?.ToString() ?? "Vendedor");
                         cmd.ExecuteNonQuery();
                     }
@@ -92,12 +94,14 @@ namespace KioscoApp
                                    "WHERE Id=@Id";
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
+                        string hashPassword = BCrypt.Net.BCrypt.HashPassword(txtContrasena.Text);
+
                         cmd.Parameters.AddWithValue("@Id", usuarioIdSeleccionado);
                         cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text);
                         cmd.Parameters.AddWithValue("@Usuario", txtUsuario.Text);
                         cmd.Parameters.AddWithValue("@Rol", cmbRol.SelectedItem?.ToString());
                         if (!string.IsNullOrEmpty(txtContrasena.Text))
-                            cmd.Parameters.AddWithValue("@Contrasena", txtContrasena.Text);
+                            cmd.Parameters.AddWithValue("@Contrasena", hashPassword);
                         cmd.ExecuteNonQuery();
                     }
                 }

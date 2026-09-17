@@ -17,80 +17,98 @@
 
         private void InitializeComponent()
         {
-            this.lblUsuario = new System.Windows.Forms.Label();
-            this.txtUsuario = new System.Windows.Forms.TextBox();
-            this.lblContrasena = new System.Windows.Forms.Label();
-            this.txtContrasena = new System.Windows.Forms.TextBox();
-            this.btnIngresar = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            lblUsuario = new Label();
+            txtUsuario = new TextBox();
+            lblContrasena = new Label();
+            txtContrasena = new TextBox();
+            btnIngresar = new Button();
+            BMostrar = new Button();
+            SuspendLayout();
             // 
             // lblUsuario
             // 
-            this.lblUsuario.AutoSize = true;
-            this.lblUsuario.Location = new System.Drawing.Point(80, 50);
-            this.lblUsuario.Name = "lblUsuario";
-            this.lblUsuario.Size = new System.Drawing.Size(50, 15);
-            this.lblUsuario.TabIndex = 0;
-            this.lblUsuario.Text = "Usuario:";
+            lblUsuario.AutoSize = true;
+            lblUsuario.Location = new Point(80, 50);
+            lblUsuario.Name = "lblUsuario";
+            lblUsuario.Size = new Size(50, 15);
+            lblUsuario.TabIndex = 0;
+            lblUsuario.Text = "Usuario:";
             // 
             // txtUsuario
             // 
-            this.txtUsuario.Location = new System.Drawing.Point(80, 70);
-            this.txtUsuario.Name = "txtUsuario";
-            this.txtUsuario.Size = new System.Drawing.Size(200, 23);
-            this.txtUsuario.TabIndex = 1;
+            txtUsuario.Location = new Point(80, 70);
+            txtUsuario.Name = "txtUsuario";
+            txtUsuario.Size = new Size(200, 23);
+            txtUsuario.TabIndex = 1;
             // 
             // lblContrasena
             // 
-            this.lblContrasena.AutoSize = true;
-            this.lblContrasena.Location = new System.Drawing.Point(80, 110);
-            this.lblContrasena.Name = "lblContrasena";
-            this.lblContrasena.Size = new System.Drawing.Size(70, 15);
-            this.lblContrasena.TabIndex = 2;
-            this.lblContrasena.Text = "Contraseña:";
+            lblContrasena.AutoSize = true;
+            lblContrasena.Location = new Point(80, 110);
+            lblContrasena.Name = "lblContrasena";
+            lblContrasena.Size = new Size(70, 15);
+            lblContrasena.TabIndex = 2;
+            lblContrasena.Text = "Contraseña:";
             // 
             // txtContrasena
             // 
-            this.txtContrasena.Location = new System.Drawing.Point(80, 130);
-            this.txtContrasena.Name = "txtContrasena";
-            this.txtContrasena.PasswordChar = '*';
-            this.txtContrasena.Size = new System.Drawing.Size(200, 23);
-            this.txtContrasena.TabIndex = 3;
+            txtContrasena.Location = new Point(80, 130);
+            txtContrasena.Name = "txtContrasena";
+            txtContrasena.Size = new Size(200, 23);
+            txtContrasena.TabIndex = 3;
+            txtContrasena.UseSystemPasswordChar = true;
             // 
             // btnIngresar
             // 
-            this.btnIngresar.Location = new System.Drawing.Point(130, 170);
-            this.btnIngresar.Name = "btnIngresar";
-            this.btnIngresar.Size = new System.Drawing.Size(100, 30);
-            this.btnIngresar.TabIndex = 4;
-            this.btnIngresar.Text = "Ingresar";
-            this.btnIngresar.UseVisualStyleBackColor = true;
-            this.btnIngresar.Click += new System.EventHandler(this.BtnIngresar_Click);
+            btnIngresar.Location = new Point(130, 170);
+            btnIngresar.Name = "btnIngresar";
+            btnIngresar.Size = new Size(100, 30);
+            btnIngresar.TabIndex = 4;
+            btnIngresar.Text = "Ingresar";
+            btnIngresar.UseVisualStyleBackColor = true;
+            btnIngresar.Click += BtnIngresar_Click;
+            // 
+            // BMostrar
+            // 
+            BMostrar.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            BMostrar.BackColor = Color.Transparent;
+            BMostrar.BackgroundImage = Properties.Resources.eyeBlindIcon;
+            BMostrar.BackgroundImageLayout = ImageLayout.Zoom;
+            BMostrar.FlatStyle = FlatStyle.Popup;
+            BMostrar.Location = new Point(286, 122);
+            BMostrar.Name = "BMostrar";
+            BMostrar.Size = new Size(33, 31);
+            BMostrar.TabIndex = 5;
+            BMostrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            BMostrar.UseVisualStyleBackColor = false;
+            BMostrar.MouseDown += BMostrar_MouseDown;
+            BMostrar.MouseUp += BMostrar_MouseUp;
             // 
             // FrmLogin
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(380, 260);
-            this.Controls.Add(this.btnIngresar);
-            this.Controls.Add(this.txtContrasena);
-            this.Controls.Add(this.lblContrasena);
-            this.Controls.Add(this.txtUsuario);
-            this.Controls.Add(this.lblUsuario);
-            this.Name = "FrmLogin";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Inicio de Sesión";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(380, 260);
+            Controls.Add(BMostrar);
+            Controls.Add(btnIngresar);
+            Controls.Add(txtContrasena);
+            Controls.Add(lblContrasena);
+            Controls.Add(txtUsuario);
+            Controls.Add(lblUsuario);
+            Name = "FrmLogin";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Inicio de Sesión";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Label lblUsuario;
-        private System.Windows.Forms.TextBox txtUsuario;
-        private System.Windows.Forms.Label lblContrasena;
-        private System.Windows.Forms.TextBox txtContrasena;
-        private System.Windows.Forms.Button btnIngresar;
+        private Label lblUsuario;
+        private TextBox txtUsuario;
+        private Label lblContrasena;
+        private TextBox txtContrasena;
+        private Button btnIngresar;
+        private Button BMostrar;
     }
 }

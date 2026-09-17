@@ -19,32 +19,32 @@ namespace KioscoApp
         private void ConfigurarMenu()
         {
             // Ocultamos todos los botones primero
-            btnUsuarios.Visible = false;
-            btnProductos.Visible = false;
-            btnCategorias.Visible = false;
-            btnProveedores.Visible = false;
-            btnStock.Visible = false;
-            btnEstadisticas.Visible = false;
-            
-            btnVenta.Visible = false;
-            btnClientes.Visible = false;
-            btnCierreCaja.Visible = false;
+            BUsuarios.Visible = false;
+            BProductos.Visible = false;
+            BCategorias.Visible = false;
+            BProveedores.Visible = false;
+            BStock.Visible = false;
+            BEstadisticas.Visible = false;
+
+            BVenta.Visible = false;
+            BClientes.Visible = false;
+            BCierreCaja.Visible = false;
 
             // Mostramos según rol
             if (rolUsuario == "admin")
             {
-                btnUsuarios.Visible = true;
-                btnProductos.Visible = true;
-                btnCategorias.Visible = true;
-                btnProveedores.Visible = true;
-                btnStock.Visible = true;
-                btnEstadisticas.Visible = true;
+                BUsuarios.Visible = true;
+                BProductos.Visible = true;
+                BCategorias.Visible = true;
+                BProveedores.Visible = true;
+                BStock.Visible = true;
+                BEstadisticas.Visible = true;
             }
             else // vendedor
             {
-                btnVenta.Visible = true;
-                btnClientes.Visible = true;
-                btnCierreCaja.Visible = true;
+                BVenta.Visible = true;
+                BClientes.Visible = true;
+                BCierreCaja.Visible = true;
             }
         }
 
@@ -62,22 +62,43 @@ namespace KioscoApp
         }
 
         // --- Eventos Click del Menú ---
-        private void btnUsuarios_Click(object sender, EventArgs e) { CargarUserControl(new UcABMUsuarios()); }
-        private void btnProductos_Click(object sender, EventArgs e) { CargarUserControl(new UcABMProductos()); }
-        private void btnCategorias_Click(object sender, EventArgs e) { CargarUserControl(new UcABMCategorias()); }
-        private void btnProveedores_Click(object sender, EventArgs e) { CargarUserControl(new UcABMProveedores()); }
-        private void btnStock_Click(object sender, EventArgs e) { CargarUserControl(new UcMovimientosStock()); }
-        private void btnEstadisticas_Click(object sender, EventArgs e) { CargarUserControl(new UcEstadisticas()); }
-        private void btnVenta_Click(object sender, EventArgs e) { CargarUserControl(new UcVenta()); }
-        private void btnClientes_Click(object sender, EventArgs e) { CargarUserControl(new UcABMClientes()); }
-        private void btnCierreCaja_Click(object sender, EventArgs e) { CargarUserControl(new UcCierreCaja()); }
-        
+
+
         private void btnCerrarSesion_Click(object sender, EventArgs e)
         {
-            FrmLogin login = new FrmLogin();
-            login.Show();
-            this.Hide();
+            UserSession.CerrarSesion();
+
+            Form loginOriginal = Application.OpenForms["FrmLogin"];
+
+            if (loginOriginal != null)
+            {
+                loginOriginal.Show();
+            }
+
+            this.FormClosed -= FrmPrincipal_FormClosed;
+            this.Close();
         }
+
+        private void pnlContent_Paint(object sender, PaintEventArgs e) { }
+
+        private void BUsuarios_Click_1(object sender, EventArgs e) { CargarUserControl(new UcABMUsuarios()); }
+
+        private void BProductos_Click(object sender, EventArgs e){CargarUserControl(new UcABMProductos());}
+        
+        private void BCategorias_Click(object sender, EventArgs e){CargarUserControl(new UcABMCategorias());}
+        
+        private void BProveedores_Click(object sender, EventArgs e){CargarUserControl(new UcABMProveedores());}
+        
+        private void BStock_Click(object sender, EventArgs e){CargarUserControl(new UcMovimientosStock());}
+
+        private void BEstadisticas_Click(object sender, EventArgs e){CargarUserControl(new UcEstadisticas());}
+        
+        private void BVenta_Click(object sender, EventArgs e){CargarUserControl(new UcVenta());}
+        
+        private void BClientes_Click(object sender, EventArgs e){CargarUserControl(new UcABMClientes());}
+        
+        private void BCierreCaja_Click(object sender, EventArgs e){CargarUserControl(new UcCierreCaja());}
+                
     }
 }
 
