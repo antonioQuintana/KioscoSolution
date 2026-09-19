@@ -7,41 +7,64 @@
 
         private void InitializeComponent()
         {
-            this.dgvCategorias = new System.Windows.Forms.DataGridView();
-            this.lblNombre = new System.Windows.Forms.Label();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCategorias)).BeginInit();
-            this.SuspendLayout();
-            
-            this.dgvCategorias.Location = new System.Drawing.Point(20, 20);
-            this.dgvCategorias.Size = new System.Drawing.Size(300, 300);
-            
-            this.lblNombre.Location = new System.Drawing.Point(340, 20);
-            this.lblNombre.Text = "Nombre de Categoría:";
-            this.txtNombre.Location = new System.Drawing.Point(340, 40);
-            this.txtNombre.Size = new System.Drawing.Size(200, 23);
-            
-            this.btnGuardar.Location = new System.Drawing.Point(340, 80);
-            this.btnGuardar.Size = new System.Drawing.Size(95, 30);
-            this.btnGuardar.Text = "Guardar";
-
-            this.btnEliminar.Location = new System.Drawing.Point(445, 80);
-            this.btnEliminar.Size = new System.Drawing.Size(95, 30);
-            this.btnEliminar.Text = "Eliminar";
-
-            
-            this.Controls.Add(this.btnEliminar);
-            this.Controls.Add(this.btnGuardar);
-            this.Controls.Add(this.txtNombre);
-            this.Controls.Add(this.lblNombre);
-            this.Controls.Add(this.dgvCategorias);
-            
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCategorias)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            dgvCategorias = new DataGridView();
+            lblNombre = new Label();
+            txtNombre = new TextBox();
+            btnGuardar = new Button();
+            btnEliminar = new Button();
+            ((System.ComponentModel.ISupportInitialize)dgvCategorias).BeginInit();
+            SuspendLayout();
+            // 
+            // dgvCategorias
+            // 
+            dgvCategorias.Location = new Point(20, 20);
+            dgvCategorias.Name = "dgvCategorias";
+            dgvCategorias.Size = new Size(300, 300);
+            dgvCategorias.TabIndex = 4;
+            // 
+            // lblNombre
+            // 
+            lblNombre.Location = new Point(340, 20);
+            lblNombre.Name = "lblNombre";
+            lblNombre.Size = new Size(100, 23);
+            lblNombre.TabIndex = 3;
+            lblNombre.Text = "Nombre de Categoría:";
+            // 
+            // txtNombre
+            // 
+            txtNombre.Location = new Point(340, 40);
+            txtNombre.Name = "txtNombre";
+            txtNombre.Size = new Size(200, 23);
+            txtNombre.TabIndex = 2;
+            // 
+            // btnGuardar
+            // 
+            btnGuardar.Location = new Point(340, 80);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(95, 30);
+            btnGuardar.TabIndex = 1;
+            btnGuardar.Text = "Guardar";
+            // 
+            // btnEliminar
+            // 
+            btnEliminar.Location = new Point(445, 80);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(95, 30);
+            btnEliminar.TabIndex = 0;
+            btnEliminar.Text = "Eliminar";
+            // 
+            // UcABMCategorias
+            // 
+            Controls.Add(btnEliminar);
+            Controls.Add(btnGuardar);
+            Controls.Add(txtNombre);
+            Controls.Add(lblNombre);
+            Controls.Add(dgvCategorias);
+            Name = "UcABMCategorias";
+            Size = new Size(851, 502);
+            ((System.ComponentModel.ISupportInitialize)dgvCategorias).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
         private System.Windows.Forms.DataGridView dgvCategorias;
         private System.Windows.Forms.Label lblNombre;

@@ -1,4 +1,4 @@
-﻿CREATE DATABASE KioscoDB;
+CREATE DATABASE KioscoDB;
 GO
 USE KioscoDB;
 GO
@@ -10,5 +10,5 @@ CREATE TABLE Usuarios (
     Rol NVARCHAR(20) NOT NULL
 );
 GO
-INSERT INTO Usuarios (Nombre, Usuario, Contrasena, Rol) VALUES ('Administrador', 'admin', 'admin123', 'Admin');
+INSERT INTO Usuarios (Nombre, Usuario, Contrasena, Rol) VALUES ('Administrador', 'admin', '$2a$11$afsMHec27ND2ytaCsjAXU.DWw6N9vyfTB7d79bYNSkZvck/Ftb3Ky', 'Admin');
 GO

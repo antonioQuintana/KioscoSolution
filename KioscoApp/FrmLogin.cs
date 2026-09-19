@@ -76,6 +76,11 @@ namespace KioscoApp
             txtContrasena.UseSystemPasswordChar = true;
             BMostrar.BackgroundImage = Properties.Resources.eyeBlindIcon;
         }
+
+        private void FrmLogin_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 
     public static class UserSession

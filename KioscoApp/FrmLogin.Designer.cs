@@ -98,6 +98,7 @@
             Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Inicio de Sesión";
+            Load += FrmLogin_Load;
             ResumeLayout(false);
             PerformLayout();
         }
