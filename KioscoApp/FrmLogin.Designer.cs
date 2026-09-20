@@ -81,8 +81,8 @@
             BMostrar.TabIndex = 5;
             BMostrar.TextImageRelation = TextImageRelation.ImageAboveText;
             BMostrar.UseVisualStyleBackColor = false;
-            BMostrar.MouseDown += BMostrar_MouseDown;
-            BMostrar.MouseUp += BMostrar_MouseUp;
+            BMostrar.Click += BMostrar_Click;
+            
             // 
             // FrmLogin
             // 
@@ -99,7 +99,7 @@
             Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Inicio de Sesión";
-            Load += FrmLogin_Load;
+            
             ResumeLayout(false);
             PerformLayout();
         }

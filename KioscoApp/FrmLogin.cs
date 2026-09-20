@@ -53,11 +53,11 @@ namespace KioscoApp
             string rol = reader["Rol"].ToString();
 
             UserSession.IniciarSesion(id, nombre, usuario, rol);
-            //if(txtUsuario.Text == "admin"){
+            
             FrmPrincipal frm = new FrmPrincipal(rol);
             frm.Show();
             this.Hide();
-            //}
+            
         }
 
         private void FrmLogin_FormClosed(object sender, FormClosedEventArgs e)
@@ -65,21 +65,20 @@ namespace KioscoApp
             Application.Exit();
         }
 
-        private void BMostrar_MouseDown(object sender, MouseEventArgs e)
+        private void BMostrar_Click(object sender, EventArgs e)
         {
-            txtContrasena.UseSystemPasswordChar = false;
-            BMostrar.BackgroundImage = Properties.Resources.eyeIcon;
-        }
-
-        private void BMostrar_MouseUp(object sender, MouseEventArgs e)
-        {
-            txtContrasena.UseSystemPasswordChar = true;
-            BMostrar.BackgroundImage = Properties.Resources.eyeBlindIcon;
-        }
-
-        private void FrmLogin_Load(object sender, EventArgs e)
-        {
-
+            // Si la contraseña está oculta, la mostramos
+            if (txtContrasena.UseSystemPasswordChar == true)
+            {
+                txtContrasena.UseSystemPasswordChar = false;
+                BMostrar.BackgroundImage = Properties.Resources.eyeIcon;
+            }
+            // Si la contraseña está visible, la ocultamos
+            else
+            {
+                txtContrasena.UseSystemPasswordChar = true;
+                BMostrar.BackgroundImage = Properties.Resources.eyeBlindIcon;
+            }
         }
     }
 
