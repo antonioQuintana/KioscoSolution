@@ -19,6 +19,7 @@
             BCategorias = new Button();
             BVenta = new Button();
             pnlContent = new Panel();
+            tableLayoutPanel1 = new TableLayoutPanel();
             pnlMenu.SuspendLayout();
             SuspendLayout();
             // 
@@ -38,7 +39,7 @@
             pnlMenu.Dock = DockStyle.Left;
             pnlMenu.Location = new Point(0, 0);
             pnlMenu.Name = "pnlMenu";
-            pnlMenu.Size = new Size(250, 700);
+            pnlMenu.Size = new Size(1100, 700);
             pnlMenu.TabIndex = 1;
             // 
             // BCierreCaja
@@ -57,9 +58,9 @@
             btnCerrarSesion.Dock = DockStyle.Bottom;
             btnCerrarSesion.FlatStyle = FlatStyle.Flat;
             btnCerrarSesion.ForeColor = Color.White;
-            btnCerrarSesion.Location = new Point(0, 650);
+            btnCerrarSesion.Location = new Point(0, 644);
             btnCerrarSesion.Name = "btnCerrarSesion";
-            btnCerrarSesion.Size = new Size(250, 50);
+            btnCerrarSesion.Size = new Size(1100, 56);
             btnCerrarSesion.TabIndex = 0;
             btnCerrarSesion.Text = "Cerrar Sesión";
             btnCerrarSesion.UseVisualStyleBackColor = false;
@@ -148,20 +149,36 @@
             // pnlContent
             // 
             pnlContent.Dock = DockStyle.Fill;
-            pnlContent.Location = new Point(250, 0);
+            pnlContent.Location = new Point(0, 0);
             pnlContent.Name = "pnlContent";
-            pnlContent.Size = new Size(850, 700);
+            pnlContent.Size = new Size(1100, 700);
             pnlContent.TabIndex = 0;
             pnlContent.Paint += pnlContent_Paint;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 85F));
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 1;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(1100, 700);
+            tableLayoutPanel1.TabIndex = 2;
             // 
             // FrmPrincipal
             // 
             ClientSize = new Size(1100, 700);
-            Controls.Add(pnlContent);
             Controls.Add(pnlMenu);
+            Controls.Add(pnlContent);
+            Controls.Add(tableLayoutPanel1);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "FrmPrincipal";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Sistema Kiosco";
+            WindowState = FormWindowState.Maximized;
             FormClosed += FrmPrincipal_FormClosed;
             pnlMenu.ResumeLayout(false);
             ResumeLayout(false);
@@ -180,5 +197,6 @@
         private Button BVenta;
         private Button BClientes;
         private Button BCierreCaja;
+        private TableLayoutPanel tableLayoutPanel1;
     }
 }
