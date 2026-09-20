@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
@@ -17,7 +17,73 @@ namespace KioscoApp
 
         private void FrmGestionUsuarios_Load(object sender, EventArgs e)
         {
+            CargarProvincias();
+            cmbProvincia.SelectedIndexChanged += CmbProvincia_SelectedIndexChanged;
             CargarUsuarios();
+        }
+
+        private void CargarProvincias()
+        {
+            try
+            {
+                using (var connection = DatabaseHelper.GetConnection())
+                {
+                    connection.Open();
+                    string query = "SELECT Id, Nombre FROM Provincias ORDER BY Nombre";
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+                    
+                    cmbProvincia.DisplayMember = "Nombre";
+                    cmbProvincia.ValueMember = "Id";
+                    cmbProvincia.DataSource = dt;
+                    cmbProvincia.SelectedIndex = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar provincias: " + ex.Message);
+            }
+        }
+
+        private void CmbProvincia_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbProvincia.SelectedValue != null && int.TryParse(cmbProvincia.SelectedValue.ToString(), out int provinciaId))
+            {
+                CargarCiudades(provinciaId);
+            }
+            else
+            {
+                cmbCiudad.DataSource = null;
+            }
+        }
+
+        private void CargarCiudades(int provinciaId)
+        {
+            try
+            {
+                using (var connection = DatabaseHelper.GetConnection())
+                {
+                    connection.Open();
+                    string query = "SELECT Id, Nombre FROM Ciudades WHERE ProvinciaId = @ProvinciaId ORDER BY Nombre";
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@ProvinciaId", provinciaId);
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+                        
+                        cmbCiudad.DisplayMember = "Nombre";
+                        cmbCiudad.ValueMember = "Id";
+                        cmbCiudad.DataSource = dt;
+                        cmbCiudad.SelectedIndex = -1;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar ciudades: " + ex.Message);
+            }
         }
 
         private void CargarUsuarios()
