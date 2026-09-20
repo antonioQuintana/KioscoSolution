@@ -82,10 +82,10 @@
             BMostrar.TextImageRelation = TextImageRelation.ImageAboveText;
             BMostrar.UseVisualStyleBackColor = false;
             BMostrar.Click += BMostrar_Click;
-            
             // 
             // FrmLogin
             // 
+            AcceptButton = btnIngresar;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(380, 260);
@@ -99,7 +99,6 @@
             Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Inicio de Sesión";
-            
             ResumeLayout(false);
             PerformLayout();
         }
