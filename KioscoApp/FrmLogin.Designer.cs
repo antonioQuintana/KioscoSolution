@@ -95,6 +95,7 @@
             Controls.Add(lblContrasena);
             Controls.Add(txtUsuario);
             Controls.Add(lblUsuario);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Inicio de Sesión";

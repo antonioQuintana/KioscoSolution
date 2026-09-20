@@ -7,38 +7,68 @@
 
         private void InitializeComponent()
         {
-            this.lblVentasHoy = new System.Windows.Forms.Label();
-            this.lblProdMasVendido = new System.Windows.Forms.Label();
-            this.dgvHistorico = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvHistorico)).BeginInit();
-            this.SuspendLayout();
-
-            this.lblVentasHoy.Location = new System.Drawing.Point(30, 30);
-            this.lblVentasHoy.Text = "Ventas Totales Hoy: $0.00";
-            this.lblVentasHoy.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblVentasHoy.AutoSize = true;
-
-            this.lblProdMasVendido.Location = new System.Drawing.Point(30, 80);
-            this.lblProdMasVendido.Text = "Producto Top: Ninguno";
-            this.lblProdMasVendido.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.lblProdMasVendido.AutoSize = true;
-
-            this.dgvHistorico.Location = new System.Drawing.Point(30, 150);
-            this.dgvHistorico.Size = new System.Drawing.Size(500, 200);
-
-            
-            this.Controls.Add(this.dgvHistorico);
-            this.Controls.Add(this.lblProdMasVendido);
-            this.Controls.Add(this.lblVentasHoy);
-            
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvHistorico)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            lblProdMasVendido = new Label();
+            lblDiaMasVentas = new Label();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            tableLayoutPanel1.SuspendLayout();
+            SuspendLayout();
+            // 
+            // lblProdMasVendido
+            // 
+            lblProdMasVendido.Anchor = AnchorStyles.None;
+            lblProdMasVendido.AutoSize = true;
+            lblProdMasVendido.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblProdMasVendido.Location = new Point(152, 25);
+            lblProdMasVendido.Name = "lblProdMasVendido";
+            lblProdMasVendido.Size = new Size(545, 25);
+            lblProdMasVendido.TabIndex = 1;
+            lblProdMasVendido.Text = "Producto Más Vendido (Semanal): Cigarrillo Marlboro (210)";
+            lblProdMasVendido.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblDiaMasVentas
+            // 
+            lblDiaMasVentas.Anchor = AnchorStyles.None;
+            lblDiaMasVentas.AutoSize = true;
+            lblDiaMasVentas.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblDiaMasVentas.Location = new Point(217, 374);
+            lblDiaMasVentas.Name = "lblDiaMasVentas";
+            lblDiaMasVentas.Size = new Size(416, 25);
+            lblDiaMasVentas.TabIndex = 3;
+            lblDiaMasVentas.Text = "Dia Con Más Ventas (Última Semana): Sábado";
+            lblDiaMasVentas.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 1;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Controls.Add(lblProdMasVendido, 0, 0);
+            tableLayoutPanel1.Controls.Add(lblDiaMasVentas, 0, 2);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 4;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 75F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.Size = new Size(850, 700);
+            tableLayoutPanel1.TabIndex = 4;
+            tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
+            // 
+            // UcEstadisticas
+            // 
+            Controls.Add(tableLayoutPanel1);
+            Name = "UcEstadisticas";
+            Size = new Size(850, 700);
+            Load += UcEstadisticas_Load;
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
+            ResumeLayout(false);
         }
-        private System.Windows.Forms.Label lblVentasHoy;
         private System.Windows.Forms.Label lblProdMasVendido;
-        private System.Windows.Forms.DataGridView dgvHistorico;
+        private Label lblDiaMasVentas;
+        private TableLayoutPanel tableLayoutPanel1;
     }
 }
 

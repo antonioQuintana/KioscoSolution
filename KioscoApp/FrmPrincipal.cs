@@ -11,6 +11,7 @@ namespace KioscoApp
         public FrmPrincipal(string rol)
         {
             InitializeComponent();
+
             rolUsuario = rol.ToLower();
             ConfigurarMenu();
             ThemeHelper.ApplyTheme(this);
@@ -18,6 +19,9 @@ namespace KioscoApp
 
         private void ConfigurarMenu()
         {
+            tableLayoutPanel1.Controls.Add(pnlMenu, 0, 0);
+            tableLayoutPanel1.Controls.Add(pnlContent, 1, 0);
+
             // Ocultamos todos los botones primero
             BUsuarios.Visible = false;
             BProductos.Visible = false;
@@ -83,22 +87,24 @@ namespace KioscoApp
 
         private void BUsuarios_Click_1(object sender, EventArgs e) { CargarUserControl(new UcABMUsuarios()); }
 
-        private void BProductos_Click(object sender, EventArgs e){CargarUserControl(new UcABMProductos());}
-        
-        private void BCategorias_Click(object sender, EventArgs e){CargarUserControl(new UcABMCategorias());}
-        
-        private void BProveedores_Click(object sender, EventArgs e){CargarUserControl(new UcABMProveedores());}
-        
-        private void BStock_Click(object sender, EventArgs e){CargarUserControl(new UcMovimientosStock());}
+        private void BProductos_Click(object sender, EventArgs e) { CargarUserControl(new UcABMProductos()); }
 
-        private void BEstadisticas_Click(object sender, EventArgs e){CargarUserControl(new UcEstadisticas());}
+        private void BCategorias_Click(object sender, EventArgs e) { CargarUserControl(new UcABMCategorias()); }
+
+        private void BProveedores_Click(object sender, EventArgs e) { CargarUserControl(new UcABMProveedores()); }
+
+        private void BStock_Click(object sender, EventArgs e) { CargarUserControl(new UcMovimientosStock()); }
+
+        private void BEstadisticas_Click(object sender, EventArgs e) { CargarUserControl(new UcEstadisticas()); }
+
+        private void BVenta_Click(object sender, EventArgs e) { CargarUserControl(new UcVenta()); }
+
+        private void BClientes_Click(object sender, EventArgs e) { CargarUserControl(new UcABMClientes()); }
+
+        private void BCierreCaja_Click(object sender, EventArgs e) { CargarUserControl(new UcCierreCaja()); }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
         
-        private void BVenta_Click(object sender, EventArgs e){CargarUserControl(new UcVenta());}
-        
-        private void BClientes_Click(object sender, EventArgs e){CargarUserControl(new UcABMClientes());}
-        
-        private void BCierreCaja_Click(object sender, EventArgs e){CargarUserControl(new UcCierreCaja());}
-                
     }
 }
 
