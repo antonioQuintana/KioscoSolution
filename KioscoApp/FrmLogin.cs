@@ -53,7 +53,8 @@ namespace KioscoApp
             string rol = reader["Rol"].ToString();
 
             UserSession.IniciarSesion(id, nombre, usuario, rol);
-            
+            txtUsuario.Text = null;
+            txtContrasena.Text = null;
             FrmPrincipal frm = new FrmPrincipal(rol);
             frm.Show();
             this.Hide();
