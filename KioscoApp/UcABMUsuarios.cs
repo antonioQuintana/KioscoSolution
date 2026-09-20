@@ -8,11 +8,46 @@ namespace KioscoApp
     public partial class UcABMUsuarios : UserControl
     {
         private int usuarioIdSeleccionado = 0;
+        private ErrorProvider errorProvider = new ErrorProvider();
 
         public UcABMUsuarios()
         {
             InitializeComponent();
-            
+            ConfigurarValidacionesEnTiempoReal();
+        }
+
+        private void ConfigurarValidacionesEnTiempoReal()
+        {
+            // Validaciones en tiempo real al perder el foco en el campo
+            txtEmail.Validating += (s, e) => {
+                if (!string.IsNullOrWhiteSpace(txtEmail.Text) && !System.Text.RegularExpressions.Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                    errorProvider.SetError(txtEmail, "Formato de email inválido (ej: correo@gmail.com)");
+                else
+                    errorProvider.SetError(txtEmail, "");
+            };
+
+            txtTelefono.Validating += (s, e) => {
+                if (!string.IsNullOrWhiteSpace(txtTelefono.Text) && !System.Text.RegularExpressions.Regex.IsMatch(txtTelefono.Text, @"^[0-9\+\-\s]+$"))
+                    errorProvider.SetError(txtTelefono, "Solo se admiten números y signos + o -");
+                else
+                    errorProvider.SetError(txtTelefono, "");
+            };
+
+            // Bloquear ingreso de letras directamente en el teclado para el teléfono
+            txtTelefono.KeyPress += (s, e) => {
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '+' && e.KeyChar != '-' && e.KeyChar != ' ')
+                {
+                    e.Handled = true; // Cancela la tecla ingresada
+                }
+            };
+
+            // Bloquear ingreso de letras directamente en el teclado para el número de calle
+            txtNumero.KeyPress += (s, e) => {
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                {
+                    e.Handled = true; // Cancela la tecla ingresada (solo admite números)
+                }
+            };
         }
 
         private void FrmGestionUsuarios_Load(object sender, EventArgs e)
@@ -93,7 +128,7 @@ namespace KioscoApp
                 using (var connection = DatabaseHelper.GetConnection())
                 {
                     connection.Open();
-                    string query = "SELECT Id, Nombre, Usuario, Rol FROM Usuarios";
+                    string query = "SELECT Id, Nombre, Apellido, Usuario, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento FROM Usuarios";
                     SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
@@ -112,34 +147,178 @@ namespace KioscoApp
             {
                 DataGridViewRow row = dgvUsuarios.Rows[e.RowIndex];
                 usuarioIdSeleccionado = Convert.ToInt32(row.Cells["Id"].Value);
+                
                 txtNombre.Text = row.Cells["Nombre"].Value?.ToString();
+                txtApellido.Text = row.Cells["Apellido"].Value?.ToString();
                 txtUsuario.Text = row.Cells["Usuario"].Value?.ToString();
-                txtContrasena.Text = ""; // No cargar contraseña por seguridad
+                txtContrasena.Text = ""; // Por seguridad
                 cmbRol.SelectedItem = row.Cells["Rol"].Value?.ToString();
+                txtEmail.Text = row.Cells["Email"].Value?.ToString();
+                txtTelefono.Text = row.Cells["Telefono"].Value?.ToString();
+                txtCalle.Text = row.Cells["Calle"].Value?.ToString();
+                txtNumero.Text = row.Cells["Numero"].Value?.ToString();
+                
+                // Cargar Provincia y Ciudad
+                cmbProvincia.SelectedIndexChanged -= CmbProvincia_SelectedIndexChanged;
+                cmbProvincia.Text = row.Cells["Provincia"].Value?.ToString();
+                cmbProvincia.SelectedIndexChanged += CmbProvincia_SelectedIndexChanged;
+                
+                if (cmbProvincia.SelectedValue != null && int.TryParse(cmbProvincia.SelectedValue.ToString(), out int provId))
+                {
+                    CargarCiudades(provId);
+                }
+                
+                cmbCiudad.Text = row.Cells["Ciudad"].Value?.ToString();
+                cmbSexo.SelectedItem = row.Cells["Sexo"].Value?.ToString();
+                
+                if (row.Cells["Nacimiento"].Value != DBNull.Value)
+                    dtpNacimiento.Value = Convert.ToDateTime(row.Cells["Nacimiento"].Value);
+                else
+                    dtpNacimiento.Value = DateTime.Now;
             }
         }
 
-        private void BtnAgregar_Click(object sender, EventArgs e)
+        private bool ExisteDatoUnico(string campo, string valor, int idExcluir)
         {
             try
             {
                 using (var connection = DatabaseHelper.GetConnection())
                 {
                     connection.Open();
-                    string query = "INSERT INTO Usuarios (Nombre, Usuario, Contrasena, Rol) VALUES (@Nombre, @Usuario, @Contrasena, @Rol)";
+                    string query = $"SELECT COUNT(1) FROM Usuarios WHERE {campo} = @Valor AND Id != @Id";
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@Valor", valor);
+                        cmd.Parameters.AddWithValue("@Id", idExcluir);
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool ValidarFormulario()
+        {
+            bool esValido = true;
+            errorProvider.Clear(); // Limpiar errores previos
+            System.Collections.Generic.List<string> mensajesError = new System.Collections.Generic.List<string>();
+
+            // Función local para simplificar el registro de errores
+            void AddError(Control ctrl, string msg, bool esErrorDetallado)
+            {
+                errorProvider.SetError(ctrl, msg);
+                esValido = false;
+                if (esErrorDetallado) mensajesError.Add($"- {msg}");
+            }
+
+            // Validaciones de obligatoriedad y formato
+            if (string.IsNullOrWhiteSpace(txtNombre.Text)) { AddError(txtNombre, "Requerido", false); }
+            if (string.IsNullOrWhiteSpace(txtApellido.Text)) { AddError(txtApellido, "Requerido", false); }
+            
+            if (string.IsNullOrWhiteSpace(txtUsuario.Text)) { 
+                AddError(txtUsuario, "Requerido", false); 
+            } else if (txtUsuario.Text.Length < 4) { 
+                AddError(txtUsuario, "El usuario debe tener mínimo 4 caracteres", true); 
+            } else if (ExisteDatoUnico("Usuario", txtUsuario.Text.Trim(), usuarioIdSeleccionado)) {
+                AddError(txtUsuario, "El usuario ingresado ya existe en el sistema", true);
+            }
+            
+            if (usuarioIdSeleccionado == 0 && string.IsNullOrWhiteSpace(txtContrasena.Text)) { AddError(txtContrasena, "Requerido para usuarios nuevos", false); }
+            if (cmbRol.SelectedIndex == -1) { AddError(cmbRol, "Requerido", false); }
+
+            // Email (Regex + Unicidad)
+            if (string.IsNullOrWhiteSpace(txtEmail.Text)) { 
+                AddError(txtEmail, "Requerido", false); 
+            } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$")) {
+                AddError(txtEmail, "El formato del email es inválido (ej: correo@gmail.com)", true);
+            } else if (ExisteDatoUnico("Email", txtEmail.Text.Trim(), usuarioIdSeleccionado)) {
+                AddError(txtEmail, "El email ingresado ya está en uso por otro usuario", true);
+            }
+
+            // Teléfono (Regex + Unicidad)
+            if (string.IsNullOrWhiteSpace(txtTelefono.Text)) { 
+                AddError(txtTelefono, "Requerido", false); 
+            } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtTelefono.Text, @"^[0-9\+\-\s]+$")) {
+                AddError(txtTelefono, "El teléfono solo puede contener números y signos + o -", true);
+            } else if (ExisteDatoUnico("Telefono", txtTelefono.Text.Trim(), usuarioIdSeleccionado)) {
+                AddError(txtTelefono, "El teléfono ingresado ya está registrado", true);
+            }
+
+            // Dirección
+            if (string.IsNullOrWhiteSpace(txtCalle.Text)) { AddError(txtCalle, "Requerido", false); }
+            if (string.IsNullOrWhiteSpace(txtNumero.Text)) { AddError(txtNumero, "Requerido", false); }
+            
+            // Provincia y Ciudad (Debe estar en la base de datos)
+            if (cmbProvincia.SelectedIndex == -1) { 
+                if (string.IsNullOrWhiteSpace(cmbProvincia.Text)) AddError(cmbProvincia, "Requerido", false); 
+                else AddError(cmbProvincia, "Debe seleccionar una Provincia de la lista sugerida", true); 
+            }
+            if (cmbCiudad.SelectedIndex == -1) { 
+                if (string.IsNullOrWhiteSpace(cmbCiudad.Text)) AddError(cmbCiudad, "Requerido", false); 
+                else AddError(cmbCiudad, "Debe seleccionar una Ciudad de la lista sugerida", true); 
+            }
+            
+            if (cmbSexo.SelectedIndex == -1) { AddError(cmbSexo, "Requerido", false); }
+            
+            if (dtpNacimiento.Value.Date >= DateTime.Now.Date) { 
+                AddError(dtpNacimiento, "La fecha de nacimiento no puede ser una fecha futura", true); 
+            }
+
+            if (!esValido)
+            {
+                string mensajeAlerta = "Por favor, complete o corrija los campos marcados en rojo.\n\n";
+                if (mensajesError.Count > 0)
+                {
+                    mensajeAlerta += "Detalles de los errores:\n" + string.Join("\n", mensajesError);
+                }
+                MessageBox.Show(mensajeAlerta, "Validación de Formulario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            return esValido;
+        }
+
+        private void BtnAgregar_Click(object sender, EventArgs e)
+        {
+            if (!ValidarFormulario()) return;
+
+            try
+            {
+                using (var connection = DatabaseHelper.GetConnection())
+                {
+                    connection.Open();
+                    string query = @"INSERT INTO Usuarios 
+                        (Nombre, Apellido, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento) 
+                        VALUES 
+                        (@Nombre, @Apellido, @Usuario, @Contrasena, @Rol, @Email, @Telefono, @Calle, @Numero, @Ciudad, @Provincia, @Sexo, @Nacimiento)";
+                        
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
                         string hashPassword = BCrypt.Net.BCrypt.HashPassword(txtContrasena.Text);
 
-                        cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text);
-                        cmd.Parameters.AddWithValue("@Usuario", txtUsuario.Text);
+                        cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Apellido", txtApellido.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Usuario", txtUsuario.Text.Trim());
                         cmd.Parameters.AddWithValue("@Contrasena", hashPassword);
-                        cmd.Parameters.AddWithValue("@Rol", cmbRol.SelectedItem?.ToString() ?? "Vendedor");
+                        cmd.Parameters.AddWithValue("@Rol", cmbRol.SelectedItem?.ToString());
+                        cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Telefono", txtTelefono.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Calle", txtCalle.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Numero", txtNumero.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Ciudad", cmbCiudad.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Provincia", cmbProvincia.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Sexo", cmbSexo.SelectedItem?.ToString());
+                        cmd.Parameters.AddWithValue("@Nacimiento", dtpNacimiento.Value.Date);
+                        
                         cmd.ExecuteNonQuery();
                     }
                 }
                 LimpiarFormulario();
                 CargarUsuarios();
+                MessageBox.Show("Usuario registrado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -150,29 +329,48 @@ namespace KioscoApp
         private void BtnEditar_Click(object sender, EventArgs e)
         {
             if (usuarioIdSeleccionado == 0) return;
+            if (!ValidarFormulario()) return;
+
             try
             {
                 using (var connection = DatabaseHelper.GetConnection())
                 {
                     connection.Open();
-                    string query = "UPDATE Usuarios SET Nombre=@Nombre, Usuario=@Usuario, Rol=@Rol " + 
-                                   (string.IsNullOrEmpty(txtContrasena.Text) ? "" : ", Contrasena=@Contrasena ") + 
-                                   "WHERE Id=@Id";
+                    string query = @"UPDATE Usuarios SET 
+                        Nombre=@Nombre, Apellido=@Apellido, Usuario=@Usuario, Rol=@Rol, 
+                        Email=@Email, Telefono=@Telefono, Calle=@Calle, Numero=@Numero, 
+                        Ciudad=@Ciudad, Provincia=@Provincia, Sexo=@Sexo, Nacimiento=@Nacimiento " + 
+                        (string.IsNullOrEmpty(txtContrasena.Text) ? "" : ", Contrasena=@Contrasena ") + 
+                        "WHERE Id=@Id";
+                        
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
-                        string hashPassword = BCrypt.Net.BCrypt.HashPassword(txtContrasena.Text);
-
                         cmd.Parameters.AddWithValue("@Id", usuarioIdSeleccionado);
-                        cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text);
-                        cmd.Parameters.AddWithValue("@Usuario", txtUsuario.Text);
+                        cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Apellido", txtApellido.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Usuario", txtUsuario.Text.Trim());
                         cmd.Parameters.AddWithValue("@Rol", cmbRol.SelectedItem?.ToString());
+                        cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Telefono", txtTelefono.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Calle", txtCalle.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Numero", txtNumero.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Ciudad", cmbCiudad.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Provincia", cmbProvincia.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Sexo", cmbSexo.SelectedItem?.ToString());
+                        cmd.Parameters.AddWithValue("@Nacimiento", dtpNacimiento.Value.Date);
+
                         if (!string.IsNullOrEmpty(txtContrasena.Text))
+                        {
+                            string hashPassword = BCrypt.Net.BCrypt.HashPassword(txtContrasena.Text);
                             cmd.Parameters.AddWithValue("@Contrasena", hashPassword);
+                        }
+                            
                         cmd.ExecuteNonQuery();
                     }
                 }
                 LimpiarFormulario();
                 CargarUsuarios();
+                MessageBox.Show("Usuario actualizado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -183,6 +381,10 @@ namespace KioscoApp
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
             if (usuarioIdSeleccionado == 0) return;
+            
+            var confirmResult = MessageBox.Show("¿Está seguro que desea eliminar este usuario?", "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (confirmResult != DialogResult.Yes) return;
+
             try
             {
                 using (var connection = DatabaseHelper.GetConnection())
@@ -212,11 +414,22 @@ namespace KioscoApp
         private void LimpiarFormulario()
         {
             usuarioIdSeleccionado = 0;
+            errorProvider.Clear();
             txtNombre.Clear();
+            txtApellido.Clear();
             txtUsuario.Clear();
             txtContrasena.Clear();
+            txtEmail.Clear();
+            txtTelefono.Clear();
+            txtCalle.Clear();
+            txtNumero.Clear();
+            cmbCiudad.SelectedIndex = -1;
+            cmbCiudad.Text = "";
+            cmbProvincia.SelectedIndex = -1;
+            cmbProvincia.Text = "";
+            cmbSexo.SelectedIndex = -1;
             cmbRol.SelectedIndex = -1;
+            dtpNacimiento.Value = DateTime.Now;
         }
     }
 }
-
