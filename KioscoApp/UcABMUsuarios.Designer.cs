@@ -35,7 +35,6 @@ namespace KioscoApp
             txtEmail = new TextBox();
             lblTelefono = new Label();
             txtTelefono = new TextBox();
-            
             lblCalle = new Label();
             txtCalle = new TextBox();
             lblNumero = new Label();
@@ -44,12 +43,10 @@ namespace KioscoApp
             cmbCiudad = new ComboBox();
             lblProvincia = new Label();
             cmbProvincia = new ComboBox();
-  
             lblSexo = new Label();
             cmbSexo = new ComboBox();
             lblNacimiento = new Label();
             dtpNacimiento = new DateTimePicker();
-            
             btnAgregar = new Button();
             btnEditar = new Button();
             btnEliminar = new Button();
@@ -60,18 +57,18 @@ namespace KioscoApp
             // dgvUsuarios
             // 
             dgvUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvUsuarios.Location = new Point(20, 20);
+            dgvUsuarios.Location = new Point(20, 246);
             dgvUsuarios.Name = "dgvUsuarios";
             dgvUsuarios.ReadOnly = true;
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsuarios.Size = new Size(500, 420);
+            dgvUsuarios.Size = new Size(959, 377);
             dgvUsuarios.TabIndex = 0;
             dgvUsuarios.CellClick += DgvUsuarios_CellClick;
             // 
             // lblNombre
             // 
             lblNombre.AutoSize = true;
-            lblNombre.Location = new Point(540, 20);
+            lblNombre.Location = new Point(30, 20);
             lblNombre.Name = "lblNombre";
             lblNombre.Size = new Size(54, 15);
             lblNombre.TabIndex = 1;
@@ -79,7 +76,7 @@ namespace KioscoApp
             // 
             // txtNombre
             // 
-            txtNombre.Location = new Point(540, 38);
+            txtNombre.Location = new Point(30, 38);
             txtNombre.Name = "txtNombre";
             txtNombre.Size = new Size(200, 23);
             txtNombre.TabIndex = 2;
@@ -87,7 +84,7 @@ namespace KioscoApp
             // lblApellido
             // 
             lblApellido.AutoSize = true;
-            lblApellido.Location = new Point(540, 70);
+            lblApellido.Location = new Point(30, 70);
             lblApellido.Name = "lblApellido";
             lblApellido.Size = new Size(54, 15);
             lblApellido.TabIndex = 3;
@@ -95,7 +92,7 @@ namespace KioscoApp
             // 
             // txtApellido
             // 
-            txtApellido.Location = new Point(540, 88);
+            txtApellido.Location = new Point(30, 88);
             txtApellido.Name = "txtApellido";
             txtApellido.Size = new Size(200, 23);
             txtApellido.TabIndex = 4;
@@ -103,7 +100,7 @@ namespace KioscoApp
             // lblUsuario
             // 
             lblUsuario.AutoSize = true;
-            lblUsuario.Location = new Point(540, 120);
+            lblUsuario.Location = new Point(30, 120);
             lblUsuario.Name = "lblUsuario";
             lblUsuario.Size = new Size(50, 15);
             lblUsuario.TabIndex = 5;
@@ -111,7 +108,7 @@ namespace KioscoApp
             // 
             // txtUsuario
             // 
-            txtUsuario.Location = new Point(540, 138);
+            txtUsuario.Location = new Point(30, 138);
             txtUsuario.Name = "txtUsuario";
             txtUsuario.Size = new Size(200, 23);
             txtUsuario.TabIndex = 6;
@@ -119,7 +116,7 @@ namespace KioscoApp
             // lblContrasena
             // 
             lblContrasena.AutoSize = true;
-            lblContrasena.Location = new Point(540, 170);
+            lblContrasena.Location = new Point(277, 20);
             lblContrasena.Name = "lblContrasena";
             lblContrasena.Size = new Size(70, 15);
             lblContrasena.TabIndex = 7;
@@ -127,7 +124,7 @@ namespace KioscoApp
             // 
             // txtContrasena
             // 
-            txtContrasena.Location = new Point(540, 188);
+            txtContrasena.Location = new Point(277, 38);
             txtContrasena.Name = "txtContrasena";
             txtContrasena.Size = new Size(200, 23);
             txtContrasena.TabIndex = 8;
@@ -135,7 +132,7 @@ namespace KioscoApp
             // lblRol
             // 
             lblRol.AutoSize = true;
-            lblRol.Location = new Point(540, 220);
+            lblRol.Location = new Point(277, 70);
             lblRol.Name = "lblRol";
             lblRol.Size = new Size(27, 15);
             lblRol.TabIndex = 9;
@@ -146,7 +143,7 @@ namespace KioscoApp
             cmbRol.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbRol.FormattingEnabled = true;
             cmbRol.Items.AddRange(new object[] { "Admin", "Vendedor" });
-            cmbRol.Location = new Point(540, 238);
+            cmbRol.Location = new Point(277, 88);
             cmbRol.Name = "cmbRol";
             cmbRol.Size = new Size(200, 23);
             cmbRol.TabIndex = 10;
@@ -154,7 +151,7 @@ namespace KioscoApp
             // lblEmail
             // 
             lblEmail.AutoSize = true;
-            lblEmail.Location = new Point(540, 270);
+            lblEmail.Location = new Point(277, 120);
             lblEmail.Name = "lblEmail";
             lblEmail.Size = new Size(39, 15);
             lblEmail.TabIndex = 11;
@@ -162,7 +159,7 @@ namespace KioscoApp
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(540, 288);
+            txtEmail.Location = new Point(277, 138);
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(200, 23);
             txtEmail.TabIndex = 12;
@@ -170,7 +167,7 @@ namespace KioscoApp
             // lblTelefono
             // 
             lblTelefono.AutoSize = true;
-            lblTelefono.Location = new Point(540, 320);
+            lblTelefono.Location = new Point(520, 20);
             lblTelefono.Name = "lblTelefono";
             lblTelefono.Size = new Size(55, 15);
             lblTelefono.TabIndex = 13;
@@ -178,7 +175,7 @@ namespace KioscoApp
             // 
             // txtTelefono
             // 
-            txtTelefono.Location = new Point(540, 338);
+            txtTelefono.Location = new Point(520, 38);
             txtTelefono.Name = "txtTelefono";
             txtTelefono.Size = new Size(200, 23);
             txtTelefono.TabIndex = 14;
@@ -186,7 +183,7 @@ namespace KioscoApp
             // lblCalle
             // 
             lblCalle.AutoSize = true;
-            lblCalle.Location = new Point(760, 20);
+            lblCalle.Location = new Point(520, 70);
             lblCalle.Name = "lblCalle";
             lblCalle.Size = new Size(36, 15);
             lblCalle.TabIndex = 15;
@@ -194,7 +191,7 @@ namespace KioscoApp
             // 
             // txtCalle
             // 
-            txtCalle.Location = new Point(760, 38);
+            txtCalle.Location = new Point(520, 88);
             txtCalle.Name = "txtCalle";
             txtCalle.Size = new Size(200, 23);
             txtCalle.TabIndex = 16;
@@ -202,7 +199,7 @@ namespace KioscoApp
             // lblNumero
             // 
             lblNumero.AutoSize = true;
-            lblNumero.Location = new Point(760, 70);
+            lblNumero.Location = new Point(520, 120);
             lblNumero.Name = "lblNumero";
             lblNumero.Size = new Size(54, 15);
             lblNumero.TabIndex = 17;
@@ -210,34 +207,15 @@ namespace KioscoApp
             // 
             // txtNumero
             // 
-            txtNumero.Location = new Point(760, 88);
+            txtNumero.Location = new Point(520, 138);
             txtNumero.Name = "txtNumero";
             txtNumero.Size = new Size(200, 23);
             txtNumero.TabIndex = 18;
             // 
-            // lblProvincia
-            // 
-            lblProvincia.AutoSize = true;
-            lblProvincia.Location = new Point(760, 120);
-            lblProvincia.Name = "lblProvincia";
-            lblProvincia.Size = new Size(59, 15);
-            lblProvincia.TabIndex = 19;
-            lblProvincia.Text = "Provincia:";
-            // 
-            // cmbProvincia
-            // 
-            cmbProvincia.FormattingEnabled = true;
-            cmbProvincia.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            cmbProvincia.AutoCompleteSource = AutoCompleteSource.ListItems;
-            cmbProvincia.Location = new Point(760, 138);
-            cmbProvincia.Name = "cmbProvincia";
-            cmbProvincia.Size = new Size(200, 23);
-            cmbProvincia.TabIndex = 20;
-            // 
             // lblCiudad
             // 
             lblCiudad.AutoSize = true;
-            lblCiudad.Location = new Point(760, 170);
+            lblCiudad.Location = new Point(760, 70);
             lblCiudad.Name = "lblCiudad";
             lblCiudad.Size = new Size(48, 15);
             lblCiudad.TabIndex = 21;
@@ -245,18 +223,37 @@ namespace KioscoApp
             // 
             // cmbCiudad
             // 
-            cmbCiudad.FormattingEnabled = true;
             cmbCiudad.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             cmbCiudad.AutoCompleteSource = AutoCompleteSource.ListItems;
-            cmbCiudad.Location = new Point(760, 188);
+            cmbCiudad.FormattingEnabled = true;
+            cmbCiudad.Location = new Point(760, 88);
             cmbCiudad.Name = "cmbCiudad";
             cmbCiudad.Size = new Size(200, 23);
             cmbCiudad.TabIndex = 22;
-            //
+            // 
+            // lblProvincia
+            // 
+            lblProvincia.AutoSize = true;
+            lblProvincia.Location = new Point(760, 20);
+            lblProvincia.Name = "lblProvincia";
+            lblProvincia.Size = new Size(59, 15);
+            lblProvincia.TabIndex = 19;
+            lblProvincia.Text = "Provincia:";
+            // 
+            // cmbProvincia
+            // 
+            cmbProvincia.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbProvincia.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbProvincia.FormattingEnabled = true;
+            cmbProvincia.Location = new Point(760, 38);
+            cmbProvincia.Name = "cmbProvincia";
+            cmbProvincia.Size = new Size(200, 23);
+            cmbProvincia.TabIndex = 20;
+            // 
             // lblSexo
             // 
             lblSexo.AutoSize = true;
-            lblSexo.Location = new Point(760, 220);
+            lblSexo.Location = new Point(760, 120);
             lblSexo.Name = "lblSexo";
             lblSexo.Size = new Size(35, 15);
             lblSexo.TabIndex = 23;
@@ -267,7 +264,7 @@ namespace KioscoApp
             cmbSexo.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSexo.FormattingEnabled = true;
             cmbSexo.Items.AddRange(new object[] { "Femenino", "Masculino", "Otro" });
-            cmbSexo.Location = new Point(760, 238);
+            cmbSexo.Location = new Point(760, 138);
             cmbSexo.Name = "cmbSexo";
             cmbSexo.Size = new Size(200, 23);
             cmbSexo.TabIndex = 24;
@@ -275,7 +272,7 @@ namespace KioscoApp
             // lblNacimiento
             // 
             lblNacimiento.AutoSize = true;
-            lblNacimiento.Location = new Point(760, 270);
+            lblNacimiento.Location = new Point(760, 170);
             lblNacimiento.Name = "lblNacimiento";
             lblNacimiento.Size = new Size(72, 15);
             lblNacimiento.TabIndex = 25;
@@ -283,15 +280,15 @@ namespace KioscoApp
             // 
             // dtpNacimiento
             // 
-            dtpNacimiento.Location = new Point(760, 288);
-            dtpNacimiento.Name = "dtpNacimiento";
             dtpNacimiento.Format = DateTimePickerFormat.Short;
+            dtpNacimiento.Location = new Point(760, 188);
+            dtpNacimiento.Name = "dtpNacimiento";
             dtpNacimiento.Size = new Size(200, 23);
             dtpNacimiento.TabIndex = 26;
             // 
             // btnAgregar
             // 
-            btnAgregar.Location = new Point(540, 380);
+            btnAgregar.Location = new Point(175, 188);
             btnAgregar.Name = "btnAgregar";
             btnAgregar.Size = new Size(95, 30);
             btnAgregar.TabIndex = 27;
@@ -301,7 +298,7 @@ namespace KioscoApp
             // 
             // btnEditar
             // 
-            btnEditar.Location = new Point(645, 380);
+            btnEditar.Location = new Point(280, 188);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(95, 30);
             btnEditar.TabIndex = 28;
@@ -311,7 +308,7 @@ namespace KioscoApp
             // 
             // btnEliminar
             // 
-            btnEliminar.Location = new Point(760, 380);
+            btnEliminar.Location = new Point(395, 188);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Size = new Size(95, 30);
             btnEliminar.TabIndex = 29;
@@ -321,7 +318,7 @@ namespace KioscoApp
             // 
             // btnLimpiar
             // 
-            btnLimpiar.Location = new Point(865, 380);
+            btnLimpiar.Location = new Point(500, 188);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(95, 30);
             btnLimpiar.TabIndex = 30;
@@ -337,7 +334,6 @@ namespace KioscoApp
             Controls.Add(btnEliminar);
             Controls.Add(btnEditar);
             Controls.Add(btnAgregar);
-            
             Controls.Add(dtpNacimiento);
             Controls.Add(lblNacimiento);
             Controls.Add(cmbSexo);
@@ -350,7 +346,6 @@ namespace KioscoApp
             Controls.Add(lblNumero);
             Controls.Add(txtCalle);
             Controls.Add(lblCalle);
-            
             Controls.Add(txtTelefono);
             Controls.Add(lblTelefono);
             Controls.Add(txtEmail);
@@ -367,7 +362,7 @@ namespace KioscoApp
             Controls.Add(lblNombre);
             Controls.Add(dgvUsuarios);
             Name = "UcABMUsuarios";
-            Size = new Size(1000, 470);
+            Size = new Size(1000, 643);
             Load += FrmGestionUsuarios_Load;
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();
             ResumeLayout(false);
