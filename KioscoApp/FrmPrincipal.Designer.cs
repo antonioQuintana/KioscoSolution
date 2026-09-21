@@ -1,4 +1,4 @@
-﻿namespace KioscoApp
+namespace KioscoApp
 {
     partial class FrmPrincipal
     {
@@ -7,25 +7,25 @@
 
         private void InitializeComponent()
         {
-            pnlMenu = new Panel();
-            BCierreCaja = new Button();
-            btnCerrarSesion = new Button();
-            BEstadisticas = new Button();
-            BUsuarios = new Button();
-            BProveedores = new Button();
-            BClientes = new Button();
-            BStock = new Button();
-            BProductos = new Button();
-            BCategorias = new Button();
-            BVenta = new Button();
-            pnlContent = new Panel();
-            tableLayoutPanel1 = new TableLayoutPanel();
+            pnlMenu = new System.Windows.Forms.Panel();
+            BCierreCaja = new System.Windows.Forms.Button();
+            btnCerrarSesion = new System.Windows.Forms.Button();
+            BEstadisticas = new System.Windows.Forms.Button();
+            BUsuarios = new System.Windows.Forms.Button();
+            BProveedores = new System.Windows.Forms.Button();
+            BClientes = new System.Windows.Forms.Button();
+            BStock = new System.Windows.Forms.Button();
+            BProductos = new System.Windows.Forms.Button();
+            BCategorias = new System.Windows.Forms.Button();
+            BVenta = new System.Windows.Forms.Button();
+            pnlContent = new System.Windows.Forms.Panel();
+            tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             pnlMenu.SuspendLayout();
             SuspendLayout();
             // 
             // pnlMenu
             // 
-            pnlMenu.BackColor = Color.FromArgb(45, 45, 48);
+            pnlMenu.BackColor = System.Drawing.Color.FromArgb(45, 45, 48);
             pnlMenu.Controls.Add(BCierreCaja);
             pnlMenu.Controls.Add(btnCerrarSesion);
             pnlMenu.Controls.Add(BEstadisticas);
@@ -36,17 +36,17 @@
             pnlMenu.Controls.Add(BProductos);
             pnlMenu.Controls.Add(BCategorias);
             pnlMenu.Controls.Add(BVenta);
-            pnlMenu.Dock = DockStyle.Left;
-            pnlMenu.Location = new Point(0, 0);
+            pnlMenu.Dock = System.Windows.Forms.DockStyle.Left;
+            pnlMenu.Location = new System.Drawing.Point(0, 0);
             pnlMenu.Name = "pnlMenu";
-            pnlMenu.Size = new Size(1100, 700);
+            pnlMenu.Size = new System.Drawing.Size(1100, 700);
             pnlMenu.TabIndex = 1;
             // 
             // BCierreCaja
             // 
-            BCierreCaja.Location = new Point(12, 520);
+            BCierreCaja.Location = new System.Drawing.Point(12, 520);
             BCierreCaja.Name = "BCierreCaja";
-            BCierreCaja.Size = new Size(230, 45);
+            BCierreCaja.Size = new System.Drawing.Size(230, 45);
             BCierreCaja.TabIndex = 9;
             BCierreCaja.Text = "Cierre de Caja";
             BCierreCaja.UseVisualStyleBackColor = true;
@@ -54,13 +54,13 @@
             // 
             // btnCerrarSesion
             // 
-            btnCerrarSesion.BackColor = Color.IndianRed;
-            btnCerrarSesion.Dock = DockStyle.Bottom;
-            btnCerrarSesion.FlatStyle = FlatStyle.Flat;
-            btnCerrarSesion.ForeColor = Color.White;
-            btnCerrarSesion.Location = new Point(0, 644);
+            btnCerrarSesion.BackColor = System.Drawing.Color.IndianRed;
+            btnCerrarSesion.Dock = System.Windows.Forms.DockStyle.Bottom;
+            btnCerrarSesion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnCerrarSesion.ForeColor = System.Drawing.Color.White;
+            btnCerrarSesion.Location = new System.Drawing.Point(0, 644);
             btnCerrarSesion.Name = "btnCerrarSesion";
-            btnCerrarSesion.Size = new Size(1100, 56);
+            btnCerrarSesion.Size = new System.Drawing.Size(1100, 56);
             btnCerrarSesion.TabIndex = 0;
             btnCerrarSesion.Text = "Cerrar Sesión";
             btnCerrarSesion.UseVisualStyleBackColor = false;
@@ -68,9 +68,9 @@
             // 
             // BEstadisticas
             // 
-            BEstadisticas.Location = new Point(12, 340);
+            BEstadisticas.Location = new System.Drawing.Point(12, 340);
             BEstadisticas.Name = "BEstadisticas";
-            BEstadisticas.Size = new Size(230, 45);
+            BEstadisticas.Size = new System.Drawing.Size(230, 45);
             BEstadisticas.TabIndex = 3;
             BEstadisticas.Text = "Estadisticas";
             BEstadisticas.UseVisualStyleBackColor = true;
@@ -78,9 +78,9 @@
             // 
             // BUsuarios
             // 
-            BUsuarios.Location = new Point(12, 40);
+            BUsuarios.Location = new System.Drawing.Point(12, 40);
             BUsuarios.Name = "BUsuarios";
-            BUsuarios.Size = new Size(230, 45);
+            BUsuarios.Size = new System.Drawing.Size(230, 45);
             BUsuarios.TabIndex = 8;
             BUsuarios.Text = "Usuarios";
             BUsuarios.UseVisualStyleBackColor = true;
@@ -88,9 +88,9 @@
             // 
             // BProveedores
             // 
-            BProveedores.Location = new Point(12, 220);
+            BProveedores.Location = new System.Drawing.Point(12, 220);
             BProveedores.Name = "BProveedores";
-            BProveedores.Size = new Size(230, 45);
+            BProveedores.Size = new System.Drawing.Size(230, 45);
             BProveedores.TabIndex = 5;
             BProveedores.Text = "Proveedores";
             BProveedores.UseVisualStyleBackColor = true;
@@ -98,9 +98,9 @@
             // 
             // BClientes
             // 
-            BClientes.Location = new Point(12, 460);
+            BClientes.Location = new System.Drawing.Point(12, 460);
             BClientes.Name = "BClientes";
-            BClientes.Size = new Size(230, 45);
+            BClientes.Size = new System.Drawing.Size(230, 45);
             BClientes.TabIndex = 1;
             BClientes.Text = "Clientes";
             BClientes.UseVisualStyleBackColor = true;
@@ -108,9 +108,9 @@
             // 
             // BStock
             // 
-            BStock.Location = new Point(12, 280);
+            BStock.Location = new System.Drawing.Point(12, 280);
             BStock.Name = "BStock";
-            BStock.Size = new Size(230, 45);
+            BStock.Size = new System.Drawing.Size(230, 45);
             BStock.TabIndex = 4;
             BStock.Text = "Stock";
             BStock.UseVisualStyleBackColor = true;
@@ -118,9 +118,9 @@
             // 
             // BProductos
             // 
-            BProductos.Location = new Point(12, 100);
+            BProductos.Location = new System.Drawing.Point(12, 100);
             BProductos.Name = "BProductos";
-            BProductos.Size = new Size(230, 45);
+            BProductos.Size = new System.Drawing.Size(230, 45);
             BProductos.TabIndex = 7;
             BProductos.Text = "Productos";
             BProductos.UseVisualStyleBackColor = true;
@@ -128,9 +128,9 @@
             // 
             // BCategorias
             // 
-            BCategorias.Location = new Point(12, 160);
+            BCategorias.Location = new System.Drawing.Point(12, 160);
             BCategorias.Name = "BCategorias";
-            BCategorias.Size = new Size(230, 45);
+            BCategorias.Size = new System.Drawing.Size(230, 45);
             BCategorias.TabIndex = 6;
             BCategorias.Text = "Categorias";
             BCategorias.UseVisualStyleBackColor = true;
@@ -138,9 +138,9 @@
             // 
             // BVenta
             // 
-            BVenta.Location = new Point(12, 400);
+            BVenta.Location = new System.Drawing.Point(12, 400);
             BVenta.Name = "BVenta";
-            BVenta.Size = new Size(230, 45);
+            BVenta.Size = new System.Drawing.Size(230, 45);
             BVenta.TabIndex = 2;
             BVenta.Text = "Venta";
             BVenta.UseVisualStyleBackColor = true;
@@ -148,55 +148,55 @@
             // 
             // pnlContent
             // 
-            pnlContent.Dock = DockStyle.Fill;
-            pnlContent.Location = new Point(0, 0);
+            pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlContent.Location = new System.Drawing.Point(0, 0);
             pnlContent.Name = "pnlContent";
-            pnlContent.Size = new Size(1100, 700);
+            pnlContent.Size = new System.Drawing.Size(1100, 700);
             pnlContent.TabIndex = 0;
             pnlContent.Paint += pnlContent_Paint;
             // 
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 2;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 85F));
-            tableLayoutPanel1.Dock = DockStyle.Fill;
-            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 250F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(1100, 700);
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new System.Drawing.Size(1100, 700);
             tableLayoutPanel1.TabIndex = 2;
             // 
             // FrmPrincipal
             // 
-            ClientSize = new Size(1100, 700);
+            ClientSize = new System.Drawing.Size(1100, 700);
             Controls.Add(pnlMenu);
             Controls.Add(pnlContent);
             Controls.Add(tableLayoutPanel1);
-            FormBorderStyle = FormBorderStyle.None;
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             Name = "FrmPrincipal";
-            StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Sistema Kiosco";
-            WindowState = FormWindowState.Maximized;
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             FormClosed += FrmPrincipal_FormClosed;
             pnlMenu.ResumeLayout(false);
             ResumeLayout(false);
         }
 
-        private Panel pnlMenu;
-        private Panel pnlContent;
+        private System.Windows.Forms.Panel pnlMenu;
+        private System.Windows.Forms.Panel pnlContent;
         
-        private Button btnCerrarSesion;
-        private Button BUsuarios;
-        private Button BProductos;
-        private Button BCategorias;
-        private Button BProveedores;
-        private Button BStock;
-        private Button BEstadisticas;
-        private Button BVenta;
-        private Button BClientes;
-        private Button BCierreCaja;
-        private TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button btnCerrarSesion;
+        private System.Windows.Forms.Button BUsuarios;
+        private System.Windows.Forms.Button BProductos;
+        private System.Windows.Forms.Button BCategorias;
+        private System.Windows.Forms.Button BProveedores;
+        private System.Windows.Forms.Button BStock;
+        private System.Windows.Forms.Button BEstadisticas;
+        private System.Windows.Forms.Button BVenta;
+        private System.Windows.Forms.Button BClientes;
+        private System.Windows.Forms.Button BCierreCaja;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
