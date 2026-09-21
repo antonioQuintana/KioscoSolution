@@ -103,7 +103,7 @@ namespace KioscoApp
 
         private void BUsuarios_Click_1(object sender, EventArgs e) { CargarUserControl(new UcABMUsuarios()); }
 
-        private void BConfiguracion_Click(object sender, EventArgs e) { MessageBox.Show("Módulo de Configuración en desarrollo (Próximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+        private void BConfiguracion_Click(object sender, EventArgs e) { CargarUserControl(new UcConfiguracion()); }
 
         private void BProductos_Click(object sender, EventArgs e) { CargarUserControl(new UcABMProductos()); }
 
