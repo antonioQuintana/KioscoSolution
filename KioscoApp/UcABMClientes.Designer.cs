@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace KioscoApp
@@ -20,181 +20,278 @@ namespace KioscoApp
 
         private void InitializeComponent()
         {
-            this.dgvClientes = new System.Windows.Forms.DataGridView();
-            this.lblDNI = new System.Windows.Forms.Label();
-            this.txtDNI = new System.Windows.Forms.TextBox();
-            this.lblNombre = new System.Windows.Forms.Label();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.lblApellido = new System.Windows.Forms.Label();
-            this.txtApellido = new System.Windows.Forms.TextBox();
-            this.lblEmail = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.lblTelefono = new System.Windows.Forms.Label();
-            this.txtTelefono = new System.Windows.Forms.TextBox();
-            
-            this.lblCalle = new System.Windows.Forms.Label();
-            this.txtCalle = new System.Windows.Forms.TextBox();
-            this.lblNumero = new System.Windows.Forms.Label();
-            this.txtNumero = new System.Windows.Forms.TextBox();
-            this.lblProvincia = new System.Windows.Forms.Label();
-            this.cmbProvincia = new System.Windows.Forms.ComboBox();
-            this.lblCiudad = new System.Windows.Forms.Label();
-            this.cmbCiudad = new System.Windows.Forms.ComboBox();
-            this.lblNacimiento = new System.Windows.Forms.Label();
-            this.dtpNacimiento = new System.Windows.Forms.DateTimePicker();
-            
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnEditar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
-            this.btnLimpiar = new System.Windows.Forms.Button();
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).BeginInit();
-            this.SuspendLayout();
-
+            dgvClientes = new DataGridView();
+            lblDNI = new Label();
+            txtDNI = new TextBox();
+            lblNombre = new Label();
+            txtNombre = new TextBox();
+            lblApellido = new Label();
+            txtApellido = new TextBox();
+            lblEmail = new Label();
+            txtEmail = new TextBox();
+            lblTelefono = new Label();
+            txtTelefono = new TextBox();
+            lblCalle = new Label();
+            txtCalle = new TextBox();
+            lblNumero = new Label();
+            txtNumero = new TextBox();
+            lblProvincia = new Label();
+            cmbProvincia = new ComboBox();
+            lblCiudad = new Label();
+            cmbCiudad = new ComboBox();
+            lblNacimiento = new Label();
+            dtpNacimiento = new DateTimePicker();
+            btnGuardar = new Button();
+            btnEditar = new Button();
+            btnEliminar = new Button();
+            btnLimpiar = new Button();
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
+            SuspendLayout();
             // 
             // dgvClientes
             // 
-            this.dgvClientes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvClientes.Location = new System.Drawing.Point(20, 20);
-            this.dgvClientes.Name = "dgvClientes";
-            this.dgvClientes.ReadOnly = true;
-            this.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvClientes.Size = new System.Drawing.Size(500, 420);
-            this.dgvClientes.TabIndex = 0;
-
-            // =========================
-            // COLUMNA 1 (X = 540)
-            // =========================
-            this.lblDNI.AutoSize = true;
-            this.lblDNI.Location = new System.Drawing.Point(540, 20);
-            this.lblDNI.Text = "DNI / Documento:";
-            this.txtDNI.Location = new System.Drawing.Point(540, 38);
-            this.txtDNI.Size = new System.Drawing.Size(200, 23);
-
-            this.lblNombre.AutoSize = true;
-            this.lblNombre.Location = new System.Drawing.Point(540, 70);
-            this.lblNombre.Text = "Nombre:";
-            this.txtNombre.Location = new System.Drawing.Point(540, 88);
-            this.txtNombre.Size = new System.Drawing.Size(200, 23);
-
-            this.lblApellido.AutoSize = true;
-            this.lblApellido.Location = new System.Drawing.Point(540, 120);
-            this.lblApellido.Text = "Apellido:";
-            this.txtApellido.Location = new System.Drawing.Point(540, 138);
-            this.txtApellido.Size = new System.Drawing.Size(200, 23);
-
-            this.lblEmail.AutoSize = true;
-            this.lblEmail.Location = new System.Drawing.Point(540, 170);
-            this.lblEmail.Text = "Email:";
-            this.txtEmail.Location = new System.Drawing.Point(540, 188);
-            this.txtEmail.Size = new System.Drawing.Size(200, 23);
-
-            this.lblTelefono.AutoSize = true;
-            this.lblTelefono.Location = new System.Drawing.Point(540, 220);
-            this.lblTelefono.Text = "Teléfono:";
-            this.txtTelefono.Location = new System.Drawing.Point(540, 238);
-            this.txtTelefono.Size = new System.Drawing.Size(200, 23);
-
-            // =========================
-            // COLUMNA 2 (X = 760)
-            // =========================
-            this.lblCalle.AutoSize = true;
-            this.lblCalle.Location = new System.Drawing.Point(760, 20);
-            this.lblCalle.Text = "Calle:";
-            this.txtCalle.Location = new System.Drawing.Point(760, 38);
-            this.txtCalle.Size = new System.Drawing.Size(200, 23);
-
-            this.lblNumero.AutoSize = true;
-            this.lblNumero.Location = new System.Drawing.Point(760, 70);
-            this.lblNumero.Text = "Número:";
-            this.txtNumero.Location = new System.Drawing.Point(760, 88);
-            this.txtNumero.Size = new System.Drawing.Size(200, 23);
-
-            this.lblProvincia.AutoSize = true;
-            this.lblProvincia.Location = new System.Drawing.Point(760, 120);
-            this.lblProvincia.Text = "Provincia:";
-            this.cmbProvincia.FormattingEnabled = true;
-            this.cmbProvincia.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbProvincia.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbProvincia.Location = new System.Drawing.Point(760, 138);
-            this.cmbProvincia.Size = new System.Drawing.Size(200, 23);
-
-            this.lblCiudad.AutoSize = true;
-            this.lblCiudad.Location = new System.Drawing.Point(760, 170);
-            this.lblCiudad.Text = "Ciudad:";
-            this.cmbCiudad.FormattingEnabled = true;
-            this.cmbCiudad.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbCiudad.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbCiudad.Location = new System.Drawing.Point(760, 188);
-            this.cmbCiudad.Size = new System.Drawing.Size(200, 23);
-
-            this.lblNacimiento.AutoSize = true;
-            this.lblNacimiento.Location = new System.Drawing.Point(760, 220);
-            this.lblNacimiento.Text = "Fecha Nacimiento:";
-            this.dtpNacimiento.Location = new System.Drawing.Point(760, 238);
-            this.dtpNacimiento.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpNacimiento.Size = new System.Drawing.Size(200, 23);
-
-            // =========================
-            // BOTONERA (Abajo)
-            // =========================
-            this.btnGuardar.Location = new System.Drawing.Point(540, 290);
-            this.btnGuardar.Size = new System.Drawing.Size(95, 30);
-            this.btnGuardar.Text = "Guardar";
-
-            this.btnEditar.Location = new System.Drawing.Point(645, 290);
-            this.btnEditar.Size = new System.Drawing.Size(95, 30);
-            this.btnEditar.Text = "Editar";
-
-            this.btnEliminar.Location = new System.Drawing.Point(760, 290);
-            this.btnEliminar.Size = new System.Drawing.Size(95, 30);
-            this.btnEliminar.Text = "Eliminar";
-
-            this.btnLimpiar.Location = new System.Drawing.Point(865, 290);
-            this.btnLimpiar.Size = new System.Drawing.Size(95, 30);
-            this.btnLimpiar.Text = "Limpiar";
-
+            dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvClientes.Location = new Point(20, 20);
+            dgvClientes.Name = "dgvClientes";
+            dgvClientes.ReadOnly = true;
+            dgvClientes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvClientes.Size = new Size(500, 420);
+            dgvClientes.TabIndex = 0;
+            // 
+            // lblDNI
+            // 
+            lblDNI.AutoSize = true;
+            lblDNI.Location = new Point(540, 20);
+            lblDNI.Name = "lblDNI";
+            lblDNI.Size = new Size(104, 15);
+            lblDNI.TabIndex = 23;
+            lblDNI.Text = "DNI / Documento:";
+            // 
+            // txtDNI
+            // 
+            txtDNI.Location = new Point(540, 38);
+            txtDNI.Name = "txtDNI";
+            txtDNI.Size = new Size(200, 23);
+            txtDNI.TabIndex = 22;
+            // 
+            // lblNombre
+            // 
+            lblNombre.AutoSize = true;
+            lblNombre.Location = new Point(540, 70);
+            lblNombre.Name = "lblNombre";
+            lblNombre.Size = new Size(54, 15);
+            lblNombre.TabIndex = 21;
+            lblNombre.Text = "Nombre:";
+            // 
+            // txtNombre
+            // 
+            txtNombre.Location = new Point(540, 88);
+            txtNombre.Name = "txtNombre";
+            txtNombre.Size = new Size(200, 23);
+            txtNombre.TabIndex = 20;
+            // 
+            // lblApellido
+            // 
+            lblApellido.AutoSize = true;
+            lblApellido.Location = new Point(540, 120);
+            lblApellido.Name = "lblApellido";
+            lblApellido.Size = new Size(54, 15);
+            lblApellido.TabIndex = 19;
+            lblApellido.Text = "Apellido:";
+            // 
+            // txtApellido
+            // 
+            txtApellido.Location = new Point(540, 138);
+            txtApellido.Name = "txtApellido";
+            txtApellido.Size = new Size(200, 23);
+            txtApellido.TabIndex = 18;
+            // 
+            // lblEmail
+            // 
+            lblEmail.AutoSize = true;
+            lblEmail.Location = new Point(540, 170);
+            lblEmail.Name = "lblEmail";
+            lblEmail.Size = new Size(39, 15);
+            lblEmail.TabIndex = 17;
+            lblEmail.Text = "Email:";
+            // 
+            // txtEmail
+            // 
+            txtEmail.Location = new Point(540, 188);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(200, 23);
+            txtEmail.TabIndex = 16;
+            // 
+            // lblTelefono
+            // 
+            lblTelefono.AutoSize = true;
+            lblTelefono.Location = new Point(540, 220);
+            lblTelefono.Name = "lblTelefono";
+            lblTelefono.Size = new Size(55, 15);
+            lblTelefono.TabIndex = 15;
+            lblTelefono.Text = "Teléfono:";
+            // 
+            // txtTelefono
+            // 
+            txtTelefono.Location = new Point(540, 238);
+            txtTelefono.Name = "txtTelefono";
+            txtTelefono.Size = new Size(200, 23);
+            txtTelefono.TabIndex = 14;
+            // 
+            // lblCalle
+            // 
+            lblCalle.AutoSize = true;
+            lblCalle.Location = new Point(760, 20);
+            lblCalle.Name = "lblCalle";
+            lblCalle.Size = new Size(36, 15);
+            lblCalle.TabIndex = 13;
+            lblCalle.Text = "Calle:";
+            // 
+            // txtCalle
+            // 
+            txtCalle.Location = new Point(760, 38);
+            txtCalle.Name = "txtCalle";
+            txtCalle.Size = new Size(200, 23);
+            txtCalle.TabIndex = 12;
+            // 
+            // lblNumero
+            // 
+            lblNumero.AutoSize = true;
+            lblNumero.Location = new Point(760, 70);
+            lblNumero.Name = "lblNumero";
+            lblNumero.Size = new Size(54, 15);
+            lblNumero.TabIndex = 11;
+            lblNumero.Text = "Número:";
+            // 
+            // txtNumero
+            // 
+            txtNumero.Location = new Point(760, 88);
+            txtNumero.Name = "txtNumero";
+            txtNumero.Size = new Size(200, 23);
+            txtNumero.TabIndex = 10;
+            // 
+            // lblProvincia
+            // 
+            lblProvincia.AutoSize = true;
+            lblProvincia.Location = new Point(760, 120);
+            lblProvincia.Name = "lblProvincia";
+            lblProvincia.Size = new Size(59, 15);
+            lblProvincia.TabIndex = 9;
+            lblProvincia.Text = "Provincia:";
+            // 
+            // cmbProvincia
+            // 
+            cmbProvincia.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbProvincia.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbProvincia.FormattingEnabled = true;
+            cmbProvincia.Location = new Point(760, 138);
+            cmbProvincia.Name = "cmbProvincia";
+            cmbProvincia.Size = new Size(200, 23);
+            cmbProvincia.TabIndex = 8;
+            // 
+            // lblCiudad
+            // 
+            lblCiudad.AutoSize = true;
+            lblCiudad.Location = new Point(760, 170);
+            lblCiudad.Name = "lblCiudad";
+            lblCiudad.Size = new Size(48, 15);
+            lblCiudad.TabIndex = 7;
+            lblCiudad.Text = "Ciudad:";
+            // 
+            // cmbCiudad
+            // 
+            cmbCiudad.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cmbCiudad.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cmbCiudad.FormattingEnabled = true;
+            cmbCiudad.Location = new Point(760, 188);
+            cmbCiudad.Name = "cmbCiudad";
+            cmbCiudad.Size = new Size(200, 23);
+            cmbCiudad.TabIndex = 6;
+            // 
+            // lblNacimiento
+            // 
+            lblNacimiento.AutoSize = true;
+            lblNacimiento.Location = new Point(760, 220);
+            lblNacimiento.Name = "lblNacimiento";
+            lblNacimiento.Size = new Size(106, 15);
+            lblNacimiento.TabIndex = 5;
+            lblNacimiento.Text = "Fecha Nacimiento:";
+            // 
+            // dtpNacimiento
+            // 
+            dtpNacimiento.Format = DateTimePickerFormat.Short;
+            dtpNacimiento.Location = new Point(760, 238);
+            dtpNacimiento.Name = "dtpNacimiento";
+            dtpNacimiento.Size = new Size(200, 23);
+            dtpNacimiento.TabIndex = 4;
+            // 
+            // btnGuardar
+            // 
+            btnGuardar.Location = new Point(540, 290);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(95, 30);
+            btnGuardar.TabIndex = 3;
+            btnGuardar.Text = "Guardar";
+            // 
+            // btnEditar
+            // 
+            btnEditar.Location = new Point(645, 290);
+            btnEditar.Name = "btnEditar";
+            btnEditar.Size = new Size(95, 30);
+            btnEditar.TabIndex = 2;
+            btnEditar.Text = "Editar";
+            // 
+            // btnEliminar
+            // 
+            btnEliminar.Location = new Point(760, 290);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(95, 30);
+            btnEliminar.TabIndex = 1;
+            btnEliminar.Text = "Eliminar";
+            // 
+            // btnLimpiar
+            // 
+            btnLimpiar.Location = new Point(865, 290);
+            btnLimpiar.Name = "btnLimpiar";
+            btnLimpiar.Size = new Size(95, 30);
+            btnLimpiar.TabIndex = 0;
+            btnLimpiar.Text = "Limpiar";
             // 
             // UcABMClientes
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            
-            this.Controls.Add(this.btnLimpiar);
-            this.Controls.Add(this.btnEliminar);
-            this.Controls.Add(this.btnEditar);
-            this.Controls.Add(this.btnGuardar);
-            
-            this.Controls.Add(this.dtpNacimiento);
-            this.Controls.Add(this.lblNacimiento);
-            this.Controls.Add(this.cmbCiudad);
-            this.Controls.Add(this.lblCiudad);
-            this.Controls.Add(this.cmbProvincia);
-            this.Controls.Add(this.lblProvincia);
-            this.Controls.Add(this.txtNumero);
-            this.Controls.Add(this.lblNumero);
-            this.Controls.Add(this.txtCalle);
-            this.Controls.Add(this.lblCalle);
-            
-            this.Controls.Add(this.txtTelefono);
-            this.Controls.Add(this.lblTelefono);
-            this.Controls.Add(this.txtEmail);
-            this.Controls.Add(this.lblEmail);
-            this.Controls.Add(this.txtApellido);
-            this.Controls.Add(this.lblApellido);
-            this.Controls.Add(this.txtNombre);
-            this.Controls.Add(this.lblNombre);
-            this.Controls.Add(this.txtDNI);
-            this.Controls.Add(this.lblDNI);
-            
-            this.Controls.Add(this.dgvClientes);
-            
-            this.Name = "UcABMClientes";
-            this.Size = new System.Drawing.Size(1000, 470);
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ControlDarkDark;
+            Controls.Add(btnLimpiar);
+            Controls.Add(btnEliminar);
+            Controls.Add(btnEditar);
+            Controls.Add(btnGuardar);
+            Controls.Add(dtpNacimiento);
+            Controls.Add(lblNacimiento);
+            Controls.Add(cmbCiudad);
+            Controls.Add(lblCiudad);
+            Controls.Add(cmbProvincia);
+            Controls.Add(lblProvincia);
+            Controls.Add(txtNumero);
+            Controls.Add(lblNumero);
+            Controls.Add(txtCalle);
+            Controls.Add(lblCalle);
+            Controls.Add(txtTelefono);
+            Controls.Add(lblTelefono);
+            Controls.Add(txtEmail);
+            Controls.Add(lblEmail);
+            Controls.Add(txtApellido);
+            Controls.Add(lblApellido);
+            Controls.Add(txtNombre);
+            Controls.Add(lblNombre);
+            Controls.Add(txtDNI);
+            Controls.Add(lblDNI);
+            Controls.Add(dgvClientes);
+            Name = "UcABMClientes";
+            Size = new Size(1000, 470);
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

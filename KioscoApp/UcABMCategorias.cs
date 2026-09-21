@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
@@ -31,7 +31,7 @@ namespace KioscoApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar categorÃ­as: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al cargar categorías: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -39,7 +39,7 @@ namespace KioscoApp
         {
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
-                MessageBox.Show("El nombre de la categorÃ­a es obligatorio.", "ValidaciÃ³n", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("El nombre de la categoría es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace KioscoApp
                         cmd.ExecuteNonQuery();
                     }
                 }
-                MessageBox.Show("CategorÃ­a guardada con Ã©xito.", "Ã‰xito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Categoría guardada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Limpiar();
                 CargarCategorias();
             }
@@ -76,7 +76,7 @@ namespace KioscoApp
         {
             if (categoriaIdSeleccionada == 0) return;
 
-            if (MessageBox.Show("Â¿EstÃ¡ seguro que desea eliminar esta categorÃ­a?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (MessageBox.Show("¿Está seguro que desea eliminar esta categoría?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 try
                 {
@@ -95,7 +95,7 @@ namespace KioscoApp
                 }
                 catch (SqlException ex) when (ex.Number == 547) // FK violation
                 {
-                    MessageBox.Show("No se puede eliminar la categorÃ­a porque hay productos asociados a ella.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("No se puede eliminar la categoría porque hay productos asociados a ella.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception ex)
                 {

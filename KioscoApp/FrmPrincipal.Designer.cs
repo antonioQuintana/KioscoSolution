@@ -1,4 +1,4 @@
-namespace KioscoApp
+﻿namespace KioscoApp
 {
     partial class FrmPrincipal
     {
@@ -9,6 +9,7 @@ namespace KioscoApp
         {
             pnlMenu = new System.Windows.Forms.Panel();
             BCierreCaja = new System.Windows.Forms.Button();
+            BHistorialVentas = new System.Windows.Forms.Button();
             btnCerrarSesion = new System.Windows.Forms.Button();
             BEstadisticas = new System.Windows.Forms.Button();
             BUsuarios = new System.Windows.Forms.Button();
@@ -38,6 +39,7 @@ namespace KioscoApp
             pnlMenu.Controls.Add(BVenta);
             pnlMenu.Controls.Add(BClientes);
             pnlMenu.Controls.Add(BCierreCaja);
+            pnlMenu.Controls.Add(BHistorialVentas);
             pnlMenu.Dock = System.Windows.Forms.DockStyle.Left;
             pnlMenu.Location = new System.Drawing.Point(0, 0);
             pnlMenu.Name = "pnlMenu";
@@ -160,6 +162,20 @@ namespace KioscoApp
             btnCerrarSesion.UseVisualStyleBackColor = false;
             btnCerrarSesion.Click += btnCerrarSesion_Click;
             // 
+            // 
+            // BHistorialVentas
+            // 
+            BHistorialVentas.Location = new System.Drawing.Point(10, 625);
+            
+            
+            
+            
+            BHistorialVentas.Name = "BHistorialVentas";
+            BHistorialVentas.Size = new System.Drawing.Size(230, 45);
+            BHistorialVentas.TabIndex = 8;
+            BHistorialVentas.Text = "Historial de Ventas";
+            BHistorialVentas.UseVisualStyleBackColor = true;
+            BHistorialVentas.Click += BHistorialVentas_Click;
             // pnlContent
             // 
             pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -212,6 +228,7 @@ namespace KioscoApp
         private System.Windows.Forms.Button BVenta;
         private System.Windows.Forms.Button BClientes;
         private System.Windows.Forms.Button BCierreCaja;
+        private System.Windows.Forms.Button BHistorialVentas;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }

@@ -1,4 +1,4 @@
-namespace KioscoApp
+﻿namespace KioscoApp
 {
     partial class UcAuditoriaCajas
     {
@@ -42,7 +42,7 @@ namespace KioscoApp
             lblTitulo.Size = new System.Drawing.Size(315, 30);
             lblTitulo.TabIndex = 0;
             lblTitulo.BackColor = SystemColors.ControlDarkDark;
-            lblTitulo.Text = "Auditor�a y Control de Cajas";
+            lblTitulo.Text = "Auditor�a y Control de Cajas";
             // 
             // gbControles
             // 
@@ -109,7 +109,7 @@ namespace KioscoApp
             gbReportes.TabIndex = 2;
             gbReportes.TabStop = false;
             gbReportes.ForeColor = SystemColors.ControlLightLight;
-            gbReportes.Text = "AnÃ¡lisis y Rendimiento";
+            gbReportes.Text = "Análisis y Rendimiento";
             // 
             // btnFaltantes
             // 
@@ -144,7 +144,7 @@ namespace KioscoApp
             btnAnular.Name = "btnAnular";
             btnAnular.Size = new System.Drawing.Size(240, 50);
             btnAnular.TabIndex = 2;
-            btnAnular.Text = "Auditor�a de Ventas Anuladas";
+            btnAnular.Text = "Auditor�a de Ventas Anuladas";
             btnAnular.BackColor = SystemColors.AppWorkspace;
             btnAnular.ForeColor = SystemColors.ButtonHighlight;
             btnAnular.UseVisualStyleBackColor = false;

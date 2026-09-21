@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace KioscoApp
@@ -347,6 +347,7 @@ namespace KioscoApp
             // 
             // UcCierreCaja
             // 
+            BackColor = SystemColors.ControlDarkDark;
             Controls.Add(btnIngresoCaja);
             Controls.Add(btnRegistrarGasto);
             Controls.Add(btnImprimirZ);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -34,7 +34,7 @@ namespace KioscoApp
 
             BVenta.Visible = false;
             BClientes.Visible = false;
-            BCierreCaja.Visible = false;
+            BCierreCaja.Visible = false; BHistorialVentas.Visible = false;
 
             // Mostramos según rol
             if (rolUsuario == "admin")
@@ -54,7 +54,7 @@ namespace KioscoApp
             {
                 BVenta.Visible = true;
                 BClientes.Visible = true;
-                BCierreCaja.Visible = true;
+                BCierreCaja.Visible = true; BHistorialVentas.Visible = true;
             }
         }
 
@@ -119,6 +119,7 @@ namespace KioscoApp
         private void BClientes_Click(object sender, EventArgs e) { CargarUserControl(new UcABMClientes()); }
 
         private void BCierreCaja_Click(object sender, EventArgs e) { CargarUserControl(new UcCierreCaja()); }
+        private void BHistorialVentas_Click(object sender, EventArgs e) { CargarUserControl(new UcHistorialVentas()); }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
         

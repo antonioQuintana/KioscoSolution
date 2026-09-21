@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace KioscoApp
@@ -23,6 +23,10 @@ namespace KioscoApp
             btnBuscarProducto = new Button();
             btnAplicarDescuento = new Button();
             btnSuspenderVenta = new Button();
+            btnConsultarPrecio = new Button();
+            btnRetiroCaja = new Button();
+            btnAutorizacion = new Button();
+            
             groupBoxCliente = new GroupBox();
             lblDniBusqueda = new Label();
             txtBusquedaCliente = new TextBox();
@@ -76,6 +80,7 @@ namespace KioscoApp
             // 
             btnCobrar.BackColor = Color.LightGreen;
             btnCobrar.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            btnCobrar.ForeColor = SystemColors.ActiveCaptionText;
             btnCobrar.Location = new Point(740, 450);
             btnCobrar.Name = "btnCobrar";
             btnCobrar.Size = new Size(300, 55);
@@ -87,6 +92,7 @@ namespace KioscoApp
             // 
             btnCobroQR.BackColor = Color.PaleTurquoise;
             btnCobroQR.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnCobroQR.ForeColor = SystemColors.ActiveCaptionText;
             btnCobroQR.Location = new Point(740, 515);
             btnCobroQR.Name = "btnCobroQR";
             btnCobroQR.Size = new Size(145, 50);
@@ -98,7 +104,8 @@ namespace KioscoApp
             // 
             btnCobroTarjeta.BackColor = Color.Khaki;
             btnCobroTarjeta.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnCobroTarjeta.Location = new Point(740, 515);
+            btnCobroTarjeta.ForeColor = SystemColors.ActiveCaptionText;
+            btnCobroTarjeta.Location = new Point(895, 515);
             btnCobroTarjeta.Name = "btnCobroTarjeta";
             btnCobroTarjeta.Size = new Size(145, 50);
             btnCobroTarjeta.TabIndex = 1;
@@ -108,6 +115,7 @@ namespace KioscoApp
             // btnCuentaCorriente
             // 
             btnCuentaCorriente.BackColor = Color.Plum;
+            btnCuentaCorriente.ForeColor = SystemColors.ActiveCaptionText;
             btnCuentaCorriente.Location = new Point(740, 575);
             btnCuentaCorriente.Name = "btnCuentaCorriente";
             btnCuentaCorriente.Size = new Size(145, 40);
@@ -119,8 +127,8 @@ namespace KioscoApp
             // 
             btnCancelarVenta.BackColor = Color.LightCoral;
             btnCancelarVenta.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnCancelarVenta.ForeColor = Color.White;
-            btnCancelarVenta.Location = new Point(740, 575);
+            btnCancelarVenta.ForeColor = SystemColors.ActiveCaptionText;
+            btnCancelarVenta.Location = new Point(895, 575);
             btnCancelarVenta.Name = "btnCancelarVenta";
             btnCancelarVenta.Size = new Size(145, 40);
             btnCancelarVenta.TabIndex = 7;
@@ -131,6 +139,7 @@ namespace KioscoApp
             // 
             btnArticulosFrecuentes.BackColor = Color.LightSkyBlue;
             btnArticulosFrecuentes.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnArticulosFrecuentes.ForeColor = SystemColors.ActiveCaptionText;
             btnArticulosFrecuentes.Location = new Point(740, 195);
             btnArticulosFrecuentes.Name = "btnArticulosFrecuentes";
             btnArticulosFrecuentes.Size = new Size(300, 45);
@@ -142,6 +151,7 @@ namespace KioscoApp
             // 
             btnBuscarProducto.BackColor = Color.LightSkyBlue;
             btnBuscarProducto.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnBuscarProducto.ForeColor = SystemColors.ActiveCaptionText;
             btnBuscarProducto.Location = new Point(740, 140);
             btnBuscarProducto.Name = "btnBuscarProducto";
             btnBuscarProducto.Size = new Size(300, 45);
@@ -152,6 +162,7 @@ namespace KioscoApp
             // btnAplicarDescuento
             // 
             btnAplicarDescuento.BackColor = Color.Gold;
+            btnAplicarDescuento.ForeColor = SystemColors.ActiveCaptionText;
             btnAplicarDescuento.Location = new Point(740, 250);
             btnAplicarDescuento.Name = "btnAplicarDescuento";
             btnAplicarDescuento.Size = new Size(145, 45);
@@ -162,13 +173,50 @@ namespace KioscoApp
             // btnSuspenderVenta
             // 
             btnSuspenderVenta.BackColor = Color.Orange;
-            btnSuspenderVenta.Location = new Point(740, 250);
+            btnSuspenderVenta.ForeColor = SystemColors.ActiveCaptionText;
+            btnSuspenderVenta.Location = new Point(895, 250);
             btnSuspenderVenta.Name = "btnSuspenderVenta";
             btnSuspenderVenta.Size = new Size(145, 45);
             btnSuspenderVenta.TabIndex = 8;
             btnSuspenderVenta.Text = "⏸ Suspender";
             btnSuspenderVenta.UseVisualStyleBackColor = false;
             // 
+            // btnConsultarPrecio
+            // 
+            btnConsultarPrecio.BackColor = Color.LightYellow;
+            btnConsultarPrecio.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnConsultarPrecio.ForeColor = SystemColors.ActiveCaptionText;
+            btnConsultarPrecio.Location = new Point(740, 85);
+            btnConsultarPrecio.Name = "btnConsultarPrecio";
+            btnConsultarPrecio.Size = new Size(145, 45);
+            btnConsultarPrecio.TabIndex = 9;
+            btnConsultarPrecio.Text = "Consulta Precio";
+            btnConsultarPrecio.UseVisualStyleBackColor = false;
+            // 
+            // btnRetiroCaja
+            // 
+            btnRetiroCaja.BackColor = Color.DarkSeaGreen;
+            btnRetiroCaja.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnRetiroCaja.ForeColor = SystemColors.ActiveCaptionText;
+            btnRetiroCaja.Location = new Point(895, 85);
+            btnRetiroCaja.Name = "btnRetiroCaja";
+            btnRetiroCaja.Size = new Size(145, 45);
+            btnRetiroCaja.TabIndex = 10;
+            btnRetiroCaja.Text = "Retiro / Gasto";
+            btnRetiroCaja.UseVisualStyleBackColor = false;
+            // 
+            // btnAutorizacion
+            // 
+            btnAutorizacion.BackColor = Color.IndianRed;
+            btnAutorizacion.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnAutorizacion.ForeColor = Color.White;
+            btnAutorizacion.Location = new Point(740, 30);
+            btnAutorizacion.Name = "btnAutorizacion";
+            btnAutorizacion.Size = new Size(300, 45);
+            btnAutorizacion.TabIndex = 11;
+            btnAutorizacion.Text = "Autorizacion Supervisor";
+            btnAutorizacion.UseVisualStyleBackColor = false;
+            //
             // groupBoxCliente
             // 
             groupBoxCliente.Controls.Add(lblDniBusqueda);
@@ -246,6 +294,7 @@ namespace KioscoApp
             // 
             // UcVenta
             // 
+            BackColor = SystemColors.ControlDarkDark;
             Controls.Add(groupBoxCliente);
             Controls.Add(btnCobroTarjeta);
             Controls.Add(btnCobroQR);
@@ -255,6 +304,10 @@ namespace KioscoApp
             Controls.Add(lblTotal);
             Controls.Add(btnCancelarVenta);
             Controls.Add(btnSuspenderVenta);
+            Controls.Add(btnConsultarPrecio);
+            Controls.Add(btnRetiroCaja);
+            Controls.Add(btnAutorizacion);
+            
             Controls.Add(btnAplicarDescuento);
             Controls.Add(btnArticulosFrecuentes);
             Controls.Add(btnBuscarProducto);
@@ -285,6 +338,10 @@ namespace KioscoApp
         private System.Windows.Forms.Button btnBuscarProducto;
         private System.Windows.Forms.Button btnAplicarDescuento;
         private System.Windows.Forms.Button btnSuspenderVenta;
+        private System.Windows.Forms.Button btnConsultarPrecio;
+        private System.Windows.Forms.Button btnRetiroCaja;
+        private System.Windows.Forms.Button btnAutorizacion;
+        
 
         private System.Windows.Forms.GroupBox groupBoxCliente;
         private System.Windows.Forms.Label lblDniBusqueda;

@@ -1,4 +1,4 @@
-namespace KioscoApp
+﻿namespace KioscoApp
 {
     partial class UcABMCategorias
     {

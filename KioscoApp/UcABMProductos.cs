@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
@@ -35,7 +35,7 @@ namespace KioscoApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar categorÃ­as: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al cargar categorías: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -68,7 +68,7 @@ namespace KioscoApp
         {
             if (string.IsNullOrWhiteSpace(txtSKU.Text) || string.IsNullOrWhiteSpace(txtNombre.Text) || cmbCategoria.SelectedIndex == -1)
             {
-                MessageBox.Show("El SKU, Nombre y CategorÃ­a son obligatorios.", "ValidaciÃ³n", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("El SKU, Nombre y Categoría son obligatorios.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -101,13 +101,13 @@ namespace KioscoApp
                         cmd.ExecuteNonQuery();
                     }
                 }
-                MessageBox.Show("Producto guardado con Ã©xito.", "Ã‰xito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Producto guardado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Limpiar();
                 CargarProductos();
             }
             catch (SqlException ex) when (ex.Number == 2627)
             {
-                MessageBox.Show("El SKU ingresado ya existe. Utilice un cÃ³digo Ãºnico.", "Error de Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("El SKU ingresado ya existe. Utilice un código único.", "Error de Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
@@ -119,7 +119,7 @@ namespace KioscoApp
         {
             if (productoIdSeleccionado == 0) return;
 
-            if (MessageBox.Show("Â¿EstÃ¡ seguro que desea eliminar este producto?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (MessageBox.Show("¿Está seguro que desea eliminar este producto?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 try
                 {
@@ -181,12 +181,12 @@ namespace KioscoApp
 
         private void btnExportarExcel_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad 'Descargar Excel' en desarrollo (PrÃ³ximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Funcionalidad 'Descargar Excel' en desarrollo (Próximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnImportarExcel_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad 'Actualizar Precios con Excel' en desarrollo (PrÃ³ximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Funcionalidad 'Actualizar Precios con Excel' en desarrollo (Próximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
