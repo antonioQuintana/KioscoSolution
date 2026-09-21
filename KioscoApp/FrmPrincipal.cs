@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -57,7 +57,7 @@ namespace KioscoApp
             pnlContent.Controls.Clear();
             uc.Dock = DockStyle.Fill;
             pnlContent.Controls.Add(uc);
-            ThemeHelper.ApplyTheme(uc);
+            // ThemeHelper.ApplyTheme(uc); // Desactivado para mantener los colores del diseñador
         }
 
         private void FrmPrincipal_FormClosed(object sender, FormClosedEventArgs e)

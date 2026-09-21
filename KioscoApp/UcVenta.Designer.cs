@@ -10,187 +10,266 @@ namespace KioscoApp
 
         private void InitializeComponent()
         {
-            this.dgvCarrito = new System.Windows.Forms.DataGridView();
-            this.lblScanner = new System.Windows.Forms.Label();
-            this.txtScanner = new System.Windows.Forms.TextBox();
-            this.lblTotal = new System.Windows.Forms.Label();
-            
-            this.btnCobrar = new System.Windows.Forms.Button(); 
-            this.btnCobroQR = new System.Windows.Forms.Button();
-            this.btnCobroTarjeta = new System.Windows.Forms.Button();
-            this.btnCuentaCorriente = new System.Windows.Forms.Button();
-            
-            this.btnCancelarVenta = new System.Windows.Forms.Button();
-            this.btnArticulosFrecuentes = new System.Windows.Forms.Button();
-            this.btnBuscarProducto = new System.Windows.Forms.Button();
-            this.btnAplicarDescuento = new System.Windows.Forms.Button();
-            this.btnSuspenderVenta = new System.Windows.Forms.Button();
-
-            // Panel Cliente
-            this.groupBoxCliente = new System.Windows.Forms.GroupBox();
-            this.lblDniBusqueda = new System.Windows.Forms.Label();
-            this.txtBusquedaCliente = new System.Windows.Forms.TextBox();
-            this.btnBuscarCliente = new System.Windows.Forms.Button();
-            this.lblClienteActual = new System.Windows.Forms.Label();
-            this.btnNuevoCliente = new System.Windows.Forms.Button();
-
-            this.lblSubtotal = new System.Windows.Forms.Label();
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCarrito)).BeginInit();
-            this.groupBoxCliente.SuspendLayout();
-            this.SuspendLayout();
-
-            // ==========================================
-            // SECCIÓN CLIENTE (Arriba)
-            // ==========================================
-            this.groupBoxCliente.Location = new System.Drawing.Point(20, 10);
-            this.groupBoxCliente.Size = new System.Drawing.Size(1020, 70);
-            this.groupBoxCliente.Text = "Datos del Cliente";
-            this.groupBoxCliente.Controls.Add(this.lblDniBusqueda);
-            this.groupBoxCliente.Controls.Add(this.txtBusquedaCliente);
-            this.groupBoxCliente.Controls.Add(this.btnBuscarCliente);
-            this.groupBoxCliente.Controls.Add(this.lblClienteActual);
-            this.groupBoxCliente.Controls.Add(this.btnNuevoCliente);
-
-            this.lblDniBusqueda.Location = new System.Drawing.Point(20, 30);
-            this.lblDniBusqueda.Text = "DNI / Teléfono:";
-            this.lblDniBusqueda.AutoSize = true;
-
-            this.txtBusquedaCliente.Location = new System.Drawing.Point(120, 27);
-            this.txtBusquedaCliente.Size = new System.Drawing.Size(150, 25);
-            this.txtBusquedaCliente.Font = new System.Drawing.Font("Segoe UI", 10F);
-
-            this.btnBuscarCliente.Location = new System.Drawing.Point(280, 25);
-            this.btnBuscarCliente.Size = new System.Drawing.Size(100, 30);
-            this.btnBuscarCliente.Text = "Buscar (F4)";
-            this.btnBuscarCliente.BackColor = System.Drawing.Color.LightGray;
-
-            this.btnNuevoCliente.Location = new System.Drawing.Point(390, 25);
-            this.btnNuevoCliente.Size = new System.Drawing.Size(140, 30);
-            this.btnNuevoCliente.Text = "+ Nuevo Cliente";
-            this.btnNuevoCliente.BackColor = System.Drawing.Color.PaleTurquoise;
-
-            this.lblClienteActual.Location = new System.Drawing.Point(550, 25);
-            this.lblClienteActual.AutoSize = true;
-            this.lblClienteActual.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblClienteActual.ForeColor = System.Drawing.Color.MediumBlue;
-            this.lblClienteActual.Text = "Cliente: CONSUMIDOR FINAL";
-
-            // ==========================================
-            // SECCIÓN CARRITO (Izquierda)
-            // ==========================================
-            this.lblScanner.Location = new System.Drawing.Point(20, 100);
-            this.lblScanner.Text = "Escanear Código de Barras:";
-            this.lblScanner.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblScanner.AutoSize = true;
-
-            this.txtScanner.Location = new System.Drawing.Point(260, 95);
-            this.txtScanner.Size = new System.Drawing.Size(460, 35);
-            this.txtScanner.Font = new System.Drawing.Font("Segoe UI", 16F);
-
-            this.dgvCarrito.Location = new System.Drawing.Point(20, 140);
-            this.dgvCarrito.Size = new System.Drawing.Size(700, 520);
-            this.dgvCarrito.RowTemplate.Height = 35; // Filas más grandes para POS
-            this.dgvCarrito.ReadOnly = true;
-
-            // ==========================================
-            // SECCIÓN BOTONERA Y TOTALES (Derecha)
-            // ==========================================
-            int rightX = 740;
-            
-            // Botones de Acción
-            this.btnBuscarProducto.Location = new System.Drawing.Point(rightX, 140);
-            this.btnBuscarProducto.Size = new System.Drawing.Size(300, 45);
-            this.btnBuscarProducto.Text = "🔍 Buscar Producto (F2)";
-            this.btnBuscarProducto.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.btnBuscarProducto.BackColor = System.Drawing.Color.LightSkyBlue;
-
-            this.btnArticulosFrecuentes.Location = new System.Drawing.Point(rightX, 195);
-            this.btnArticulosFrecuentes.Size = new System.Drawing.Size(300, 45);
-            this.btnArticulosFrecuentes.Text = "⭐ Artículos Frecuentes (F3)";
-            this.btnArticulosFrecuentes.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.btnArticulosFrecuentes.BackColor = System.Drawing.Color.LightSkyBlue;
-
-            this.btnAplicarDescuento.Location = new System.Drawing.Point(rightX, 250);
-            this.btnAplicarDescuento.Size = new System.Drawing.Size(145, 45);
-            this.btnAplicarDescuento.Text = "% Descuento";
-            this.btnAplicarDescuento.BackColor = System.Drawing.Color.Gold;
-
-            this.btnSuspenderVenta.Location = new System.Drawing.Point(rightX + 155, 250);
-            this.btnSuspenderVenta.Size = new System.Drawing.Size(145, 45);
-            this.btnSuspenderVenta.Text = "⏸ Suspender";
-            this.btnSuspenderVenta.BackColor = System.Drawing.Color.Orange;
-
-            // Totales
-            this.lblSubtotal.Location = new System.Drawing.Point(rightX, 320);
-            this.lblSubtotal.AutoSize = true;
-            this.lblSubtotal.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.lblSubtotal.Text = "Subtotal: $ 0.00\nDescuentos: $ 0.00";
-
-            this.lblTotal.Location = new System.Drawing.Point(rightX, 370);
-            this.lblTotal.AutoSize = true;
-            this.lblTotal.Font = new System.Drawing.Font("Segoe UI", 32F, System.Drawing.FontStyle.Bold);
-            this.lblTotal.ForeColor = System.Drawing.Color.DarkGreen;
-            this.lblTotal.Text = "TOTAL: $0.00";
-
-            // Botones de Pago
-            this.btnCobrar.Location = new System.Drawing.Point(rightX, 450);
-            this.btnCobrar.Size = new System.Drawing.Size(300, 55);
-            this.btnCobrar.Text = "💵 COBRO EFECTIVO (F10)";
-            this.btnCobrar.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.btnCobrar.BackColor = System.Drawing.Color.LightGreen;
-
-            this.btnCobroQR.Location = new System.Drawing.Point(rightX, 515);
-            this.btnCobroQR.Size = new System.Drawing.Size(145, 50);
-            this.btnCobroQR.Text = "📱 COBRO QR";
-            this.btnCobroQR.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnCobroQR.BackColor = System.Drawing.Color.PaleTurquoise;
-
-            this.btnCobroTarjeta.Location = new System.Drawing.Point(rightX + 155, 515);
-            this.btnCobroTarjeta.Size = new System.Drawing.Size(145, 50);
-            this.btnCobroTarjeta.Text = "💳 TARJETA";
-            this.btnCobroTarjeta.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnCobroTarjeta.BackColor = System.Drawing.Color.Khaki;
-
-            this.btnCuentaCorriente.Location = new System.Drawing.Point(rightX, 575);
-            this.btnCuentaCorriente.Size = new System.Drawing.Size(145, 40);
-            this.btnCuentaCorriente.Text = "📝 Cuenta Corriente";
-            this.btnCuentaCorriente.BackColor = System.Drawing.Color.Plum;
-
-            this.btnCancelarVenta.Location = new System.Drawing.Point(rightX + 155, 575);
-            this.btnCancelarVenta.Size = new System.Drawing.Size(145, 40);
-            this.btnCancelarVenta.Text = "❌ Cancelar Venta";
-            this.btnCancelarVenta.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnCancelarVenta.BackColor = System.Drawing.Color.LightCoral;
-            this.btnCancelarVenta.ForeColor = System.Drawing.Color.White;
-
-            
-            this.Controls.Add(this.groupBoxCliente);
-            this.Controls.Add(this.btnCobroTarjeta);
-            this.Controls.Add(this.btnCobroQR);
-            this.Controls.Add(this.btnCobrar);
-            this.Controls.Add(this.btnCuentaCorriente);
-            this.Controls.Add(this.lblSubtotal);
-            this.Controls.Add(this.lblTotal);
-            this.Controls.Add(this.btnCancelarVenta);
-            this.Controls.Add(this.btnSuspenderVenta);
-            this.Controls.Add(this.btnAplicarDescuento);
-            this.Controls.Add(this.btnArticulosFrecuentes);
-            this.Controls.Add(this.btnBuscarProducto);
-            this.Controls.Add(this.dgvCarrito);
-            this.Controls.Add(this.txtScanner);
-            this.Controls.Add(this.lblScanner);
-            
-            // Configurar el tamaño del control principal para pantalla completa
-            this.Size = new System.Drawing.Size(1060, 680);
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCarrito)).EndInit();
-            this.groupBoxCliente.ResumeLayout(false);
-            this.groupBoxCliente.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            dgvCarrito = new DataGridView();
+            lblScanner = new Label();
+            txtScanner = new TextBox();
+            lblTotal = new Label();
+            btnCobrar = new Button();
+            btnCobroQR = new Button();
+            btnCobroTarjeta = new Button();
+            btnCuentaCorriente = new Button();
+            btnCancelarVenta = new Button();
+            btnArticulosFrecuentes = new Button();
+            btnBuscarProducto = new Button();
+            btnAplicarDescuento = new Button();
+            btnSuspenderVenta = new Button();
+            groupBoxCliente = new GroupBox();
+            lblDniBusqueda = new Label();
+            txtBusquedaCliente = new TextBox();
+            btnBuscarCliente = new Button();
+            lblClienteActual = new Label();
+            btnNuevoCliente = new Button();
+            lblSubtotal = new Label();
+            ((System.ComponentModel.ISupportInitialize)dgvCarrito).BeginInit();
+            groupBoxCliente.SuspendLayout();
+            SuspendLayout();
+            // 
+            // dgvCarrito
+            // 
+            dgvCarrito.Location = new Point(20, 140);
+            dgvCarrito.Name = "dgvCarrito";
+            dgvCarrito.ReadOnly = true;
+            dgvCarrito.RowTemplate.Height = 35;
+            dgvCarrito.Size = new Size(700, 520);
+            dgvCarrito.TabIndex = 12;
+            // 
+            // lblScanner
+            // 
+            lblScanner.AutoSize = true;
+            lblScanner.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblScanner.Location = new Point(20, 100);
+            lblScanner.Name = "lblScanner";
+            lblScanner.Size = new Size(214, 21);
+            lblScanner.TabIndex = 14;
+            lblScanner.Text = "Escanear Código de Barras:";
+            // 
+            // txtScanner
+            // 
+            txtScanner.Font = new Font("Segoe UI", 16F);
+            txtScanner.Location = new Point(260, 95);
+            txtScanner.Name = "txtScanner";
+            txtScanner.Size = new Size(460, 36);
+            txtScanner.TabIndex = 13;
+            // 
+            // lblTotal
+            // 
+            lblTotal.AutoSize = true;
+            lblTotal.Font = new Font("Segoe UI", 32F, FontStyle.Bold);
+            lblTotal.ForeColor = Color.DarkGreen;
+            lblTotal.Location = new Point(740, 370);
+            lblTotal.Name = "lblTotal";
+            lblTotal.Size = new Size(289, 59);
+            lblTotal.TabIndex = 6;
+            lblTotal.Text = "TOTAL: $0.00";
+            // 
+            // btnCobrar
+            // 
+            btnCobrar.BackColor = Color.LightGreen;
+            btnCobrar.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            btnCobrar.Location = new Point(740, 450);
+            btnCobrar.Name = "btnCobrar";
+            btnCobrar.Size = new Size(300, 55);
+            btnCobrar.TabIndex = 3;
+            btnCobrar.Text = "💵 COBRO EFECTIVO (F10)";
+            btnCobrar.UseVisualStyleBackColor = false;
+            // 
+            // btnCobroQR
+            // 
+            btnCobroQR.BackColor = Color.PaleTurquoise;
+            btnCobroQR.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnCobroQR.Location = new Point(740, 515);
+            btnCobroQR.Name = "btnCobroQR";
+            btnCobroQR.Size = new Size(145, 50);
+            btnCobroQR.TabIndex = 2;
+            btnCobroQR.Text = "📱 COBRO QR";
+            btnCobroQR.UseVisualStyleBackColor = false;
+            // 
+            // btnCobroTarjeta
+            // 
+            btnCobroTarjeta.BackColor = Color.Khaki;
+            btnCobroTarjeta.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnCobroTarjeta.Location = new Point(740, 515);
+            btnCobroTarjeta.Name = "btnCobroTarjeta";
+            btnCobroTarjeta.Size = new Size(145, 50);
+            btnCobroTarjeta.TabIndex = 1;
+            btnCobroTarjeta.Text = "💳 TARJETA";
+            btnCobroTarjeta.UseVisualStyleBackColor = false;
+            // 
+            // btnCuentaCorriente
+            // 
+            btnCuentaCorriente.BackColor = Color.Plum;
+            btnCuentaCorriente.Location = new Point(740, 575);
+            btnCuentaCorriente.Name = "btnCuentaCorriente";
+            btnCuentaCorriente.Size = new Size(145, 40);
+            btnCuentaCorriente.TabIndex = 4;
+            btnCuentaCorriente.Text = "📝 Cuenta Corriente";
+            btnCuentaCorriente.UseVisualStyleBackColor = false;
+            // 
+            // btnCancelarVenta
+            // 
+            btnCancelarVenta.BackColor = Color.LightCoral;
+            btnCancelarVenta.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnCancelarVenta.ForeColor = Color.White;
+            btnCancelarVenta.Location = new Point(740, 575);
+            btnCancelarVenta.Name = "btnCancelarVenta";
+            btnCancelarVenta.Size = new Size(145, 40);
+            btnCancelarVenta.TabIndex = 7;
+            btnCancelarVenta.Text = "❌ Cancelar Venta";
+            btnCancelarVenta.UseVisualStyleBackColor = false;
+            // 
+            // btnArticulosFrecuentes
+            // 
+            btnArticulosFrecuentes.BackColor = Color.LightSkyBlue;
+            btnArticulosFrecuentes.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnArticulosFrecuentes.Location = new Point(740, 195);
+            btnArticulosFrecuentes.Name = "btnArticulosFrecuentes";
+            btnArticulosFrecuentes.Size = new Size(300, 45);
+            btnArticulosFrecuentes.TabIndex = 10;
+            btnArticulosFrecuentes.Text = "⭐ Artículos Frecuentes (F3)";
+            btnArticulosFrecuentes.UseVisualStyleBackColor = false;
+            // 
+            // btnBuscarProducto
+            // 
+            btnBuscarProducto.BackColor = Color.LightSkyBlue;
+            btnBuscarProducto.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnBuscarProducto.Location = new Point(740, 140);
+            btnBuscarProducto.Name = "btnBuscarProducto";
+            btnBuscarProducto.Size = new Size(300, 45);
+            btnBuscarProducto.TabIndex = 11;
+            btnBuscarProducto.Text = "🔍 Buscar Producto (F2)";
+            btnBuscarProducto.UseVisualStyleBackColor = false;
+            // 
+            // btnAplicarDescuento
+            // 
+            btnAplicarDescuento.BackColor = Color.Gold;
+            btnAplicarDescuento.Location = new Point(740, 250);
+            btnAplicarDescuento.Name = "btnAplicarDescuento";
+            btnAplicarDescuento.Size = new Size(145, 45);
+            btnAplicarDescuento.TabIndex = 9;
+            btnAplicarDescuento.Text = "% Descuento";
+            btnAplicarDescuento.UseVisualStyleBackColor = false;
+            // 
+            // btnSuspenderVenta
+            // 
+            btnSuspenderVenta.BackColor = Color.Orange;
+            btnSuspenderVenta.Location = new Point(740, 250);
+            btnSuspenderVenta.Name = "btnSuspenderVenta";
+            btnSuspenderVenta.Size = new Size(145, 45);
+            btnSuspenderVenta.TabIndex = 8;
+            btnSuspenderVenta.Text = "⏸ Suspender";
+            btnSuspenderVenta.UseVisualStyleBackColor = false;
+            // 
+            // groupBoxCliente
+            // 
+            groupBoxCliente.Controls.Add(lblDniBusqueda);
+            groupBoxCliente.Controls.Add(txtBusquedaCliente);
+            groupBoxCliente.Controls.Add(btnBuscarCliente);
+            groupBoxCliente.Controls.Add(lblClienteActual);
+            groupBoxCliente.Controls.Add(btnNuevoCliente);
+            groupBoxCliente.ForeColor = SystemColors.ControlLightLight;
+            groupBoxCliente.Location = new Point(20, 10);
+            groupBoxCliente.Name = "groupBoxCliente";
+            groupBoxCliente.Size = new Size(1020, 70);
+            groupBoxCliente.TabIndex = 0;
+            groupBoxCliente.TabStop = false;
+            groupBoxCliente.Text = "Datos del Cliente";
+            // 
+            // lblDniBusqueda
+            // 
+            lblDniBusqueda.AutoSize = true;
+            lblDniBusqueda.Location = new Point(20, 30);
+            lblDniBusqueda.Name = "lblDniBusqueda";
+            lblDniBusqueda.Size = new Size(86, 15);
+            lblDniBusqueda.TabIndex = 0;
+            lblDniBusqueda.Text = "DNI / Teléfono:";
+            // 
+            // txtBusquedaCliente
+            // 
+            txtBusquedaCliente.Font = new Font("Segoe UI", 10F);
+            txtBusquedaCliente.Location = new Point(120, 27);
+            txtBusquedaCliente.Name = "txtBusquedaCliente";
+            txtBusquedaCliente.Size = new Size(150, 25);
+            txtBusquedaCliente.TabIndex = 1;
+            // 
+            // btnBuscarCliente
+            // 
+            btnBuscarCliente.BackColor = Color.LightGray;
+            btnBuscarCliente.ForeColor = SystemColors.ActiveCaptionText;
+            btnBuscarCliente.Location = new Point(280, 25);
+            btnBuscarCliente.Name = "btnBuscarCliente";
+            btnBuscarCliente.Size = new Size(100, 30);
+            btnBuscarCliente.TabIndex = 2;
+            btnBuscarCliente.Text = "Buscar (F4)";
+            btnBuscarCliente.UseVisualStyleBackColor = false;
+            // 
+            // lblClienteActual
+            // 
+            lblClienteActual.AutoSize = true;
+            lblClienteActual.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblClienteActual.ForeColor = Color.MediumBlue;
+            lblClienteActual.Location = new Point(550, 25);
+            lblClienteActual.Name = "lblClienteActual";
+            lblClienteActual.Size = new Size(272, 25);
+            lblClienteActual.TabIndex = 3;
+            lblClienteActual.Text = "Cliente: CONSUMIDOR FINAL";
+            // 
+            // btnNuevoCliente
+            // 
+            btnNuevoCliente.BackColor = Color.PaleTurquoise;
+            btnNuevoCliente.ForeColor = SystemColors.ActiveCaptionText;
+            btnNuevoCliente.Location = new Point(390, 25);
+            btnNuevoCliente.Name = "btnNuevoCliente";
+            btnNuevoCliente.Size = new Size(140, 30);
+            btnNuevoCliente.TabIndex = 4;
+            btnNuevoCliente.Text = "+ Nuevo Cliente";
+            btnNuevoCliente.UseVisualStyleBackColor = false;
+            // 
+            // lblSubtotal
+            // 
+            lblSubtotal.AutoSize = true;
+            lblSubtotal.Font = new Font("Segoe UI", 14F);
+            lblSubtotal.Location = new Point(740, 320);
+            lblSubtotal.Name = "lblSubtotal";
+            lblSubtotal.Size = new Size(167, 50);
+            lblSubtotal.TabIndex = 5;
+            lblSubtotal.Text = "Subtotal: $ 0.00\nDescuentos: $ 0.00";
+            // 
+            // UcVenta
+            // 
+            Controls.Add(groupBoxCliente);
+            Controls.Add(btnCobroTarjeta);
+            Controls.Add(btnCobroQR);
+            Controls.Add(btnCobrar);
+            Controls.Add(btnCuentaCorriente);
+            Controls.Add(lblSubtotal);
+            Controls.Add(lblTotal);
+            Controls.Add(btnCancelarVenta);
+            Controls.Add(btnSuspenderVenta);
+            Controls.Add(btnAplicarDescuento);
+            Controls.Add(btnArticulosFrecuentes);
+            Controls.Add(btnBuscarProducto);
+            Controls.Add(dgvCarrito);
+            Controls.Add(txtScanner);
+            Controls.Add(lblScanner);
+            Name = "UcVenta";
+            Size = new Size(1060, 680);
+            ((System.ComponentModel.ISupportInitialize)dgvCarrito).EndInit();
+            groupBoxCliente.ResumeLayout(false);
+            groupBoxCliente.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
-        
+
         private System.Windows.Forms.DataGridView dgvCarrito;
         private System.Windows.Forms.Label lblScanner;
         private System.Windows.Forms.TextBox txtScanner;

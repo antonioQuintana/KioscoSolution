@@ -7,68 +7,121 @@
 
         private void InitializeComponent()
         {
-            this.dgvProductos = new System.Windows.Forms.DataGridView();
-            this.lblCodigo = new System.Windows.Forms.Label();
-            this.txtCodigo = new System.Windows.Forms.TextBox();
-            this.lblDesc = new System.Windows.Forms.Label();
-            this.txtDesc = new System.Windows.Forms.TextBox();
-            this.lblPrecio = new System.Windows.Forms.Label();
-            this.txtPrecio = new System.Windows.Forms.TextBox();
-            this.lblStock = new System.Windows.Forms.Label();
-            this.txtStock = new System.Windows.Forms.TextBox();
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).BeginInit();
-            this.SuspendLayout();
-            
-            this.dgvProductos.Location = new System.Drawing.Point(20, 20);
-            this.dgvProductos.Size = new System.Drawing.Size(500, 400);
-            
-            this.lblCodigo.Location = new System.Drawing.Point(540, 20);
-            this.lblCodigo.Text = "Código de Barras:";
-            this.txtCodigo.Location = new System.Drawing.Point(540, 40);
-            this.txtCodigo.Size = new System.Drawing.Size(200, 23);
-            
-            this.lblDesc.Location = new System.Drawing.Point(540, 70);
-            this.lblDesc.Text = "Descripción:";
-            this.txtDesc.Location = new System.Drawing.Point(540, 90);
-            this.txtDesc.Size = new System.Drawing.Size(200, 23);
-            
-            this.lblPrecio.Location = new System.Drawing.Point(540, 120);
-            this.lblPrecio.Text = "Precio Venta:";
-            this.txtPrecio.Location = new System.Drawing.Point(540, 140);
-            this.txtPrecio.Size = new System.Drawing.Size(200, 23);
-
-            this.lblStock.Location = new System.Drawing.Point(540, 170);
-            this.lblStock.Text = "Stock Actual:";
-            this.txtStock.Location = new System.Drawing.Point(540, 190);
-            this.txtStock.Size = new System.Drawing.Size(200, 23);
-            
-            this.btnGuardar.Location = new System.Drawing.Point(540, 240);
-            this.btnGuardar.Size = new System.Drawing.Size(95, 30);
-            this.btnGuardar.Text = "Guardar";
-
-            this.btnEliminar.Location = new System.Drawing.Point(645, 240);
-            this.btnEliminar.Size = new System.Drawing.Size(95, 30);
-            this.btnEliminar.Text = "Eliminar";
-
-            
-            this.Controls.Add(this.btnEliminar);
-            this.Controls.Add(this.btnGuardar);
-            this.Controls.Add(this.txtStock);
-            this.Controls.Add(this.lblStock);
-            this.Controls.Add(this.txtPrecio);
-            this.Controls.Add(this.lblPrecio);
-            this.Controls.Add(this.txtDesc);
-            this.Controls.Add(this.lblDesc);
-            this.Controls.Add(this.txtCodigo);
-            this.Controls.Add(this.lblCodigo);
-            this.Controls.Add(this.dgvProductos);
-            
-            
-            ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            dgvProductos = new DataGridView();
+            lblCodigo = new Label();
+            txtCodigo = new TextBox();
+            lblDesc = new Label();
+            txtDesc = new TextBox();
+            lblPrecio = new Label();
+            txtPrecio = new TextBox();
+            lblStock = new Label();
+            txtStock = new TextBox();
+            btnGuardar = new Button();
+            btnEliminar = new Button();
+            ((System.ComponentModel.ISupportInitialize)dgvProductos).BeginInit();
+            SuspendLayout();
+            // 
+            // dgvProductos
+            // 
+            dgvProductos.Location = new Point(20, 20);
+            dgvProductos.Name = "dgvProductos";
+            dgvProductos.Size = new Size(500, 400);
+            dgvProductos.TabIndex = 10;
+            // 
+            // lblCodigo
+            // 
+            lblCodigo.Location = new Point(540, 20);
+            lblCodigo.Name = "lblCodigo";
+            lblCodigo.Size = new Size(100, 23);
+            lblCodigo.TabIndex = 9;
+            lblCodigo.Text = "Código de Barras:";
+            // 
+            // txtCodigo
+            // 
+            txtCodigo.Location = new Point(540, 40);
+            txtCodigo.Name = "txtCodigo";
+            txtCodigo.Size = new Size(200, 23);
+            txtCodigo.TabIndex = 8;
+            // 
+            // lblDesc
+            // 
+            lblDesc.Location = new Point(540, 70);
+            lblDesc.Name = "lblDesc";
+            lblDesc.Size = new Size(100, 23);
+            lblDesc.TabIndex = 7;
+            lblDesc.Text = "Descripción:";
+            // 
+            // txtDesc
+            // 
+            txtDesc.Location = new Point(540, 90);
+            txtDesc.Name = "txtDesc";
+            txtDesc.Size = new Size(200, 23);
+            txtDesc.TabIndex = 6;
+            // 
+            // lblPrecio
+            // 
+            lblPrecio.Location = new Point(540, 120);
+            lblPrecio.Name = "lblPrecio";
+            lblPrecio.Size = new Size(100, 23);
+            lblPrecio.TabIndex = 5;
+            lblPrecio.Text = "Precio Venta:";
+            // 
+            // txtPrecio
+            // 
+            txtPrecio.Location = new Point(540, 140);
+            txtPrecio.Name = "txtPrecio";
+            txtPrecio.Size = new Size(200, 23);
+            txtPrecio.TabIndex = 4;
+            // 
+            // lblStock
+            // 
+            lblStock.Location = new Point(540, 170);
+            lblStock.Name = "lblStock";
+            lblStock.Size = new Size(100, 23);
+            lblStock.TabIndex = 3;
+            lblStock.Text = "Stock Actual:";
+            // 
+            // txtStock
+            // 
+            txtStock.Location = new Point(540, 190);
+            txtStock.Name = "txtStock";
+            txtStock.Size = new Size(200, 23);
+            txtStock.TabIndex = 2;
+            // 
+            // btnGuardar
+            // 
+            btnGuardar.Location = new Point(540, 240);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(95, 30);
+            btnGuardar.TabIndex = 1;
+            btnGuardar.Text = "Guardar";
+            // 
+            // btnEliminar
+            // 
+            btnEliminar.Location = new Point(645, 240);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(95, 30);
+            btnEliminar.TabIndex = 0;
+            btnEliminar.Text = "Eliminar";
+            // 
+            // UcABMProductos
+            // 
+            Controls.Add(btnEliminar);
+            Controls.Add(btnGuardar);
+            Controls.Add(txtStock);
+            Controls.Add(lblStock);
+            Controls.Add(txtPrecio);
+            Controls.Add(lblPrecio);
+            Controls.Add(txtDesc);
+            Controls.Add(lblDesc);
+            Controls.Add(txtCodigo);
+            Controls.Add(lblCodigo);
+            Controls.Add(dgvProductos);
+            Name = "UcABMProductos";
+            Size = new Size(762, 354);
+            ((System.ComponentModel.ISupportInitialize)dgvProductos).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
         private System.Windows.Forms.DataGridView dgvProductos;
         private System.Windows.Forms.Label lblCodigo;
