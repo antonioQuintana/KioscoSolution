@@ -24,11 +24,14 @@ namespace KioscoApp
 
             // Ocultamos todos los botones primero
             BUsuarios.Visible = false;
+            BConfiguracion.Visible = false;
+            
             BProductos.Visible = false;
             BCategorias.Visible = false;
             BProveedores.Visible = false;
             BStock.Visible = false;
             BEstadisticas.Visible = false;
+            BAuditoriaCajas.Visible = false;
 
             BVenta.Visible = false;
             BClientes.Visible = false;
@@ -38,11 +41,16 @@ namespace KioscoApp
             if (rolUsuario == "admin")
             {
                 BUsuarios.Visible = true;
+                BConfiguracion.Visible = true;
+            }
+            else if (rolUsuario == "supervisor")
+            {
                 BProductos.Visible = true;
                 BCategorias.Visible = true;
                 BProveedores.Visible = true;
                 BStock.Visible = true;
                 BEstadisticas.Visible = true;
+                BAuditoriaCajas.Visible = true;
             }
             else // vendedor
             {
@@ -57,7 +65,15 @@ namespace KioscoApp
             pnlContent.Controls.Clear();
             uc.Dock = DockStyle.Fill;
             pnlContent.Controls.Add(uc);
-            // ThemeHelper.ApplyTheme(uc); // Desactivado para mantener los colores del diseñador
+            // Fix: WinForms hereda el color blanco del FrmPrincipal, y oculta el texto en las grillas de fondo blanco.
+            foreach (Control c in uc.Controls)
+            {
+                if (c is DataGridView dgv)
+                {
+                    dgv.DefaultCellStyle.ForeColor = Color.Black;
+                    dgv.ForeColor = Color.Black;
+                }
+            }
         }
 
         private void FrmPrincipal_FormClosed(object sender, FormClosedEventArgs e)
@@ -87,6 +103,8 @@ namespace KioscoApp
 
         private void BUsuarios_Click_1(object sender, EventArgs e) { CargarUserControl(new UcABMUsuarios()); }
 
+        private void BConfiguracion_Click(object sender, EventArgs e) { MessageBox.Show("Módulo de Configuración en desarrollo (Próximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
         private void BProductos_Click(object sender, EventArgs e) { CargarUserControl(new UcABMProductos()); }
 
         private void BCategorias_Click(object sender, EventArgs e) { CargarUserControl(new UcABMCategorias()); }
@@ -96,6 +114,8 @@ namespace KioscoApp
         private void BStock_Click(object sender, EventArgs e) { CargarUserControl(new UcMovimientosStock()); }
 
         private void BEstadisticas_Click(object sender, EventArgs e) { CargarUserControl(new UcEstadisticas()); }
+
+        private void BAuditoriaCajas_Click(object sender, EventArgs e) { MessageBox.Show("Módulo de Auditoría de Cajas en desarrollo (Próximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information); }
 
         private void BVenta_Click(object sender, EventArgs e) { CargarUserControl(new UcVenta()); }
 

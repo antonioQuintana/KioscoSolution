@@ -142,7 +142,7 @@ namespace KioscoApp
             // 
             cmbRol.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbRol.FormattingEnabled = true;
-            cmbRol.Items.AddRange(new object[] { "Admin", "Vendedor" });
+            cmbRol.Items.AddRange(new object[] { "admin", "supervisor", "vendedor" });
             cmbRol.Location = new Point(277, 88);
             cmbRol.Name = "cmbRol";
             cmbRol.Size = new Size(200, 23);

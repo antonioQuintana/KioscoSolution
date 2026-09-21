@@ -12,11 +12,13 @@ namespace KioscoApp
             btnCerrarSesion = new System.Windows.Forms.Button();
             BEstadisticas = new System.Windows.Forms.Button();
             BUsuarios = new System.Windows.Forms.Button();
+            BConfiguracion = new System.Windows.Forms.Button();
             BProveedores = new System.Windows.Forms.Button();
             BClientes = new System.Windows.Forms.Button();
             BStock = new System.Windows.Forms.Button();
             BProductos = new System.Windows.Forms.Button();
             BCategorias = new System.Windows.Forms.Button();
+            BAuditoriaCajas = new System.Windows.Forms.Button();
             BVenta = new System.Windows.Forms.Button();
             pnlContent = new System.Windows.Forms.Panel();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -26,25 +28,127 @@ namespace KioscoApp
             // pnlMenu
             // 
             pnlMenu.BackColor = System.Drawing.Color.FromArgb(45, 45, 48);
-            pnlMenu.Controls.Add(BCierreCaja);
             pnlMenu.Controls.Add(btnCerrarSesion);
-            pnlMenu.Controls.Add(BEstadisticas);
             pnlMenu.Controls.Add(BUsuarios);
-            pnlMenu.Controls.Add(BProveedores);
-            pnlMenu.Controls.Add(BClientes);
-            pnlMenu.Controls.Add(BStock);
+            pnlMenu.Controls.Add(BConfiguracion);
             pnlMenu.Controls.Add(BProductos);
             pnlMenu.Controls.Add(BCategorias);
+            pnlMenu.Controls.Add(BProveedores);
+            pnlMenu.Controls.Add(BStock);
+            pnlMenu.Controls.Add(BEstadisticas);
+            pnlMenu.Controls.Add(BAuditoriaCajas);
             pnlMenu.Controls.Add(BVenta);
+            pnlMenu.Controls.Add(BClientes);
+            pnlMenu.Controls.Add(BCierreCaja);
             pnlMenu.Dock = System.Windows.Forms.DockStyle.Left;
             pnlMenu.Location = new System.Drawing.Point(0, 0);
             pnlMenu.Name = "pnlMenu";
-            pnlMenu.Size = new System.Drawing.Size(1100, 700);
+            pnlMenu.Size = new System.Drawing.Size(250, 700);
             pnlMenu.TabIndex = 1;
+            // 
+            // BUsuarios
+            // 
+            BUsuarios.Location = new System.Drawing.Point(10, 20);
+            BUsuarios.Name = "BUsuarios";
+            BUsuarios.Size = new System.Drawing.Size(230, 45);
+            BUsuarios.TabIndex = 8;
+            BUsuarios.Text = "Usuarios (Admin)";
+            BUsuarios.UseVisualStyleBackColor = true;
+            BUsuarios.Click += BUsuarios_Click_1;
+            // 
+            // BConfiguracion
+            // 
+            BConfiguracion.Location = new System.Drawing.Point(10, 75);
+            BConfiguracion.Name = "BConfiguracion";
+            BConfiguracion.Size = new System.Drawing.Size(230, 45);
+            BConfiguracion.TabIndex = 10;
+            BConfiguracion.Text = "Configuración (Admin)";
+            BConfiguracion.UseVisualStyleBackColor = true;
+            BConfiguracion.Click += BConfiguracion_Click;
+            // 
+            // BProductos
+            // 
+            BProductos.Location = new System.Drawing.Point(10, 130);
+            BProductos.Name = "BProductos";
+            BProductos.Size = new System.Drawing.Size(230, 45);
+            BProductos.TabIndex = 7;
+            BProductos.Text = "Productos";
+            BProductos.UseVisualStyleBackColor = true;
+            BProductos.Click += BProductos_Click;
+            // 
+            // BCategorias
+            // 
+            BCategorias.Location = new System.Drawing.Point(10, 185);
+            BCategorias.Name = "BCategorias";
+            BCategorias.Size = new System.Drawing.Size(230, 45);
+            BCategorias.TabIndex = 6;
+            BCategorias.Text = "Categorias";
+            BCategorias.UseVisualStyleBackColor = true;
+            BCategorias.Click += BCategorias_Click;
+            // 
+            // BProveedores
+            // 
+            BProveedores.Location = new System.Drawing.Point(10, 240);
+            BProveedores.Name = "BProveedores";
+            BProveedores.Size = new System.Drawing.Size(230, 45);
+            BProveedores.TabIndex = 5;
+            BProveedores.Text = "Proveedores";
+            BProveedores.UseVisualStyleBackColor = true;
+            BProveedores.Click += BProveedores_Click;
+            // 
+            // BStock
+            // 
+            BStock.Location = new System.Drawing.Point(10, 295);
+            BStock.Name = "BStock";
+            BStock.Size = new System.Drawing.Size(230, 45);
+            BStock.TabIndex = 4;
+            BStock.Text = "Stock";
+            BStock.UseVisualStyleBackColor = true;
+            BStock.Click += BStock_Click;
+            // 
+            // BEstadisticas
+            // 
+            BEstadisticas.Location = new System.Drawing.Point(10, 350);
+            BEstadisticas.Name = "BEstadisticas";
+            BEstadisticas.Size = new System.Drawing.Size(230, 45);
+            BEstadisticas.TabIndex = 3;
+            BEstadisticas.Text = "Estadisticas";
+            BEstadisticas.UseVisualStyleBackColor = true;
+            BEstadisticas.Click += BEstadisticas_Click;
+            // 
+            // BAuditoriaCajas
+            // 
+            BAuditoriaCajas.Location = new System.Drawing.Point(10, 405);
+            BAuditoriaCajas.Name = "BAuditoriaCajas";
+            BAuditoriaCajas.Size = new System.Drawing.Size(230, 45);
+            BAuditoriaCajas.TabIndex = 11;
+            BAuditoriaCajas.Text = "Auditoría Cajas (Sup)";
+            BAuditoriaCajas.UseVisualStyleBackColor = true;
+            BAuditoriaCajas.Click += BAuditoriaCajas_Click;
+            // 
+            // BVenta
+            // 
+            BVenta.Location = new System.Drawing.Point(10, 460);
+            BVenta.Name = "BVenta";
+            BVenta.Size = new System.Drawing.Size(230, 45);
+            BVenta.TabIndex = 2;
+            BVenta.Text = "Venta";
+            BVenta.UseVisualStyleBackColor = true;
+            BVenta.Click += BVenta_Click;
+            // 
+            // BClientes
+            // 
+            BClientes.Location = new System.Drawing.Point(10, 515);
+            BClientes.Name = "BClientes";
+            BClientes.Size = new System.Drawing.Size(230, 45);
+            BClientes.TabIndex = 1;
+            BClientes.Text = "Clientes";
+            BClientes.UseVisualStyleBackColor = true;
+            BClientes.Click += BClientes_Click;
             // 
             // BCierreCaja
             // 
-            BCierreCaja.Location = new System.Drawing.Point(12, 520);
+            BCierreCaja.Location = new System.Drawing.Point(10, 570);
             BCierreCaja.Name = "BCierreCaja";
             BCierreCaja.Size = new System.Drawing.Size(230, 45);
             BCierreCaja.TabIndex = 9;
@@ -60,91 +164,11 @@ namespace KioscoApp
             btnCerrarSesion.ForeColor = System.Drawing.Color.White;
             btnCerrarSesion.Location = new System.Drawing.Point(0, 644);
             btnCerrarSesion.Name = "btnCerrarSesion";
-            btnCerrarSesion.Size = new System.Drawing.Size(1100, 56);
+            btnCerrarSesion.Size = new System.Drawing.Size(250, 56);
             btnCerrarSesion.TabIndex = 0;
             btnCerrarSesion.Text = "Cerrar Sesión";
             btnCerrarSesion.UseVisualStyleBackColor = false;
             btnCerrarSesion.Click += btnCerrarSesion_Click;
-            // 
-            // BEstadisticas
-            // 
-            BEstadisticas.Location = new System.Drawing.Point(12, 340);
-            BEstadisticas.Name = "BEstadisticas";
-            BEstadisticas.Size = new System.Drawing.Size(230, 45);
-            BEstadisticas.TabIndex = 3;
-            BEstadisticas.Text = "Estadisticas";
-            BEstadisticas.UseVisualStyleBackColor = true;
-            BEstadisticas.Click += BEstadisticas_Click;
-            // 
-            // BUsuarios
-            // 
-            BUsuarios.Location = new System.Drawing.Point(12, 40);
-            BUsuarios.Name = "BUsuarios";
-            BUsuarios.Size = new System.Drawing.Size(230, 45);
-            BUsuarios.TabIndex = 8;
-            BUsuarios.Text = "Usuarios";
-            BUsuarios.UseVisualStyleBackColor = true;
-            BUsuarios.Click += BUsuarios_Click_1;
-            // 
-            // BProveedores
-            // 
-            BProveedores.Location = new System.Drawing.Point(12, 220);
-            BProveedores.Name = "BProveedores";
-            BProveedores.Size = new System.Drawing.Size(230, 45);
-            BProveedores.TabIndex = 5;
-            BProveedores.Text = "Proveedores";
-            BProveedores.UseVisualStyleBackColor = true;
-            BProveedores.Click += BProveedores_Click;
-            // 
-            // BClientes
-            // 
-            BClientes.Location = new System.Drawing.Point(12, 460);
-            BClientes.Name = "BClientes";
-            BClientes.Size = new System.Drawing.Size(230, 45);
-            BClientes.TabIndex = 1;
-            BClientes.Text = "Clientes";
-            BClientes.UseVisualStyleBackColor = true;
-            BClientes.Click += BClientes_Click;
-            // 
-            // BStock
-            // 
-            BStock.Location = new System.Drawing.Point(12, 280);
-            BStock.Name = "BStock";
-            BStock.Size = new System.Drawing.Size(230, 45);
-            BStock.TabIndex = 4;
-            BStock.Text = "Stock";
-            BStock.UseVisualStyleBackColor = true;
-            BStock.Click += BStock_Click;
-            // 
-            // BProductos
-            // 
-            BProductos.Location = new System.Drawing.Point(12, 100);
-            BProductos.Name = "BProductos";
-            BProductos.Size = new System.Drawing.Size(230, 45);
-            BProductos.TabIndex = 7;
-            BProductos.Text = "Productos";
-            BProductos.UseVisualStyleBackColor = true;
-            BProductos.Click += BProductos_Click;
-            // 
-            // BCategorias
-            // 
-            BCategorias.Location = new System.Drawing.Point(12, 160);
-            BCategorias.Name = "BCategorias";
-            BCategorias.Size = new System.Drawing.Size(230, 45);
-            BCategorias.TabIndex = 6;
-            BCategorias.Text = "Categorias";
-            BCategorias.UseVisualStyleBackColor = true;
-            BCategorias.Click += BCategorias_Click;
-            // 
-            // BVenta
-            // 
-            BVenta.Location = new System.Drawing.Point(12, 400);
-            BVenta.Name = "BVenta";
-            BVenta.Size = new System.Drawing.Size(230, 45);
-            BVenta.TabIndex = 2;
-            BVenta.Text = "Venta";
-            BVenta.UseVisualStyleBackColor = true;
-            BVenta.Click += BVenta_Click;
             // 
             // pnlContent
             // 
@@ -189,11 +213,13 @@ namespace KioscoApp
         
         private System.Windows.Forms.Button btnCerrarSesion;
         private System.Windows.Forms.Button BUsuarios;
+        private System.Windows.Forms.Button BConfiguracion;
         private System.Windows.Forms.Button BProductos;
         private System.Windows.Forms.Button BCategorias;
         private System.Windows.Forms.Button BProveedores;
         private System.Windows.Forms.Button BStock;
         private System.Windows.Forms.Button BEstadisticas;
+        private System.Windows.Forms.Button BAuditoriaCajas;
         private System.Windows.Forms.Button BVenta;
         private System.Windows.Forms.Button BClientes;
         private System.Windows.Forms.Button BCierreCaja;
