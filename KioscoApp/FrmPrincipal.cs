@@ -28,7 +28,6 @@ namespace KioscoApp
             
             BProductos.Visible = false;
             BCategorias.Visible = false;
-            BProveedores.Visible = false;
             BStock.Visible = false;
             BEstadisticas.Visible = false;
             BAuditoriaCajas.Visible = false;
@@ -47,7 +46,6 @@ namespace KioscoApp
             {
                 BProductos.Visible = true;
                 BCategorias.Visible = true;
-                BProveedores.Visible = true;
                 BStock.Visible = true;
                 BEstadisticas.Visible = true;
                 BAuditoriaCajas.Visible = true;
@@ -109,13 +107,12 @@ namespace KioscoApp
 
         private void BCategorias_Click(object sender, EventArgs e) { CargarUserControl(new UcABMCategorias()); }
 
-        private void BProveedores_Click(object sender, EventArgs e) { CargarUserControl(new UcABMProveedores()); }
 
         private void BStock_Click(object sender, EventArgs e) { CargarUserControl(new UcMovimientosStock()); }
 
         private void BEstadisticas_Click(object sender, EventArgs e) { CargarUserControl(new UcEstadisticas()); }
 
-        private void BAuditoriaCajas_Click(object sender, EventArgs e) { MessageBox.Show("Módulo de Auditoría de Cajas en desarrollo (Próximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+        private void BAuditoriaCajas_Click(object sender, EventArgs e) { CargarUserControl(new UcAuditoriaCajas()); }
 
         private void BVenta_Click(object sender, EventArgs e) { CargarUserControl(new UcVenta()); }
 

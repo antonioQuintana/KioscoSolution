@@ -13,7 +13,6 @@ namespace KioscoApp
             BEstadisticas = new System.Windows.Forms.Button();
             BUsuarios = new System.Windows.Forms.Button();
             BConfiguracion = new System.Windows.Forms.Button();
-            BProveedores = new System.Windows.Forms.Button();
             BClientes = new System.Windows.Forms.Button();
             BStock = new System.Windows.Forms.Button();
             BProductos = new System.Windows.Forms.Button();
@@ -33,7 +32,6 @@ namespace KioscoApp
             pnlMenu.Controls.Add(BConfiguracion);
             pnlMenu.Controls.Add(BProductos);
             pnlMenu.Controls.Add(BCategorias);
-            pnlMenu.Controls.Add(BProveedores);
             pnlMenu.Controls.Add(BStock);
             pnlMenu.Controls.Add(BEstadisticas);
             pnlMenu.Controls.Add(BAuditoriaCajas);
@@ -86,15 +84,7 @@ namespace KioscoApp
             BCategorias.UseVisualStyleBackColor = true;
             BCategorias.Click += BCategorias_Click;
             // 
-            // BProveedores
             // 
-            BProveedores.Location = new System.Drawing.Point(10, 240);
-            BProveedores.Name = "BProveedores";
-            BProveedores.Size = new System.Drawing.Size(230, 45);
-            BProveedores.TabIndex = 5;
-            BProveedores.Text = "Proveedores";
-            BProveedores.UseVisualStyleBackColor = true;
-            BProveedores.Click += BProveedores_Click;
             // 
             // BStock
             // 
@@ -216,7 +206,6 @@ namespace KioscoApp
         private System.Windows.Forms.Button BConfiguracion;
         private System.Windows.Forms.Button BProductos;
         private System.Windows.Forms.Button BCategorias;
-        private System.Windows.Forms.Button BProveedores;
         private System.Windows.Forms.Button BStock;
         private System.Windows.Forms.Button BEstadisticas;
         private System.Windows.Forms.Button BAuditoriaCajas;

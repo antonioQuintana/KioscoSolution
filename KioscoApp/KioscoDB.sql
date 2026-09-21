@@ -99,3 +99,49 @@ VALUES
     'Femenino', '1998-03-08'
 );
 GO
+
+-- =============================================
+-- TABLA CATEGORIAS
+-- =============================================
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Categorias')
+BEGIN
+    CREATE TABLE Categorias (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        Nombre NVARCHAR(100) NOT NULL,
+        Descripcion NVARCHAR(255) NULL
+    );
+END
+GO
+
+-- =============================================
+-- TABLA PRODUCTOS
+-- =============================================
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Productos')
+BEGIN
+    CREATE TABLE Productos (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        SKU NVARCHAR(50) NOT NULL UNIQUE,
+        Nombre NVARCHAR(100) NOT NULL,
+        Descripcion NVARCHAR(255) NULL,
+        IdCategoria INT NOT NULL FOREIGN KEY REFERENCES Categorias(Id),
+        PrecioCosto DECIMAL(18,2) NOT NULL DEFAULT 0,
+        PrecioVenta DECIMAL(18,2) NOT NULL DEFAULT 0,
+        StockActual INT NOT NULL DEFAULT 0,
+        StockMinimo INT NOT NULL DEFAULT 0
+    );
+END
+GO
+
+-- =============================================
+-- INSERTAR CATEGORIAS DE EJEMPLO
+-- =============================================
+IF NOT EXISTS (SELECT 1 FROM Categorias)
+BEGIN
+    INSERT INTO Categorias (Nombre, Descripcion) VALUES 
+    ('Bebidas sin alcohol', 'Gaseosas, aguas, jugos'),
+    ('Cervezas', 'Cervezas en lata y botella'),
+    ('Golosinas', 'Alfajores, caramelos, chocolates'),
+    ('Cigarrillos', 'Atados y accesorios'),
+    ('Snacks', 'Papas fritas, chizitos, palitos');
+END
+GO
