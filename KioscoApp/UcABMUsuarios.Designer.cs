@@ -288,6 +288,7 @@ namespace KioscoApp
             // 
             // btnAgregar
             // 
+            btnAgregar.ForeColor = SystemColors.ActiveCaptionText;
             btnAgregar.Location = new Point(175, 188);
             btnAgregar.Name = "btnAgregar";
             btnAgregar.Size = new Size(95, 30);
@@ -298,6 +299,7 @@ namespace KioscoApp
             // 
             // btnEditar
             // 
+            btnEditar.ForeColor = SystemColors.ActiveCaptionText;
             btnEditar.Location = new Point(280, 188);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(95, 30);
@@ -308,6 +310,7 @@ namespace KioscoApp
             // 
             // btnEliminar
             // 
+            btnEliminar.ForeColor = SystemColors.ActiveCaptionText;
             btnEliminar.Location = new Point(395, 188);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Size = new Size(95, 30);
@@ -318,6 +321,7 @@ namespace KioscoApp
             // 
             // btnLimpiar
             // 
+            btnLimpiar.ForeColor = SystemColors.ActiveCaptionText;
             btnLimpiar.Location = new Point(500, 188);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(95, 30);

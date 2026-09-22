@@ -265,7 +265,7 @@ namespace KioscoApp
             if (cmbSexo.SelectedIndex == -1) { AddError(cmbSexo, "Requerido", false); }
             
             if (dtpNacimiento.Value.Date >= DateTime.Now.Date) { 
-                AddError(dtpNacimiento, "La fecha de nacimiento no puede ser una fecha futura", true); 
+                AddError(dtpNacimiento, "La fecha de nacimiento no es válida", true); 
             }
 
             if (!esValido)
