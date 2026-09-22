@@ -1,4 +1,4 @@
-CREATE DATABASE KioscoDB;
+﻿CREATE DATABASE KioscoDB;
 GO
 USE KioscoDB;
 GO
@@ -81,22 +81,22 @@ VALUES
     'Femenino', '1990-10-20'
 ),
 (
-    'Antonio', 'Quintana', 'vendedor1', 
+    'Antonio', 'Quintana', 'antonio', 
     '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 
     'vendedor', 
-    'vendedor1@kiosco.com', '+54 9 11 2233 4455', 
+    'antonio.quintana@kiosco.com', '+54 9 11 2233 4455', 
     'Florida', '999', 
     'CABA', 'Buenos Aires', 
     'Masculino', '1995-02-28'
 ),
 (
-    'María', 'López', 'maria', 
+    'Ramiro', 'Nuñez', 'ramiro', 
     '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 
     'Vendedor', 
-    'maria.lopez@gmail.com', '+54 9 379 456 7890', 
+    'ramiro.nunez@gmail.com', '+54 9 379 456 7890', 
     'San Juan', '890', 
     'Corrientes Capital', 'Corrientes', 
-    'Femenino', '1998-03-08'
+    'Masculino', '1998-03-08'
 );
 GO
 
