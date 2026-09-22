@@ -184,6 +184,15 @@ namespace KioscoApp
                     dtpNacimiento.Value = Convert.ToDateTime(row.Cells["Nacimiento"].Value);
                 else
                     dtpNacimiento.Value = DateTime.Now;
+
+                if (usuarioIdSeleccionado == UserSession.IdUsuario)
+                {
+                    cmbRol.Enabled = false;
+                }
+                else
+                {
+                    cmbRol.Enabled = true;
+                }
             }
         }
 
@@ -504,6 +513,7 @@ namespace KioscoApp
             cmbProvincia.Text = "";
             cmbSexo.SelectedIndex = -1;
             cmbRol.SelectedIndex = -1;
+            cmbRol.Enabled = true;
             dtpNacimiento.Value = DateTime.Now;
         }
     }
