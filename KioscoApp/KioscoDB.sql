@@ -64,12 +64,18 @@ BEGIN
     DECLARE @IdCBA INT = (SELECT Id FROM Provincias WHERE Nombre = 'Córdoba');
     DECLARE @IdCorrientes INT = (SELECT Id FROM Provincias WHERE Nombre = 'Corrientes');
     DECLARE @IdChaco INT = (SELECT Id FROM Provincias WHERE Nombre = 'Chaco');
+    DECLARE @IdSantaFe INT = (SELECT Id FROM Provincias WHERE Nombre = 'Santa Fe');
+    DECLARE @IdMendoza INT = (SELECT Id FROM Provincias WHERE Nombre = 'Mendoza');
+    DECLARE @IdTucuman INT = (SELECT Id FROM Provincias WHERE Nombre = 'Tucumán');
 
     INSERT INTO Ciudades (ProvinciaId, Nombre) VALUES 
     (@IdBA, 'La Plata'), (@IdBA, 'Mar del Plata'), (@IdBA, 'Bahía Blanca'), (@IdBA, 'Quilmes'),
     (@IdCBA, 'Córdoba Capital'), (@IdCBA, 'Villa Carlos Paz'), (@IdCBA, 'Río Cuarto'),
     (@IdCorrientes, 'Corrientes Capital'), (@IdCorrientes, 'Goya'), (@IdCorrientes, 'Paso de los Libres'), (@IdCorrientes, 'Curuzú Cuatiá'), (@IdCorrientes, 'Mercedes'), (@IdCorrientes, 'Bella Vista'), (@IdCorrientes, 'Ituzaingó'),
-    (@IdChaco, 'Resistencia'), (@IdChaco, 'Presidencia Roque Sáenz Peña'), (@IdChaco, 'Villa Ángela'), (@IdChaco, 'Barranqueras'), (@IdChaco, 'Fontana'), (@IdChaco, 'General José de San Martín'), (@IdChaco, 'Juan José Castelli');
+    (@IdChaco, 'Resistencia'), (@IdChaco, 'Presidencia Roque Sáenz Peña'), (@IdChaco, 'Villa Ángela'), (@IdChaco, 'Barranqueras'), (@IdChaco, 'Fontana'), (@IdChaco, 'General José de San Martín'), (@IdChaco, 'Juan José Castelli'),
+    (@IdSantaFe, 'Rosario'), (@IdSantaFe, 'Santa Fe Capital'), (@IdSantaFe, 'Rafaela'), (@IdSantaFe, 'Venado Tuerto'),
+    (@IdMendoza, 'Mendoza Capital'), (@IdMendoza, 'San Rafael'), (@IdMendoza, 'Godoy Cruz'), (@IdMendoza, 'Luján de Cuyo'),
+    (@IdTucuman, 'San Miguel de Tucumán'), (@IdTucuman, 'Tafí Viejo'), (@IdTucuman, 'Concepción'), (@IdTucuman, 'Yerba Buena');
 END
 GO
 
