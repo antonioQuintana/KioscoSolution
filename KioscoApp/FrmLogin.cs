@@ -1,64 +1,38 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using KioscoApp.Business;
 
 namespace KioscoApp
 {
     public partial class FrmLogin : Form
     {
+        private UsuarioService _usuarioService;
+
         public FrmLogin()
         {
             InitializeComponent();
             ThemeHelper.ApplyTheme(this);
+            _usuarioService = new UsuarioService();
         }
 
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtUsuario.Text) || string.IsNullOrWhiteSpace(txtContrasena.Text))
+            var user = _usuarioService.Login(txtUsuario.Text.Trim(), txtContrasena.Text, out string errorMsg);
+
+            if (user == null)
             {
-                MessageBox.Show("Por favor, ingrese usuario y contraseña.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(errorMsg, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            string query = "SELECT Id, Nombre, Usuario, Contrasena, Rol FROM Usuarios WHERE Usuario = @Usuario";
-
-            using var conexion = DatabaseHelper.GetConnection();
-            conexion.Open();
-
-            using var cmd = new SqlCommand(query, conexion);
-            // El parámetro sanitiza automáticamente la entrada contra SQL Injection
-            cmd.Parameters.AddWithValue("@Usuario", txtUsuario.Text.Trim());
-
-            using var reader = cmd.ExecuteReader();
-            if (!reader.Read())
-            {
-                MessageBox.Show("Usuario no encontrado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            string hashBD = reader["Contrasena"].ToString();
-
-            // Verificar la contraseña en texto claro contra el hash almacenado
-            bool esValida = BCrypt.Net.BCrypt.Verify(txtContrasena.Text, hashBD);
-
-            if (!esValida)
-            {
-                MessageBox.Show("Contraseña incorrecta.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            int id = Convert.ToInt32(reader["Id"]);
-            string nombre = reader["Nombre"].ToString();
-            string usuario = reader["Usuario"].ToString();
-            string rol = reader["Rol"].ToString();
-
-            UserSession.IniciarSesion(id, nombre, usuario, rol);
+            UserSession.IniciarSesion(user.Id, user.Nombre, user.NombreUsuario, user.Rol);
+            
             txtUsuario.Text = null;
             txtContrasena.Text = null;
-            FrmPrincipal frm = new FrmPrincipal(rol);
+            
+            FrmPrincipal frm = new FrmPrincipal(user.Rol);
             frm.Show();
             this.Hide();
-            
         }
 
         private void FrmLogin_FormClosed(object sender, FormClosedEventArgs e)
