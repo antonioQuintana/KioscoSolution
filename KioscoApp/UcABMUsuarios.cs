@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
@@ -18,6 +18,15 @@ namespace KioscoApp
 
         private void ConfigurarValidacionesEnTiempoReal()
         {
+            txtNombre.MaxLength = 100;
+            txtApellido.MaxLength = 100;
+            txtUsuario.MaxLength = 50;
+            txtContrasena.MaxLength = 100;
+            txtEmail.MaxLength = 100;
+            txtTelefono.MaxLength = 50;
+            txtCalle.MaxLength = 100;
+            txtNumero.MaxLength = 20;
+
             // Validaciones en tiempo real al perder el foco en el campo
             txtEmail.Validating += (s, e) => {
                 if (!string.IsNullOrWhiteSpace(txtEmail.Text) && !System.Text.RegularExpressions.Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
@@ -201,8 +210,9 @@ namespace KioscoApp
             }
         }
 
-        private bool ValidarFormulario()
+        private bool ValidarFormulario(bool isEdit)
         {
+            int idExcluir = isEdit ? usuarioIdSeleccionado : 0;
             bool esValido = true;
             errorProvider.Clear(); // Limpiar errores previos
             System.Collections.Generic.List<string> mensajesError = new System.Collections.Generic.List<string>();
@@ -216,18 +226,23 @@ namespace KioscoApp
             }
 
             // Validaciones de obligatoriedad y formato
-            if (string.IsNullOrWhiteSpace(txtNombre.Text)) { AddError(txtNombre, "Requerido", false); }
+            if (string.IsNullOrWhiteSpace(txtNombre.Text)) { 
+                AddError(txtNombre, "Requerido", false); 
+            } else if (txtNombre.Text.Trim().Length < 3) {
+                AddError(txtNombre, "El nombre debe tener mínimo 3 caracteres", true);
+            }
+
             if (string.IsNullOrWhiteSpace(txtApellido.Text)) { AddError(txtApellido, "Requerido", false); }
             
             if (string.IsNullOrWhiteSpace(txtUsuario.Text)) { 
                 AddError(txtUsuario, "Requerido", false); 
-            } else if (txtUsuario.Text.Length < 4) { 
-                AddError(txtUsuario, "El usuario debe tener mínimo 4 caracteres", true); 
-            } else if (ExisteDatoUnico("Usuario", txtUsuario.Text.Trim(), usuarioIdSeleccionado)) {
+            } else if (txtUsuario.Text.Trim().Length < 5) { 
+                AddError(txtUsuario, "El usuario debe tener mínimo 5 caracteres", true); 
+            } else if (ExisteDatoUnico("Usuario", txtUsuario.Text.Trim(), idExcluir)) {
                 AddError(txtUsuario, "El usuario ingresado ya existe en el sistema", true);
             }
             
-            if (usuarioIdSeleccionado == 0 && string.IsNullOrWhiteSpace(txtContrasena.Text)) { AddError(txtContrasena, "Requerido para usuarios nuevos", false); }
+            if (!isEdit && string.IsNullOrWhiteSpace(txtContrasena.Text)) { AddError(txtContrasena, "Requerido para usuarios nuevos", false); }
             if (cmbRol.SelectedIndex == -1) { AddError(cmbRol, "Requerido", false); }
 
             // Email (Regex + Unicidad)
@@ -235,7 +250,7 @@ namespace KioscoApp
                 AddError(txtEmail, "Requerido", false); 
             } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$")) {
                 AddError(txtEmail, "El formato del email es inválido (ej: correo@gmail.com)", true);
-            } else if (ExisteDatoUnico("Email", txtEmail.Text.Trim(), usuarioIdSeleccionado)) {
+            } else if (ExisteDatoUnico("Email", txtEmail.Text.Trim(), idExcluir)) {
                 AddError(txtEmail, "El email ingresado ya está en uso por otro usuario", true);
             }
 
@@ -244,12 +259,18 @@ namespace KioscoApp
                 AddError(txtTelefono, "Requerido", false); 
             } else if (!System.Text.RegularExpressions.Regex.IsMatch(txtTelefono.Text, @"^[0-9\+\-\s]+$")) {
                 AddError(txtTelefono, "El teléfono solo puede contener números y signos + o -", true);
-            } else if (ExisteDatoUnico("Telefono", txtTelefono.Text.Trim(), usuarioIdSeleccionado)) {
+            } else if (txtTelefono.Text.Replace(" ", "").Replace("-", "").Replace("+", "").Length < 8) {
+                AddError(txtTelefono, "El teléfono debe tener mínimo 8 números", true);
+            } else if (ExisteDatoUnico("Telefono", txtTelefono.Text.Trim(), idExcluir)) {
                 AddError(txtTelefono, "El teléfono ingresado ya está registrado", true);
             }
 
             // Dirección
-            if (string.IsNullOrWhiteSpace(txtCalle.Text)) { AddError(txtCalle, "Requerido", false); }
+            if (string.IsNullOrWhiteSpace(txtCalle.Text)) { 
+                AddError(txtCalle, "Requerido", false); 
+            } else if (txtCalle.Text.Trim().Length < 5) {
+                AddError(txtCalle, "La calle debe tener mínimo 5 caracteres", true);
+            }
             if (string.IsNullOrWhiteSpace(txtNumero.Text)) { AddError(txtNumero, "Requerido", false); }
             
             // Provincia y Ciudad (Debe estar en la base de datos)
@@ -283,7 +304,7 @@ namespace KioscoApp
 
         private void BtnAgregar_Click(object sender, EventArgs e)
         {
-            if (!ValidarFormulario()) return;
+            if (!ValidarFormulario(false)) return;
 
             try
             {
@@ -329,7 +350,56 @@ namespace KioscoApp
         private void BtnEditar_Click(object sender, EventArgs e)
         {
             if (usuarioIdSeleccionado == 0) return;
-            if (!ValidarFormulario()) return;
+            if (usuarioIdSeleccionado == UserSession.IdUsuario && cmbRol.SelectedItem?.ToString() != "admin")
+            {
+                MessageBox.Show("No puede quitarse el rol de administrador a sí mismo mientras está en sesión.", "Acción no permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Verificar si hay cambios
+            DataGridViewRow row = null;
+            foreach (DataGridViewRow r in dgvUsuarios.Rows)
+            {
+                if (r.Cells["Id"].Value != null && Convert.ToInt32(r.Cells["Id"].Value) == usuarioIdSeleccionado)
+                {
+                    row = r;
+                    break;
+                }
+            }
+
+            if (row != null)
+            {
+                bool hayCambios = false;
+                if (txtNombre.Text.Trim() != row.Cells["Nombre"].Value?.ToString()) hayCambios = true;
+                if (txtApellido.Text.Trim() != row.Cells["Apellido"].Value?.ToString()) hayCambios = true;
+                if (txtUsuario.Text.Trim() != row.Cells["Usuario"].Value?.ToString()) hayCambios = true;
+                if (!string.IsNullOrEmpty(txtContrasena.Text)) hayCambios = true;
+                if (cmbRol.SelectedItem?.ToString() != row.Cells["Rol"].Value?.ToString()) hayCambios = true;
+                if (txtEmail.Text.Trim() != row.Cells["Email"].Value?.ToString()) hayCambios = true;
+                if (txtTelefono.Text.Trim() != row.Cells["Telefono"].Value?.ToString()) hayCambios = true;
+                if (txtCalle.Text.Trim() != row.Cells["Calle"].Value?.ToString()) hayCambios = true;
+                if (txtNumero.Text.Trim() != row.Cells["Numero"].Value?.ToString()) hayCambios = true;
+                if (cmbProvincia.Text.Trim() != row.Cells["Provincia"].Value?.ToString()) hayCambios = true;
+                if (cmbCiudad.Text.Trim() != row.Cells["Ciudad"].Value?.ToString()) hayCambios = true;
+                if (cmbSexo.SelectedItem?.ToString() != row.Cells["Sexo"].Value?.ToString()) hayCambios = true;
+                
+                if (row.Cells["Nacimiento"].Value != DBNull.Value)
+                {
+                    if (dtpNacimiento.Value.Date != Convert.ToDateTime(row.Cells["Nacimiento"].Value).Date) hayCambios = true;
+                }
+                else
+                {
+                    hayCambios = true;
+                }
+
+                if (!hayCambios)
+                {
+                    MessageBox.Show("No se modificó ningún dato.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
+            if (!ValidarFormulario(true)) return;
 
             try
             {
@@ -381,6 +451,11 @@ namespace KioscoApp
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
             if (usuarioIdSeleccionado == 0) return;
+            if (usuarioIdSeleccionado == UserSession.IdUsuario)
+            {
+                MessageBox.Show("No puede eliminar su propio usuario mientras está en sesión.", "Acción no permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             
             var confirmResult = MessageBox.Show("¿Está seguro que desea eliminar este usuario?", "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (confirmResult != DialogResult.Yes) return;
