@@ -33,12 +33,14 @@ namespace KioscoApp
             txtCalle.MaxLength = 100;
             txtNumero.MaxLength = 20;
 
-            txtTelefono.KeyPress += (s, e) => {
+            txtTelefono.KeyPress += (s, e) =>
+            {
                 if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '+' && e.KeyChar != '-' && e.KeyChar != ' ')
                     e.Handled = true;
             };
 
-            txtNumero.KeyPress += (s, e) => {
+            txtNumero.KeyPress += (s, e) =>
+            {
                 if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                     e.Handled = true;
             };
@@ -114,29 +116,29 @@ namespace KioscoApp
             {
                 var row = dgvUsuarios.Rows[e.RowIndex];
                 usuarioIdSeleccionado = Convert.ToInt32(row.Cells["Id"].Value);
-                
+
                 txtNombre.Text = row.Cells["Nombre"].Value?.ToString();
                 txtApellido.Text = row.Cells["Apellido"].Value?.ToString();
                 txtUsuario.Text = row.Cells["NombreUsuario"].Value?.ToString(); // Mapeado a NombreUsuario
-                txtContrasena.Text = ""; 
+                txtContrasena.Text = "";
                 cmbRol.SelectedItem = row.Cells["Rol"].Value?.ToString();
                 txtEmail.Text = row.Cells["Email"].Value?.ToString();
                 txtTelefono.Text = row.Cells["Telefono"].Value?.ToString();
                 txtCalle.Text = row.Cells["Calle"].Value?.ToString();
                 txtNumero.Text = row.Cells["Numero"].Value?.ToString();
-                
+
                 cmbProvincia.SelectedIndexChanged -= CmbProvincia_SelectedIndexChanged;
                 cmbProvincia.Text = row.Cells["Provincia"].Value?.ToString();
                 cmbProvincia.SelectedIndexChanged += CmbProvincia_SelectedIndexChanged;
-                
+
                 if (cmbProvincia.SelectedValue != null && int.TryParse(cmbProvincia.SelectedValue.ToString(), out int provId))
                 {
                     CargarCiudades(provId);
                 }
-                
+
                 cmbCiudad.Text = row.Cells["Ciudad"].Value?.ToString();
                 cmbSexo.SelectedItem = row.Cells["Sexo"].Value?.ToString();
-                
+
                 if (row.Cells["Nacimiento"].Value != null)
                     dtpNacimiento.Value = Convert.ToDateTime(row.Cells["Nacimiento"].Value);
                 else
@@ -261,7 +263,7 @@ namespace KioscoApp
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
             if (usuarioIdSeleccionado == 0) return;
-            
+
             var confirmResult = MessageBox.Show("¿Está seguro que desea eliminar este usuario?", "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (confirmResult != DialogResult.Yes) return;
 
@@ -297,6 +299,22 @@ namespace KioscoApp
             cmbRol.SelectedIndex = -1;
             cmbRol.Enabled = true;
             dtpNacimiento.Value = DateTime.Now;
+        }
+
+        private void txtNombre_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && !char.IsWhiteSpace(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtApellido_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && !char.IsWhiteSpace(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
     }
 }

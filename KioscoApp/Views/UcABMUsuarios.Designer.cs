@@ -80,6 +80,7 @@ namespace KioscoApp
             txtNombre.Name = "txtNombre";
             txtNombre.Size = new Size(200, 23);
             txtNombre.TabIndex = 2;
+            txtNombre.KeyPress += txtNombre_KeyPress;
             // 
             // lblApellido
             // 
@@ -96,6 +97,7 @@ namespace KioscoApp
             txtApellido.Name = "txtApellido";
             txtApellido.Size = new Size(200, 23);
             txtApellido.TabIndex = 4;
+            txtApellido.KeyPress += txtApellido_KeyPress;
             // 
             // lblUsuario
             // 
