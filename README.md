@@ -1,12 +1,14 @@
-# Sistema de Gestión para Kiosco (C# WinForms)
+﻿# Sistema de Gestión para Kiosco (C# WinForms)
 
 Un sistema de Punto de Venta (POS) ligero y rápido, diseñado específicamente para kioscos y minimercados, desarrollado en **C# (.NET 8)** con **Windows Forms** y **SQL Server**.
 
 ## Características Principales
+- **Arquitectura de 3 Capas (N-Tier)** aplicada al módulo de Usuarios (Views, Business, Data).
+- Estructura de carpetas limpia y profesional (Views, Models, Data, Business, Utils, Scripts).
 - Arquitectura basada en Roles (Administrador, Supervisor, Vendedor).
-- Autenticación segura de usuarios utilizando cifrado **BCrypt**.
-- Interfaz de módulos por pestañas ("Single Page Application" en WinForms usando `UserControls`).
-- Modo Oscuro nativo para reducir la fatiga visual durante turnos largos.
+- Autenticación segura usando cifrado **BCrypt**.
+- Interfaz de módulos por pestañas ("Single Page Application" usando UserControls).
+- Modo Oscuro nativo.
 
 ## Requisitos del Sistema
 - **.NET 8.0 SDK** o superior.
@@ -61,3 +63,4 @@ Todos los usuarios creados por el seeder inicial tienen la contraseña: `admin`
 - **Admin IT:** `admin`
 - **Supervisor:** `super`
 - **Vendedores:** `antonio`, `ramiro`
+
