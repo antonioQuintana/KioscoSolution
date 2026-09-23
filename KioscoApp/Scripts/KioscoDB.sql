@@ -80,10 +80,10 @@ GO
 INSERT INTO Usuarios 
 (Nombre, Apellido, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento) 
 VALUES 
-('Juan', 'Pérez', 'admin', '.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'admin', 'admin@kiosco.com', '+54 9 11 1234 5678', 'Av. Corrientes', '1234', 'La Plata', 'Buenos Aires', 'Masculino', '1985-05-15'),
-('María', 'Gómez', 'super', '.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'supervisor', 'super@kiosco.com', '+54 9 351 987 6543', 'Av. Colón', '456', 'Córdoba Capital', 'Córdoba', 'Femenino', '1990-10-20'),
-('Antonio', 'Quintana', 'antonio', '.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'vendedor', 'antonio.quintana@kiosco.com', '+54 9 11 2233 4455', 'Florida', '999', 'Mar del Plata', 'Buenos Aires', 'Masculino', '1995-02-28'),
-('Ramiro', 'Nuñez', 'ramiro', '.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'Vendedor', 'ramiro.nunez@gmail.com', '+54 9 379 456 7890', 'San Juan', '890', 'Corrientes Capital', 'Corrientes', 'Masculino', '1998-03-08');
+('Juan', 'Pérez', 'admin', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'admin', 'admin@kiosco.com', '+54 9 11 1234 5678', 'Av. Corrientes', '1234', 'La Plata', 'Buenos Aires', 'Masculino', '1985-05-15'),
+('María', 'Gómez', 'super', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'supervisor', 'super@kiosco.com', '+54 9 351 987 6543', 'Av. Colón', '456', 'Córdoba Capital', 'Córdoba', 'Femenino', '1990-10-20'),
+('Antonio', 'Quintana', 'antonio', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'vendedor', 'antonio.quintana@kiosco.com', '+54 9 11 2233 4455', 'Florida', '999', 'Mar del Plata', 'Buenos Aires', 'Masculino', '1995-02-28'),
+('Ramiro', 'Nuñez', 'ramiro', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'Vendedor', 'ramiro.nunez@gmail.com', '+54 9 379 456 7890', 'San Juan', '890', 'Corrientes Capital', 'Corrientes', 'Masculino', '1998-03-08');
 GO
 
 -- =============================================
