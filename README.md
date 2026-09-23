@@ -26,9 +26,9 @@ Un sistema de Punto de Venta (POS) ligero y rápido, diseñado específicamente 
 2. **Configuración de la Base de Datos (Seeder):**
    El archivo `KioscoApp/KioscoDB.sql` contiene tanto el esquema de las tablas (`CREATE TABLE`) como los datos iniciales de prueba (usuarios base, categorías, productos).
    
-   Ejecuta el script SQL desde tu consola usando `sqlcmd`:
+   Abrir **powershell** en la ubicacion del archivo *Kiosco.sql* que se encuentra dentro de la carpeta *scripts* y ejecutar el siguiente comando:
    ```powershell
-   sqlcmd -S "localhost\SQLEXPRESS" -E -i KioscoApp\KioscoDB.sql
+   Invoke-Sqlcmd -ServerInstance ".\SQLEXPRESS" -InputFile "KioscoDB.sql"
    ```
 
 3. **Compilar y Ejecutar:**
