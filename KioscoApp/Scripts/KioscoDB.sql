@@ -123,3 +123,15 @@ INSERT INTO Categorias (Nombre, Descripcion) VALUES
 ('Cigarrillos', 'Atados y accesorios'),
 ('Snacks', 'Papas fritas, chizitos, palitos');
 GO
+-- =============================================
+-- INSERTAR PRODUCTOS DE EJEMPLO
+-- =============================================
+DECLARE @IdBebidas INT = (SELECT Id FROM Categorias WHERE Nombre = 'Bebidas sin alcohol');
+DECLARE @IdGolosinas INT = (SELECT Id FROM Categorias WHERE Nombre = 'Golosinas');
+DECLARE @IdSnacks INT = (SELECT Id FROM Categorias WHERE Nombre = 'Snacks');
+
+INSERT INTO Productos (SKU, Nombre, Descripcion, IdCategoria, PrecioCosto, PrecioVenta, StockActual, StockMinimo) VALUES 
+('7791234567890', 'Coca Cola 2L', 'Gaseosa Cola 2 Litros', @IdBebidas, 1500, 2200, 50, 10),
+('7790987654321', 'Alfajor Jorgito', 'Alfajor de chocolate', @IdGolosinas, 300, 500, 100, 20),
+('7791111222233', 'Papas Lays 150g', 'Papas fritas clasicas', @IdSnacks, 800, 1300, 30, 5);
+GO
