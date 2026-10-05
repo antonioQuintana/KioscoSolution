@@ -1,37 +1,72 @@
-﻿using System;
-using System.Data;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
-using Microsoft.Data.SqlClient;
+using KioscoApp.Business;
+using KioscoApp.Models;
 
 namespace KioscoApp
 {
     public partial class UcABMProductos : UserControl
     {
         private int productoIdSeleccionado = 0;
+        private readonly ErrorProvider errorProvider = new ErrorProvider();
+        private readonly ProductoService _productoService;
+        private readonly CategoriaService _categoriaService;
+        private List<Producto>? _listaProductos;
+        private List<Categoria>? _listaCategorias;
 
         public UcABMProductos()
         {
             InitializeComponent();
+            _productoService = new ProductoService();
+            _categoriaService = new CategoriaService();
+            ConfigurarValidacionesEntrada();
             CargarCategorias();
             CargarProductos();
+        }
+
+        private void ConfigurarValidacionesEntrada()
+        {
+            txtSKU.MaxLength = 50;
+            txtNombre.MaxLength = 100;
+            txtDesc.MaxLength = 255;
+
+            // Restringir ingreso de caracteres no numéricos en costos/precios
+            txtCosto.KeyPress += (s, e) =>
+            {
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
+                    e.Handled = true;
+            };
+
+            txtVenta.KeyPress += (s, e) =>
+            {
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
+                    e.Handled = true;
+            };
+
+            txtStock.KeyPress += (s, e) =>
+            {
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                    e.Handled = true;
+            };
+
+            txtStockMin.KeyPress += (s, e) =>
+            {
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                    e.Handled = true;
+            };
         }
 
         private void CargarCategorias()
         {
             try
             {
-                using (var conn = DatabaseHelper.GetConnection())
-                {
-                    conn.Open();
-                    string query = "SELECT Id, Nombre FROM Categorias ORDER BY Nombre";
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    cmbCategoria.DisplayMember = "Nombre";
-                    cmbCategoria.ValueMember = "Id";
-                    cmbCategoria.DataSource = dt;
-                    cmbCategoria.SelectedIndex = -1;
-                }
+                _listaCategorias = _categoriaService.ObtenerTodas();
+                cmbCategoria.DataSource = null;
+                cmbCategoria.DisplayMember = "Nombre";
+                cmbCategoria.ValueMember = "Id";
+                cmbCategoria.DataSource = _listaCategorias;
+                cmbCategoria.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -43,20 +78,12 @@ namespace KioscoApp
         {
             try
             {
-                using (var conn = DatabaseHelper.GetConnection())
-                {
-                    conn.Open();
-                    string query = @"SELECT p.Id, p.SKU, p.Nombre, p.Descripcion, 
-                                     c.Nombre AS Categoria, p.IdCategoria, 
-                                     p.PrecioCosto, p.PrecioVenta, p.StockActual, p.StockMinimo
-                                     FROM Productos p
-                                     INNER JOIN Categorias c ON p.IdCategoria = c.Id";
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    dgvProductos.DataSource = dt;
+                _listaProductos = _productoService.ObtenerTodos();
+                dgvProductos.DataSource = null;
+                dgvProductos.DataSource = _listaProductos;
+
+                if (dgvProductos.Columns["IdCategoria"] != null)
                     dgvProductos.Columns["IdCategoria"].Visible = false;
-                }
             }
             catch (Exception ex)
             {
@@ -64,82 +91,110 @@ namespace KioscoApp
             }
         }
 
+        private Producto ConstruirProductoDesdeForm()
+        {
+            decimal.TryParse(txtCosto.Text.Replace('.', ','), out decimal costo);
+            decimal.TryParse(txtVenta.Text.Replace('.', ','), out decimal venta);
+            int.TryParse(txtStock.Text, out int stock);
+            int.TryParse(txtStockMin.Text, out int stockMin);
+
+            int idCat = cmbCategoria.SelectedValue is int catId ? catId : 0;
+
+            return new Producto
+            {
+                Id = productoIdSeleccionado,
+                SKU = txtSKU.Text.Trim(),
+                Nombre = txtNombre.Text.Trim(),
+                Descripcion = string.IsNullOrWhiteSpace(txtDesc.Text) ? null : txtDesc.Text.Trim(),
+                IdCategoria = idCat,
+                CategoriaNombre = cmbCategoria.Text,
+                PrecioCosto = costo,
+                PrecioVenta = venta,
+                StockActual = stock,
+                StockMinimo = stockMin
+            };
+        }
+
+        private bool MostrarErroresDeValidacion(ValidationResult resultado)
+        {
+            errorProvider.Clear();
+            if (resultado.IsValid) return true;
+
+            var controlMap = new Dictionary<string, Control>
+            {
+                { "SKU", txtSKU },
+                { "Nombre", txtNombre },
+                { "Descripcion", txtDesc },
+                { "Categoria", cmbCategoria },
+                { "PrecioCosto", txtCosto },
+                { "PrecioVenta", txtVenta },
+                { "StockActual", txtStock },
+                { "StockMinimo", txtStockMin },
+                { "General", this }
+            };
+
+            List<string> mensajesError = new List<string>();
+
+            foreach (var error in resultado.Errors)
+            {
+                if (controlMap.TryGetValue(error.Key, out Control ctrl) && ctrl != this)
+                {
+                    errorProvider.SetError(ctrl, error.Value);
+                }
+                mensajesError.Add($"- {error.Key}: {error.Value}");
+            }
+
+            MessageBox.Show("Por favor, complete o corrija los campos marcados en rojo.\n\nDetalles:\n" + string.Join("\n", mensajesError), "Validación de Formulario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return false;
+        }
+
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtSKU.Text) || string.IsNullOrWhiteSpace(txtNombre.Text) || cmbCategoria.SelectedIndex == -1)
-            {
-                MessageBox.Show("El SKU, Nombre y Categoría son obligatorios.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            var producto = ConstruirProductoDesdeForm();
+            bool esEdicion = productoIdSeleccionado != 0;
 
-            try
+            if (esEdicion)
             {
-                using (var conn = DatabaseHelper.GetConnection())
+                var actual = _listaProductos?.Find(p => p.Id == productoIdSeleccionado);
+                if (actual != null &&
+                    actual.SKU == producto.SKU &&
+                    actual.Nombre == producto.Nombre &&
+                    actual.Descripcion == producto.Descripcion &&
+                    actual.IdCategoria == producto.IdCategoria &&
+                    actual.PrecioCosto == producto.PrecioCosto &&
+                    actual.PrecioVenta == producto.PrecioVenta &&
+                    actual.StockActual == producto.StockActual &&
+                    actual.StockMinimo == producto.StockMinimo)
                 {
-                    conn.Open();
-                    string query = productoIdSeleccionado == 0 
-                        ? @"INSERT INTO Productos (SKU, Nombre, Descripcion, IdCategoria, PrecioCosto, PrecioVenta, StockActual, StockMinimo) 
-                            VALUES (@SKU, @Nombre, @Desc, @IdCat, @Costo, @Venta, @Stock, @StockMin)"
-                        : @"UPDATE Productos SET SKU=@SKU, Nombre=@Nombre, Descripcion=@Desc, IdCategoria=@IdCat, 
-                            PrecioCosto=@Costo, PrecioVenta=@Venta, StockActual=@Stock, StockMinimo=@StockMin 
-                            WHERE Id=@Id";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@SKU", txtSKU.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Desc", txtDesc.Text.Trim());
-                        cmd.Parameters.AddWithValue("@IdCat", cmbCategoria.SelectedValue);
-                        cmd.Parameters.AddWithValue("@Costo", string.IsNullOrEmpty(txtCosto.Text) ? 0 : Convert.ToDecimal(txtCosto.Text));
-                        cmd.Parameters.AddWithValue("@Venta", string.IsNullOrEmpty(txtVenta.Text) ? 0 : Convert.ToDecimal(txtVenta.Text));
-                        cmd.Parameters.AddWithValue("@Stock", string.IsNullOrEmpty(txtStock.Text) ? 0 : Convert.ToInt32(txtStock.Text));
-                        cmd.Parameters.AddWithValue("@StockMin", string.IsNullOrEmpty(txtStockMin.Text) ? 0 : Convert.ToInt32(txtStockMin.Text));
-                        
-                        if (productoIdSeleccionado != 0)
-                            cmd.Parameters.AddWithValue("@Id", productoIdSeleccionado);
-                        
-                        cmd.ExecuteNonQuery();
-                    }
+                    MessageBox.Show("No se realizó ningún cambio.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
-                MessageBox.Show("Producto guardado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Limpiar();
-                CargarProductos();
             }
-            catch (SqlException ex) when (ex.Number == 2627)
-            {
-                MessageBox.Show("El SKU ingresado ya existe. Utilice un código único.", "Error de Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al guardar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+            var resultado = _productoService.GuardarProducto(producto, esEdicion);
+            if (!MostrarErroresDeValidacion(resultado)) return;
+
+            MessageBox.Show(esEdicion ? "Producto actualizado con éxito." : "Producto registrado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Limpiar();
+            CargarProductos();
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            if (productoIdSeleccionado == 0) return;
-
-            if (MessageBox.Show("¿Está seguro que desea eliminar este producto?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (productoIdSeleccionado == 0)
             {
-                try
-                {
-                    using (var conn = DatabaseHelper.GetConnection())
-                    {
-                        conn.Open();
-                        string query = "DELETE FROM Productos WHERE Id = @Id";
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@Id", productoIdSeleccionado);
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
-                    Limpiar();
-                    CargarProductos();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al eliminar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show("Seleccione un producto para eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (MessageBox.Show("¿Está seguro que desea eliminar este producto?", "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                var resultado = _productoService.EliminarProducto(productoIdSeleccionado);
+                if (!MostrarErroresDeValidacion(resultado)) return;
+
+                MessageBox.Show("Producto eliminado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Limpiar();
+                CargarProductos();
             }
         }
 
@@ -150,24 +205,24 @@ namespace KioscoApp
 
         private void dgvProductos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (e.RowIndex >= 0 && dgvProductos.Rows[e.RowIndex].DataBoundItem is Producto producto)
             {
-                DataGridViewRow row = dgvProductos.Rows[e.RowIndex];
-                productoIdSeleccionado = Convert.ToInt32(row.Cells["Id"].Value);
-                txtSKU.Text = row.Cells["SKU"].Value.ToString();
-                txtNombre.Text = row.Cells["Nombre"].Value.ToString();
-                txtDesc.Text = row.Cells["Descripcion"].Value.ToString();
-                cmbCategoria.SelectedValue = row.Cells["IdCategoria"].Value;
-                txtCosto.Text = row.Cells["PrecioCosto"].Value.ToString();
-                txtVenta.Text = row.Cells["PrecioVenta"].Value.ToString();
-                txtStock.Text = row.Cells["StockActual"].Value.ToString();
-                txtStockMin.Text = row.Cells["StockMinimo"].Value.ToString();
+                productoIdSeleccionado = producto.Id;
+                txtSKU.Text = producto.SKU;
+                txtNombre.Text = producto.Nombre;
+                txtDesc.Text = producto.Descripcion ?? string.Empty;
+                cmbCategoria.SelectedValue = producto.IdCategoria;
+                txtCosto.Text = producto.PrecioCosto.ToString("0.##");
+                txtVenta.Text = producto.PrecioVenta.ToString("0.##");
+                txtStock.Text = producto.StockActual.ToString();
+                txtStockMin.Text = producto.StockMinimo.ToString();
             }
         }
 
         private void Limpiar()
         {
             productoIdSeleccionado = 0;
+            errorProvider.Clear();
             txtSKU.Clear();
             txtNombre.Clear();
             txtDesc.Clear();

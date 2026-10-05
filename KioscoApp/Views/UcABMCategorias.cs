@@ -1,17 +1,22 @@
-﻿using System;
-using System.Data;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
-using Microsoft.Data.SqlClient;
+using KioscoApp.Business;
+using KioscoApp.Models;
 
 namespace KioscoApp
 {
     public partial class UcABMCategorias : UserControl
     {
         private int categoriaIdSeleccionada = 0;
+        private readonly ErrorProvider errorProvider = new ErrorProvider();
+        private readonly CategoriaService _categoriaService;
+        private List<Categoria>? _listaCategorias;
 
         public UcABMCategorias()
         {
             InitializeComponent();
+            _categoriaService = new CategoriaService();
             CargarCategorias();
         }
 
@@ -19,15 +24,9 @@ namespace KioscoApp
         {
             try
             {
-                using (var conn = DatabaseHelper.GetConnection())
-                {
-                    conn.Open();
-                    string query = "SELECT Id, Nombre, Descripcion FROM Categorias";
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    dgvCategorias.DataSource = dt;
-                }
+                _listaCategorias = _categoriaService.ObtenerTodas();
+                dgvCategorias.DataSource = null;
+                dgvCategorias.DataSource = _listaCategorias;
             }
             catch (Exception ex)
             {
@@ -35,72 +34,82 @@ namespace KioscoApp
             }
         }
 
+        private Categoria ConstruirCategoriaDesdeForm()
+        {
+            return new Categoria
+            {
+                Id = categoriaIdSeleccionada,
+                Nombre = txtNombre.Text.Trim(),
+                Descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) ? null : txtDescripcion.Text.Trim()
+            };
+        }
+
+        private bool MostrarErroresDeValidacion(ValidationResult resultado)
+        {
+            errorProvider.Clear();
+            if (resultado.IsValid) return true;
+
+            var controlMap = new Dictionary<string, Control>
+            {
+                { "Nombre", txtNombre },
+                { "Descripcion", txtDescripcion },
+                { "General", this }
+            };
+
+            List<string> mensajesError = new List<string>();
+
+            foreach (var error in resultado.Errors)
+            {
+                if (controlMap.TryGetValue(error.Key, out Control ctrl) && ctrl != this)
+                {
+                    errorProvider.SetError(ctrl, error.Value);
+                }
+                mensajesError.Add($"- {error.Key}: {error.Value}");
+            }
+
+            MessageBox.Show("Por favor, complete o corrija los campos marcados en rojo.\n\nDetalles:\n" + string.Join("\n", mensajesError), "Validación de Formulario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return false;
+        }
+
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
-            {
-                MessageBox.Show("El nombre de la categoría es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            var categoria = ConstruirCategoriaDesdeForm();
+            bool esEdicion = categoriaIdSeleccionada != 0;
 
-            try
+            if (esEdicion)
             {
-                using (var conn = DatabaseHelper.GetConnection())
+                var actual = _listaCategorias?.Find(c => c.Id == categoriaIdSeleccionada);
+                if (actual != null && actual.Nombre == categoria.Nombre && actual.Descripcion == categoria.Descripcion)
                 {
-                    conn.Open();
-                    string query = categoriaIdSeleccionada == 0 
-                        ? "INSERT INTO Categorias (Nombre, Descripcion) VALUES (@Nombre, @Desc)"
-                        : "UPDATE Categorias SET Nombre = @Nombre, Descripcion = @Desc WHERE Id = @Id";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Nombre", txtNombre.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Desc", txtDescripcion.Text.Trim());
-                        if (categoriaIdSeleccionada != 0)
-                            cmd.Parameters.AddWithValue("@Id", categoriaIdSeleccionada);
-                        
-                        cmd.ExecuteNonQuery();
-                    }
+                    MessageBox.Show("No se realizó ningún cambio.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
-                MessageBox.Show("Categoría guardada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Limpiar();
-                CargarCategorias();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al guardar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+            var resultado = _categoriaService.GuardarCategoria(categoria, esEdicion);
+            if (!MostrarErroresDeValidacion(resultado)) return;
+
+            MessageBox.Show(esEdicion ? "Categoría actualizada con éxito." : "Categoría registrada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Limpiar();
+            CargarCategorias();
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            if (categoriaIdSeleccionada == 0) return;
-
-            if (MessageBox.Show("¿Está seguro que desea eliminar esta categoría?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (categoriaIdSeleccionada == 0)
             {
-                try
-                {
-                    using (var conn = DatabaseHelper.GetConnection())
-                    {
-                        conn.Open();
-                        string query = "DELETE FROM Categorias WHERE Id = @Id";
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@Id", categoriaIdSeleccionada);
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
-                    Limpiar();
-                    CargarCategorias();
-                }
-                catch (SqlException ex) when (ex.Number == 547) // FK violation
-                {
-                    MessageBox.Show("No se puede eliminar la categoría porque hay productos asociados a ella.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al eliminar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show("Seleccione una categoría para eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (MessageBox.Show("¿Está seguro que desea eliminar esta categoría?", "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                var resultado = _categoriaService.EliminarCategoria(categoriaIdSeleccionada);
+                if (!MostrarErroresDeValidacion(resultado)) return;
+
+                MessageBox.Show("Categoría eliminada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Limpiar();
+                CargarCategorias();
             }
         }
 
@@ -111,18 +120,18 @@ namespace KioscoApp
 
         private void dgvCategorias_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (e.RowIndex >= 0 && dgvCategorias.Rows[e.RowIndex].DataBoundItem is Categoria categoria)
             {
-                DataGridViewRow row = dgvCategorias.Rows[e.RowIndex];
-                categoriaIdSeleccionada = Convert.ToInt32(row.Cells["Id"].Value);
-                txtNombre.Text = row.Cells["Nombre"].Value.ToString();
-                txtDescripcion.Text = row.Cells["Descripcion"].Value.ToString();
+                categoriaIdSeleccionada = categoria.Id;
+                txtNombre.Text = categoria.Nombre;
+                txtDescripcion.Text = categoria.Descripcion ?? string.Empty;
             }
         }
 
         private void Limpiar()
         {
             categoriaIdSeleccionada = 0;
+            errorProvider.Clear();
             txtNombre.Clear();
             txtDescripcion.Clear();
             txtNombre.Focus();
