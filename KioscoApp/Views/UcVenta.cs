@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -42,12 +42,12 @@ namespace KioscoApp
         {
             dgvCarrito.AutoGenerateColumns = false;
             
-            // Si el DataGridView no tiene columnas diseñadas, las creamos. 
-            // Si ya las tiene en el diseñador, esto no hará daño si los DataPropertyName coinciden.
+            // Si el DataGridView no tiene columnas diseÃ±adas, las creamos. 
+            // Si ya las tiene en el diseÃ±ador, esto no harÃ¡ daÃ±o si los DataPropertyName coinciden.
             if (dgvCarrito.Columns.Count == 0)
             {
-                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cód/SKU", DataPropertyName = "Codigo", Width = 100, ReadOnly = true });
-                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Descripción", DataPropertyName = "Descripcion", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, ReadOnly = true });
+                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "CÃ³d/SKU", DataPropertyName = "Codigo", Width = 100, ReadOnly = true });
+                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "DescripciÃ³n", DataPropertyName = "Descripcion", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, ReadOnly = true });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "PrecioUnitario", Width = 100, DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }, ReadOnly = true });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cant.", DataPropertyName = "Cantidad", Width = 80 });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Subtotal", DataPropertyName = "Subtotal", Width = 100, DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }, ReadOnly = true });
@@ -74,6 +74,7 @@ namespace KioscoApp
             txtScanner.TextChanged += TxtScanner_TextChanged;
             txtScanner.KeyDown += TxtScanner_KeyDown;
             if (txtBusquedaCliente != null) txtBusquedaCliente.KeyPress += TxtBusquedaCliente_KeyPress;
+            ConfigurarAutocompletadoClientes();
             if (lstSugerencias != null)
             {
                 lstSugerencias.KeyDown += LstSugerencias_KeyDown;
@@ -153,13 +154,13 @@ namespace KioscoApp
 
         private void TxtScanner_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Detectar si el usuario presionó Enter (como un lector de códigos de barras)
+            // Detectar si el usuario presionÃ³ Enter (como un lector de cÃ³digos de barras)
             if (e.KeyChar == (char)Keys.Enter)
             {
                 e.Handled = true;
                 if (lstSugerencias.Visible && lstSugerencias.Items.Count > 0)
                 {
-                    // Si la lista está visible, elegir el primero por defecto o no hacer nada
+                    // Si la lista estÃ¡ visible, elegir el primero por defecto o no hacer nada
                     lstSugerencias.SelectedIndex = 0;
                     SeleccionarSugerencia();
                 }
@@ -181,7 +182,7 @@ namespace KioscoApp
             var producto = _productoService.ObtenerPorSKU(sku);
             if (producto == null)
             {
-                MessageBox.Show($"No se encontró ningún producto con el SKU: {sku}", "Producto no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"No se encontrÃ³ ningÃºn producto con el SKU: {sku}", "Producto no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -189,7 +190,7 @@ namespace KioscoApp
             if (itemExistente != null)
             {
                 itemExistente.Cantidad += 1;
-                // Forzar actualización de la fila para que recalcule subtotal
+                // Forzar actualizaciÃ³n de la fila para que recalcule subtotal
                 dgvCarrito.Refresh();
             }
             else
@@ -244,7 +245,7 @@ namespace KioscoApp
         {
             if (_carrito.Count > 0)
             {
-                var result = MessageBox.Show("¿Está seguro que desea cancelar la venta actual?", "Cancelar Venta", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = MessageBox.Show("Â¿EstÃ¡ seguro que desea cancelar la venta actual?", "Cancelar Venta", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     CancelarVenta();
@@ -273,14 +274,14 @@ namespace KioscoApp
 
         private void BtnCobroTarjeta_Click(object sender, EventArgs e)
         {
-            ProcesarCobro("Tarjeta (Débito/Crédito)");
+            ProcesarCobro("Tarjeta (DÃ©bito/CrÃ©dito)");
         }
 
         private void ProcesarCobro(string metodoPago)
         {
             if (_carrito.Count == 0)
             {
-                MessageBox.Show("El carrito está vacío. Escanee productos antes de cobrar.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("El carrito estÃ¡ vacÃ­o. Escanee productos antes de cobrar.", "Carrito vacÃ­o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -302,7 +303,7 @@ namespace KioscoApp
             {
                 _ventaService.RegistrarVenta(nuevaVenta);
 
-                string msg = $"Venta registrada con éxito.\n\nMétodo: {metodoPago}\nTotal Cobrado: $ {total:N2}";
+                string msg = $"Venta registrada con Ã©xito.\n\nMÃ©todo: {metodoPago}\nTotal Cobrado: $ {total:N2}";
                 if (_descuentoPorcentaje > 0) msg += $"\n(Incluye descuento del {_descuentoPorcentaje}%)";
 
                 MessageBox.Show(msg, "Venta Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -320,7 +321,7 @@ namespace KioscoApp
             string sku = txtScanner.Text.Trim();
             if (string.IsNullOrEmpty(sku))
             {
-                MessageBox.Show("Primero escanee o escriba un código en el buscador para consultar su precio.", "Consultar Precio", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Primero escanee o escriba un cÃ³digo en el buscador para consultar su precio.", "Consultar Precio", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtScanner.Focus();
                 return;
             }
@@ -334,7 +335,7 @@ namespace KioscoApp
             }
             else
             {
-                MessageBox.Show($"No se encontró el producto con código: {sku}", "No encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"No se encontrÃ³ el producto con cÃ³digo: {sku}", "No encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -342,13 +343,13 @@ namespace KioscoApp
         {
             if (_carrito.Count == 0)
             {
-                MessageBox.Show("Agregue productos al carrito antes de aplicar un descuento.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Agregue productos al carrito antes de aplicar un descuento.", "Carrito vacÃ­o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (_descuentoPorcentaje > 0)
             {
-                var remove = MessageBox.Show($"Ya existe un descuento del {_descuentoPorcentaje}%. ¿Desea quitarlo?", "Quitar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var remove = MessageBox.Show($"Ya existe un descuento del {_descuentoPorcentaje}%. Â¿Desea quitarlo?", "Quitar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (remove == DialogResult.Yes)
                 {
                     _descuentoPorcentaje = 0;
@@ -357,7 +358,7 @@ namespace KioscoApp
             }
             else
             {
-                var res = MessageBox.Show("¿Desea aplicar un 10% de descuento a esta compra?", "Aplicar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var res = MessageBox.Show("Â¿Desea aplicar un 10% de descuento a esta compra?", "Aplicar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (res == DialogResult.Yes)
                 {
                     _descuentoPorcentaje = 10;
@@ -369,12 +370,12 @@ namespace KioscoApp
 
         private void BtnSuspenderVenta_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("La funcionalidad de 'Suspender Venta' permitirá guardar este carrito temporalmente para atender a otro cliente.\n¡Próximamente!", "Próximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("La funcionalidad de 'Suspender Venta' permitirÃ¡ guardar este carrito temporalmente para atender a otro cliente.\nÂ¡PrÃ³ximamente!", "PrÃ³ximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void BtnBuscarProducto_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("La funcionalidad de 'Búsqueda Manual de Productos' se implementará pronto.\nPor ahora usa el buscador predictivo escribiendo en la barra de escáner.", "Próximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("La funcionalidad de 'BÃºsqueda Manual de Productos' se implementarÃ¡ pronto.\nPor ahora usa el buscador predictivo escribiendo en la barra de escÃ¡ner.", "PrÃ³ximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void BtnBuscarCliente_Click(object sender, EventArgs e)
@@ -407,18 +408,36 @@ namespace KioscoApp
             {
                 _clienteActual = cliente;
                 ActualizarUICliente();
-                txtScanner.Focus(); // Volver foco al escáner
+                txtScanner.Focus(); // Volver foco al escÃ¡ner
             }
             else
             {
-                MessageBox.Show($"No se encontró ningún cliente activo con el DNI {dni}.", "Cliente no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"No se encontrÃ³ ningÃºn cliente activo con el DNI {dni}.", "Cliente no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private void BtnNuevoCliente_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Diríjase a la pestaña 'Clientes' en el menú principal para registrar un nuevo cliente.", "Nuevo Cliente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("DirÃ­jase a la pestaÃ±a 'Clientes' en el menÃº principal para registrar un nuevo cliente.", "Nuevo Cliente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ConfigurarAutocompletadoClientes()
+        {
+            if (txtBusquedaCliente != null)
+            {
+                AutoCompleteStringCollection data = new AutoCompleteStringCollection();
+                var clientes = _clienteService.ObtenerTodos();
+                foreach (var c in clientes)
+                {
+                    data.Add(c.Dni);
+                }
+                
+                txtBusquedaCliente.AutoCompleteCustomSource = data;
+                txtBusquedaCliente.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                txtBusquedaCliente.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            }
         }
     }
 }
+
 

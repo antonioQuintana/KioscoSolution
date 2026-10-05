@@ -14,6 +14,8 @@ namespace KioscoApp.Models
         public string MetodoPago { get; set; }
         public string Estado { get; set; }
 
+        public string NombreCliente { get; set; }
+
         public List<DetalleVenta> Detalles { get; set; } = new List<DetalleVenta>();
     }
 }

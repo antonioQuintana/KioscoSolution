@@ -23,5 +23,10 @@ namespace KioscoApp.Business
 
             return _repository.InsertarVenta(venta);
         }
+
+        public System.Collections.Generic.List<Venta> ObtenerTodas()
+        {
+            return _repository.ObtenerTodas();
+        }
     }
 }

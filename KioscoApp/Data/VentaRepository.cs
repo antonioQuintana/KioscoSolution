@@ -61,5 +61,34 @@ namespace KioscoApp.Data
                 throw new Exception("Error al registrar la venta en la base de datos.", ex);
             }
         }
+        public List<Venta> ObtenerTodas()
+        {
+            var ventas = new List<Venta>();
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+            // Traer las ventas más recientes primero (últimas 50 por ahora para que sea rápido)
+            string query = @"SELECT TOP 50 v.*, c.Dni as DniCliente, c.Nombre as NombreCliente, c.Apellido as ApellidoCliente 
+                             FROM Ventas v 
+                             INNER JOIN Clientes c ON v.IdCliente = c.Id 
+                             ORDER BY v.Fecha DESC";
+            
+            using var cmd = new SqlCommand(query, connection);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                ventas.Add(new Venta
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    IdCliente = Convert.ToInt32(reader["IdCliente"]),
+                    Fecha = Convert.ToDateTime(reader["Fecha"]),
+                    Total = Convert.ToDecimal(reader["Total"]),
+                    Descuento = Convert.ToDecimal(reader["Descuento"]),
+                    MetodoPago = reader["MetodoPago"].ToString(),
+                    Estado = reader["Estado"].ToString(),
+                    NombreCliente = $"{reader["DniCliente"]} - {reader["NombreCliente"]} {reader["ApellidoCliente"]}"
+                });
+            }
+            return ventas;
+        }
     }
 }
