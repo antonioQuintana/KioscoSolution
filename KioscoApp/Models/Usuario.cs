@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace KioscoApp.Models
 {
@@ -7,6 +7,7 @@ namespace KioscoApp.Models
         public int Id { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
+        public string Dni { get; set; }
         public string NombreUsuario { get; set; } // Map to 'Usuario' in DB
         public string Contrasena { get; set; }
         public string Rol { get; set; }

@@ -1,4 +1,4 @@
-ï»¿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace KioscoApp
@@ -25,6 +25,8 @@ namespace KioscoApp
             txtNombre = new TextBox();
             lblApellido = new Label();
             txtApellido = new TextBox();
+            lblDni = new Label();
+            txtDni = new TextBox();
             lblUsuario = new Label();
             txtUsuario = new TextBox();
             lblContrasena = new Label();
@@ -57,7 +59,7 @@ namespace KioscoApp
             // dgvUsuarios
             // 
             dgvUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvUsuarios.Location = new Point(20, 246);
+            dgvUsuarios.Location = new Point(20, 280);
             dgvUsuarios.Name = "dgvUsuarios";
             dgvUsuarios.ReadOnly = true;
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -99,6 +101,24 @@ namespace KioscoApp
             txtApellido.TabIndex = 4;
             txtApellido.KeyPress += txtApellido_KeyPress;
             // 
+                        // 
+            // lblDni
+            // 
+            lblDni.AutoSize = true;
+            lblDni.Location = new Point(30, 170);
+            lblDni.Name = "lblDni";
+            lblDni.Size = new Size(30, 15);
+            lblDni.TabIndex = 31;
+            lblDni.Text = "DNI:";
+            // 
+            // txtDni
+            // 
+            txtDni.Location = new Point(30, 188);
+            txtDni.Name = "txtDni";
+            txtDni.Size = new Size(200, 23);
+            txtDni.TabIndex = 32;
+            txtDni.KeyPress += txtDni_KeyPress;
+            //
             // lblUsuario
             // 
             lblUsuario.AutoSize = true;
@@ -122,7 +142,7 @@ namespace KioscoApp
             lblContrasena.Name = "lblContrasena";
             lblContrasena.Size = new Size(70, 15);
             lblContrasena.TabIndex = 7;
-            lblContrasena.Text = "ContraseÃ±a:";
+            lblContrasena.Text = "Contraseña:";
             // 
             // txtContrasena
             // 
@@ -173,7 +193,7 @@ namespace KioscoApp
             lblTelefono.Name = "lblTelefono";
             lblTelefono.Size = new Size(55, 15);
             lblTelefono.TabIndex = 13;
-            lblTelefono.Text = "TelÃ©fono:";
+            lblTelefono.Text = "Teléfono:";
             // 
             // txtTelefono
             // 
@@ -205,7 +225,7 @@ namespace KioscoApp
             lblNumero.Name = "lblNumero";
             lblNumero.Size = new Size(54, 15);
             lblNumero.TabIndex = 17;
-            lblNumero.Text = "NÃºmero:";
+            lblNumero.Text = "Número:";
             // 
             // txtNumero
             // 
@@ -291,7 +311,7 @@ namespace KioscoApp
             // btnAgregar
             // 
             btnAgregar.ForeColor = SystemColors.ActiveCaptionText;
-            btnAgregar.Location = new Point(175, 188);
+            btnAgregar.Location = new Point(175, 230);
             btnAgregar.Name = "btnAgregar";
             btnAgregar.Size = new Size(95, 30);
             btnAgregar.TabIndex = 27;
@@ -302,7 +322,7 @@ namespace KioscoApp
             // btnEditar
             // 
             btnEditar.ForeColor = SystemColors.ActiveCaptionText;
-            btnEditar.Location = new Point(280, 188);
+            btnEditar.Location = new Point(280, 230);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(95, 30);
             btnEditar.TabIndex = 28;
@@ -313,7 +333,7 @@ namespace KioscoApp
             // btnEliminar
             // 
             btnEliminar.ForeColor = SystemColors.ActiveCaptionText;
-            btnEliminar.Location = new Point(395, 188);
+            btnEliminar.Location = new Point(395, 230);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Size = new Size(95, 30);
             btnEliminar.TabIndex = 29;
@@ -324,7 +344,7 @@ namespace KioscoApp
             // btnLimpiar
             // 
             btnLimpiar.ForeColor = SystemColors.ActiveCaptionText;
-            btnLimpiar.Location = new Point(500, 188);
+            btnLimpiar.Location = new Point(500, 230);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(95, 30);
             btnLimpiar.TabIndex = 30;
@@ -362,6 +382,8 @@ namespace KioscoApp
             Controls.Add(lblContrasena);
             Controls.Add(txtUsuario);
             Controls.Add(lblUsuario);
+            Controls.Add(txtDni);
+            Controls.Add(lblDni);
             Controls.Add(txtApellido);
             Controls.Add(lblApellido);
             Controls.Add(txtNombre);
@@ -382,6 +404,8 @@ namespace KioscoApp
         private System.Windows.Forms.TextBox txtNombre;
         private System.Windows.Forms.Label lblApellido;
         private System.Windows.Forms.TextBox txtApellido;
+        private System.Windows.Forms.Label lblDni;
+        private System.Windows.Forms.TextBox txtDni;
         private System.Windows.Forms.Label lblUsuario;
         private System.Windows.Forms.TextBox txtUsuario;
         private System.Windows.Forms.Label lblContrasena;
@@ -413,3 +437,4 @@ namespace KioscoApp
         private System.Windows.Forms.Button btnLimpiar;
     }
 }
+
