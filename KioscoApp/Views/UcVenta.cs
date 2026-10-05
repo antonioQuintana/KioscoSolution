@@ -49,6 +49,9 @@ namespace KioscoApp
             if (btnCobroQR != null) btnCobroQR.Click += BtnCobroQR_Click;
             if (btnCobroTarjeta != null) btnCobroTarjeta.Click += BtnCobroTarjeta_Click;
             if (btnBuscarProducto != null) btnBuscarProducto.Click += BtnBuscarProducto_Click;
+            if (btnConsultarPrecio != null) btnConsultarPrecio.Click += BtnConsultarPrecio_Click;
+            if (btnAplicarDescuento != null) btnAplicarDescuento.Click += BtnAplicarDescuento_Click;
+            if (btnSuspenderVenta != null) btnSuspenderVenta.Click += BtnSuspenderVenta_Click;
             
             txtScanner.TextChanged += TxtScanner_TextChanged;
             txtScanner.KeyDown += TxtScanner_KeyDown;
@@ -185,10 +188,14 @@ namespace KioscoApp
             ActualizarTotales();
         }
 
+        private decimal _descuentoPorcentaje = 0;
+
         private void DgvCarrito_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
+                // Forzar que el grid se redibuje para actualizar la columna calculada "Subtotal"
+                dgvCarrito.InvalidateRow(e.RowIndex);
                 ActualizarTotales();
             }
         }
@@ -200,14 +207,17 @@ namespace KioscoApp
 
         private void ActualizarTotales()
         {
-            decimal total = _carrito.Sum(d => d.Subtotal);
+            decimal subtotal = _carrito.Sum(d => d.Subtotal);
+            decimal descuento = subtotal * (_descuentoPorcentaje / 100);
+            decimal total = subtotal - descuento;
+
+            if (lblSubtotal != null)
+            {
+                lblSubtotal.Text = $"$ {subtotal:N2}";
+            }
             if (lblTotal != null)
             {
                 lblTotal.Text = $"$ {total:N2}";
-            }
-            if (lblSubtotal != null)
-            {
-                lblSubtotal.Text = $"$ {total:N2}"; // Por ahora igual al total, hasta agregar descuentos
             }
         }
 
@@ -226,6 +236,7 @@ namespace KioscoApp
         private void CancelarVenta()
         {
             _carrito.Clear();
+            _descuentoPorcentaje = 0;
             ActualizarTotales();
             txtScanner.Clear();
             txtScanner.Focus();
@@ -254,17 +265,78 @@ namespace KioscoApp
                 return;
             }
 
-            decimal total = _carrito.Sum(d => d.Subtotal);
+            decimal subtotal = _carrito.Sum(d => d.Subtotal);
+            decimal total = subtotal - (subtotal * (_descuentoPorcentaje / 100));
             
             // Aquí en el futuro se guardará en la tabla Ventas y DetallesVenta
-            MessageBox.Show($"Venta registrada con éxito.\n\nMétodo: {metodoPago}\nTotal Cobrado: $ {total:N2}", "Venta Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string msg = $"Venta registrada con éxito.\n\nMétodo: {metodoPago}\nTotal Cobrado: $ {total:N2}";
+            if (_descuentoPorcentaje > 0) msg += $"\n(Incluye descuento del {_descuentoPorcentaje}%)";
+
+            MessageBox.Show(msg, "Venta Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
             
             CancelarVenta(); // Limpia la pantalla para el siguiente cliente
         }
 
+        private void BtnConsultarPrecio_Click(object sender, EventArgs e)
+        {
+            string sku = txtScanner.Text.Trim();
+            if (string.IsNullOrEmpty(sku))
+            {
+                MessageBox.Show("Primero escanee o escriba un código en el buscador para consultar su precio.", "Consultar Precio", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtScanner.Focus();
+                return;
+            }
+
+            var producto = _productoService.ObtenerPorSKU(sku);
+            if (producto != null)
+            {
+                MessageBox.Show($"Producto: {producto.Nombre}\nPrecio: $ {producto.PrecioVenta:N2}", "Consulta de Precio", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtScanner.Clear();
+                txtScanner.Focus();
+            }
+            else
+            {
+                MessageBox.Show($"No se encontró el producto con código: {sku}", "No encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void BtnAplicarDescuento_Click(object sender, EventArgs e)
+        {
+            if (_carrito.Count == 0)
+            {
+                MessageBox.Show("Agregue productos al carrito antes de aplicar un descuento.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (_descuentoPorcentaje > 0)
+            {
+                var remove = MessageBox.Show($"Ya existe un descuento del {_descuentoPorcentaje}%. ¿Desea quitarlo?", "Quitar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (remove == DialogResult.Yes)
+                {
+                    _descuentoPorcentaje = 0;
+                    ActualizarTotales();
+                }
+            }
+            else
+            {
+                var res = MessageBox.Show("¿Desea aplicar un 10% de descuento a esta compra?", "Aplicar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (res == DialogResult.Yes)
+                {
+                    _descuentoPorcentaje = 10;
+                    ActualizarTotales();
+                }
+            }
+            txtScanner.Focus();
+        }
+
+        private void BtnSuspenderVenta_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("La funcionalidad de 'Suspender Venta' permitirá guardar este carrito temporalmente para atender a otro cliente.\n¡Próximamente!", "Próximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         private void BtnBuscarProducto_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("La funcionalidad de 'Búsqueda Manual de Productos' se implementará en el próximo paso. \n¡Pronto podrás buscar por nombre o categoría!", "Próximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("La funcionalidad de 'Búsqueda Manual de Productos' se implementará pronto.\nPor ahora usa el buscador predictivo escribiendo en la barra de escáner.", "Próximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
