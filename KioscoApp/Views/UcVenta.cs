@@ -42,12 +42,12 @@ namespace KioscoApp
         {
             dgvCarrito.AutoGenerateColumns = false;
             
-            // Si el DataGridView no tiene columnas diseÃ±adas, las creamos. 
-            // Si ya las tiene en el diseÃ±ador, esto no harÃ¡ daÃ±o si los DataPropertyName coinciden.
+            // Si el DataGridView no tiene columnas diseñadas, las creamos. 
+            // Si ya las tiene en el diseñador, esto no hará daño si los DataPropertyName coinciden.
             if (dgvCarrito.Columns.Count == 0)
             {
-                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "CÃ³d/SKU", DataPropertyName = "Codigo", Width = 100, ReadOnly = true });
-                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "DescripciÃ³n", DataPropertyName = "Descripcion", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, ReadOnly = true });
+                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cód/SKU", DataPropertyName = "Codigo", Width = 100, ReadOnly = true });
+                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Descripción", DataPropertyName = "Descripcion", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, ReadOnly = true });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "PrecioUnitario", Width = 100, DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }, ReadOnly = true });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cant.", DataPropertyName = "Cantidad", Width = 80 });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Subtotal", DataPropertyName = "Subtotal", Width = 100, DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }, ReadOnly = true });
@@ -182,7 +182,7 @@ namespace KioscoApp
             var producto = _productoService.ObtenerPorSKU(sku);
             if (producto == null)
             {
-                MessageBox.Show($"No se encontrÃ³ ningÃºn producto con el SKU: {sku}", "Producto no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"No se encontró ningún producto con el SKU: {sku}", "Producto no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -412,13 +412,13 @@ namespace KioscoApp
             }
             else
             {
-                MessageBox.Show($"No se encontrÃ³ ningÃºn cliente activo con el DNI {dni}.", "Cliente no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"No se encontró ningún cliente activo con el DNI {dni}.", "Cliente no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private void BtnNuevoCliente_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("DirÃ­jase a la pestaÃ±a 'Clientes' en el menÃº principal para registrar un nuevo cliente.", "Nuevo Cliente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Diríjase a la pestaña 'Clientes' en el menú principal para registrar un nuevo cliente.", "Nuevo Cliente", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void ConfigurarAutocompletadoClientes()
@@ -439,5 +439,6 @@ namespace KioscoApp
         }
     }
 }
+
 
 
