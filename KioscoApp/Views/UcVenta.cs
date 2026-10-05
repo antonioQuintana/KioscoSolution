@@ -11,15 +11,31 @@ namespace KioscoApp
     public partial class UcVenta : UserControl
     {
         private readonly ProductoService _productoService;
+        private readonly ClienteService _clienteService;
+        private readonly VentaService _ventaService;
         private BindingList<DetalleVenta> _carrito;
+        private Cliente _clienteActual;
 
         public UcVenta()
         {
             InitializeComponent();
             _productoService = new ProductoService();
+            _clienteService = new ClienteService();
+            _ventaService = new VentaService();
             _carrito = new BindingList<DetalleVenta>();
 
             ConfigurarUI();
+
+            _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Nombre = "Consumidor", Apellido = "Final" };
+            ActualizarUICliente();
+        }
+
+        private void ActualizarUICliente()
+        {
+            if (lblClienteActual != null)
+            {
+                lblClienteActual.Text = $"Cliente: {_clienteActual.NombreCompleto.ToUpper()}";
+            }
         }
 
         private void ConfigurarUI()
@@ -52,9 +68,12 @@ namespace KioscoApp
             if (btnConsultarPrecio != null) btnConsultarPrecio.Click += BtnConsultarPrecio_Click;
             if (btnAplicarDescuento != null) btnAplicarDescuento.Click += BtnAplicarDescuento_Click;
             if (btnSuspenderVenta != null) btnSuspenderVenta.Click += BtnSuspenderVenta_Click;
+            if (btnBuscarCliente != null) btnBuscarCliente.Click += BtnBuscarCliente_Click;
+            if (btnNuevoCliente != null) btnNuevoCliente.Click += BtnNuevoCliente_Click;
             
             txtScanner.TextChanged += TxtScanner_TextChanged;
             txtScanner.KeyDown += TxtScanner_KeyDown;
+            if (txtBusquedaCliente != null) txtBusquedaCliente.KeyPress += TxtBusquedaCliente_KeyPress;
             if (lstSugerencias != null)
             {
                 lstSugerencias.KeyDown += LstSugerencias_KeyDown;
@@ -266,15 +285,34 @@ namespace KioscoApp
             }
 
             decimal subtotal = _carrito.Sum(d => d.Subtotal);
-            decimal total = subtotal - (subtotal * (_descuentoPorcentaje / 100));
+            decimal descuentoMonto = subtotal * (_descuentoPorcentaje / 100);
+            decimal total = subtotal - descuentoMonto;
             
-            // Aquí en el futuro se guardará en la tabla Ventas y DetallesVenta
-            string msg = $"Venta registrada con éxito.\n\nMétodo: {metodoPago}\nTotal Cobrado: $ {total:N2}";
-            if (_descuentoPorcentaje > 0) msg += $"\n(Incluye descuento del {_descuentoPorcentaje}%)";
+            var nuevaVenta = new Venta
+            {
+                IdCliente = _clienteActual.Id,
+                Total = total,
+                Descuento = descuentoMonto,
+                MetodoPago = metodoPago,
+                Estado = "Completada",
+                Detalles = _carrito.ToList()
+            };
 
-            MessageBox.Show(msg, "Venta Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            
-            CancelarVenta(); // Limpia la pantalla para el siguiente cliente
+            try
+            {
+                _ventaService.RegistrarVenta(nuevaVenta);
+
+                string msg = $"Venta registrada con éxito.\n\nMétodo: {metodoPago}\nTotal Cobrado: $ {total:N2}";
+                if (_descuentoPorcentaje > 0) msg += $"\n(Incluye descuento del {_descuentoPorcentaje}%)";
+
+                MessageBox.Show(msg, "Venta Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+                CancelarVenta(); // Limpia la pantalla para el siguiente cliente
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al registrar la venta: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void BtnConsultarPrecio_Click(object sender, EventArgs e)
@@ -337,6 +375,49 @@ namespace KioscoApp
         private void BtnBuscarProducto_Click(object sender, EventArgs e)
         {
             MessageBox.Show("La funcionalidad de 'Búsqueda Manual de Productos' se implementará pronto.\nPor ahora usa el buscador predictivo escribiendo en la barra de escáner.", "Próximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void BtnBuscarCliente_Click(object sender, EventArgs e)
+        {
+            BuscarCliente();
+        }
+
+        private void TxtBusquedaCliente_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                BuscarCliente();
+            }
+        }
+
+        private void BuscarCliente()
+        {
+            string dni = txtBusquedaCliente.Text.Trim();
+            if (string.IsNullOrEmpty(dni))
+            {
+                // Volver a Consumidor Final
+                _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Nombre = "Consumidor", Apellido = "Final" };
+                ActualizarUICliente();
+                return;
+            }
+
+            var cliente = _clienteService.ObtenerPorDni(dni);
+            if (cliente != null)
+            {
+                _clienteActual = cliente;
+                ActualizarUICliente();
+                txtScanner.Focus(); // Volver foco al escáner
+            }
+            else
+            {
+                MessageBox.Show($"No se encontró ningún cliente activo con el DNI {dni}.", "Cliente no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void BtnNuevoCliente_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Diríjase a la pestaña 'Clientes' en el menú principal para registrar un nuevo cliente.", "Nuevo Cliente", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

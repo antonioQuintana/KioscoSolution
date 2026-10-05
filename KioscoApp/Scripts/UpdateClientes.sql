@@ -1,0 +1,48 @@
+﻿USE KioscoDB;
+GO
+DROP TABLE DetallesVenta;
+DROP TABLE Ventas;
+DROP TABLE Clientes;
+GO
+
+CREATE TABLE Clientes (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Dni NVARCHAR(20) NOT NULL UNIQUE,
+    Nombre NVARCHAR(100) NOT NULL,
+    Apellido NVARCHAR(100) NOT NULL,
+    Telefono NVARCHAR(50) NULL,
+    Email NVARCHAR(100) NULL,
+    Calle NVARCHAR(100) NULL,
+    Numero NVARCHAR(20) NULL,
+    Ciudad NVARCHAR(100) NULL,
+    Provincia NVARCHAR(100) NULL,
+    Nacimiento DATE NULL,
+    FechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    Activo BIT NOT NULL DEFAULT 1
+);
+GO
+
+INSERT INTO Clientes (Dni, Nombre, Apellido, Activo) VALUES ('00000000', 'Consumidor', 'Final', 1);
+GO
+
+CREATE TABLE Ventas (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    IdCliente INT NOT NULL FOREIGN KEY REFERENCES Clientes(Id),
+    IdUsuario INT NULL FOREIGN KEY REFERENCES Usuarios(Id),
+    Fecha DATETIME NOT NULL DEFAULT GETDATE(),
+    Total DECIMAL(18,2) NOT NULL DEFAULT 0,
+    Descuento DECIMAL(18,2) NOT NULL DEFAULT 0,
+    MetodoPago NVARCHAR(50) NOT NULL,
+    Estado NVARCHAR(50) NOT NULL DEFAULT 'Completada'
+);
+GO
+
+CREATE TABLE DetallesVenta (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    IdVenta INT NOT NULL FOREIGN KEY REFERENCES Ventas(Id),
+    IdProducto INT NOT NULL FOREIGN KEY REFERENCES Productos(Id),
+    Cantidad INT NOT NULL,
+    PrecioUnitario DECIMAL(18,2) NOT NULL,
+    Subtotal DECIMAL(18,2) NOT NULL
+);
+GO
