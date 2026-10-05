@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
 using KioscoApp.Models;
@@ -13,7 +13,7 @@ namespace KioscoApp.Data
             var usuarios = new List<Usuario>();
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT Id, Nombre, Apellido, Usuario, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento FROM Usuarios";
+            string query = "SELECT Id, Nombre, Apellido, Dni, Usuario, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento FROM Usuarios";
             using var cmd = new SqlCommand(query, connection);
             using var reader = cmd.ExecuteReader();
 
@@ -28,7 +28,7 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT Id, Nombre, Apellido, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento FROM Usuarios WHERE Usuario = @Usuario";
+            string query = "SELECT Id, Nombre, Apellido, Dni, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento FROM Usuarios WHERE Usuario = @Usuario";
             using var cmd = new SqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@Usuario", nombreUsuario);
 
@@ -43,7 +43,7 @@ namespace KioscoApp.Data
         public bool ExisteDatoUnico(string campo, string valor, int idExcluir)
         {
             // Validar el campo para prevenir inyección SQL en el nombre de la columna
-            var allowedColumns = new HashSet<string> { "Usuario", "Email", "Telefono" };
+            var allowedColumns = new HashSet<string> { "Usuario", "Email", "Telefono", "Dni" };
             if (!allowedColumns.Contains(campo)) throw new ArgumentException("Campo inválido");
 
             using var connection = DatabaseHelper.GetConnection();
@@ -62,9 +62,9 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
             string query = @"INSERT INTO Usuarios 
-                (Nombre, Apellido, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento) 
+                (Nombre, Apellido, Dni, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento) 
                 VALUES 
-                (@Nombre, @Apellido, @Usuario, @Contrasena, @Rol, @Email, @Telefono, @Calle, @Numero, @Ciudad, @Provincia, @Sexo, @Nacimiento)";
+                (@Nombre, @Apellido, @Dni, @Usuario, @Contrasena, @Rol, @Email, @Telefono, @Calle, @Numero, @Ciudad, @Provincia, @Sexo, @Nacimiento)";
                 
             using var cmd = new SqlCommand(query, connection);
             SetCommandParameters(cmd, u, true);
@@ -76,7 +76,7 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
             string query = @"UPDATE Usuarios SET 
-                Nombre=@Nombre, Apellido=@Apellido, Usuario=@Usuario, Rol=@Rol, 
+                Nombre=@Nombre, Apellido=@Apellido, Dni=@Dni, Usuario=@Usuario, Rol=@Rol, 
                 Email=@Email, Telefono=@Telefono, Calle=@Calle, Numero=@Numero, 
                 Ciudad=@Ciudad, Provincia=@Provincia, Sexo=@Sexo, Nacimiento=@Nacimiento " + 
                 (string.IsNullOrEmpty(u.Contrasena) ? "" : ", Contrasena=@Contrasena ") + 
@@ -102,6 +102,7 @@ namespace KioscoApp.Data
         {
             cmd.Parameters.AddWithValue("@Nombre", (object)u.Nombre ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Apellido", (object)u.Apellido ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Dni", (object)u.Dni ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Usuario", (object)u.NombreUsuario ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Rol", (object)u.Rol ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Email", (object)u.Email ?? DBNull.Value);
@@ -126,6 +127,7 @@ namespace KioscoApp.Data
                 Id = Convert.ToInt32(reader["Id"]),
                 Nombre = reader["Nombre"].ToString(),
                 Apellido = reader["Apellido"] != DBNull.Value ? reader["Apellido"].ToString() : null,
+                Dni = reader["Dni"] != DBNull.Value ? reader["Dni"].ToString() : null,
                 NombreUsuario = reader["Usuario"].ToString(),
                 Rol = reader["Rol"].ToString(),
                 Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,

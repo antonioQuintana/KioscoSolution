@@ -8,6 +8,7 @@ namespace KioscoApp.Data
     public class ProductoRepository
     {
         public List<Producto> ObtenerTodos()
+        public Producto ObtenerPorSKU(string sku)
         {
             var productos = new List<Producto>();
             using var connection = DatabaseHelper.GetConnection();
@@ -18,8 +19,10 @@ namespace KioscoApp.Data
                              FROM Productos p
                              INNER JOIN Categorias c ON p.IdCategoria = c.Id
                              ORDER BY p.Nombre";
+            string query = "SELECT Id, SKU, Nombre, Descripcion, IdCategoria, PrecioCosto, PrecioVenta, StockActual, StockMinimo FROM Productos WHERE SKU = @SKU";
             using var cmd = new SqlCommand(query, connection);
             using var reader = cmd.ExecuteReader();
+            cmd.Parameters.AddWithValue("@SKU", sku);
 
             while (reader.Read())
             {
@@ -50,7 +53,8 @@ namespace KioscoApp.Data
         }
 
         public bool ExisteSKU(string sku, int idExcluir)
-        {
+                return new Producto
+                {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
             string query = "SELECT COUNT(1) FROM Productos WHERE LOWER(SKU) = LOWER(@SKU) AND Id != @Id";
@@ -74,7 +78,17 @@ namespace KioscoApp.Data
             using var cmd = new SqlCommand(query, connection);
             SetCommandParameters(cmd, p);
             cmd.ExecuteNonQuery();
-        }
+                    Id = Convert.ToInt32(reader["Id"]),
+                    SKU = reader["SKU"].ToString(),
+                    Nombre = reader["Nombre"].ToString(),
+                    Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : null,
+                    IdCategoria = Convert.ToInt32(reader["IdCategoria"]),
+                    PrecioCosto = Convert.ToDecimal(reader["PrecioCosto"]),
+                    PrecioVenta = Convert.ToDecimal(reader["PrecioVenta"]),
+                    StockActual = Convert.ToInt32(reader["StockActual"]),
+                    StockMinimo = Convert.ToInt32(reader["StockMinimo"])
+                };
+            }
 
         public void Actualizar(Producto p)
         {
@@ -90,13 +104,17 @@ namespace KioscoApp.Data
             cmd.Parameters.AddWithValue("@Id", p.Id);
             SetCommandParameters(cmd, p);
             cmd.ExecuteNonQuery();
+            return null;
         }
 
         public void Eliminar(int id)
+        public List<Producto> BuscarPorNombreOSKU(string term)
         {
+            var productos = new List<Producto>();
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
             string query = "DELETE FROM Productos WHERE Id = @Id";
+            string query = "SELECT TOP 10 Id, SKU, Nombre, Descripcion, IdCategoria, PrecioCosto, PrecioVenta, StockActual, StockMinimo FROM Productos WHERE Nombre LIKE @Term OR SKU LIKE @Term";
             using var cmd = new SqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@Id", id);
             cmd.ExecuteNonQuery();
@@ -113,22 +131,31 @@ namespace KioscoApp.Data
             cmd.Parameters.AddWithValue("@StockActual", p.StockActual);
             cmd.Parameters.AddWithValue("@StockMinimo", p.StockMinimo);
         }
+            cmd.Parameters.AddWithValue("@Term", "%" + term + "%");
 
         private Producto MapProducto(SqlDataReader reader)
-        {
-            return new Producto
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                Id = Convert.ToInt32(reader["Id"]),
+            return new Producto
+                productos.Add(new Producto
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
                 SKU = reader["SKU"].ToString() ?? string.Empty,
                 Nombre = reader["Nombre"].ToString() ?? string.Empty,
-                Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : null,
-                IdCategoria = Convert.ToInt32(reader["IdCategoria"]),
+                    SKU = reader["SKU"].ToString(),
+                    Nombre = reader["Nombre"].ToString(),
+                    Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : null,
+                    IdCategoria = Convert.ToInt32(reader["IdCategoria"]),
                 CategoriaNombre = reader["CategoriaNombre"].ToString() ?? string.Empty,
-                PrecioCosto = Convert.ToDecimal(reader["PrecioCosto"]),
-                PrecioVenta = Convert.ToDecimal(reader["PrecioVenta"]),
-                StockActual = Convert.ToInt32(reader["StockActual"]),
-                StockMinimo = Convert.ToInt32(reader["StockMinimo"])
+                    PrecioCosto = Convert.ToDecimal(reader["PrecioCosto"]),
+                    PrecioVenta = Convert.ToDecimal(reader["PrecioVenta"]),
+                    StockActual = Convert.ToInt32(reader["StockActual"]),
+                    StockMinimo = Convert.ToInt32(reader["StockMinimo"])
             };
+                });
+            }
+            return productos;
         }
     }
 }

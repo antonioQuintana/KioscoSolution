@@ -26,6 +26,7 @@ namespace KioscoApp
         {
             txtNombre.MaxLength = 100;
             txtApellido.MaxLength = 100;
+            txtDni.MaxLength = 20;
             txtUsuario.MaxLength = 50;
             txtContrasena.MaxLength = 100;
             txtEmail.MaxLength = 100;
@@ -119,6 +120,7 @@ namespace KioscoApp
 
                 txtNombre.Text = row.Cells["Nombre"].Value?.ToString();
                 txtApellido.Text = row.Cells["Apellido"].Value?.ToString();
+                txtDni.Text = row.Cells["Dni"].Value?.ToString();
                 txtUsuario.Text = row.Cells["NombreUsuario"].Value?.ToString(); // Mapeado a NombreUsuario
                 txtContrasena.Text = "";
                 cmbRol.SelectedItem = row.Cells["Rol"].Value?.ToString();
@@ -155,6 +157,7 @@ namespace KioscoApp
                 Id = usuarioIdSeleccionado,
                 Nombre = txtNombre.Text.Trim(),
                 Apellido = txtApellido.Text.Trim(),
+                Dni = txtDni.Text.Trim(),
                 NombreUsuario = txtUsuario.Text.Trim(),
                 Contrasena = txtContrasena.Text,
                 Rol = cmbRol.SelectedItem?.ToString(),
@@ -178,6 +181,7 @@ namespace KioscoApp
             {
                 { "Nombre", txtNombre },
                 { "Apellido", txtApellido },
+                { "Dni", txtDni },
                 { "Usuario", txtUsuario },
                 { "Contrasena", txtContrasena },
                 { "Rol", cmbRol },
@@ -232,6 +236,7 @@ namespace KioscoApp
                 bool hayCambios = (
                     current.Nombre != u.Nombre ||
                     current.Apellido != u.Apellido ||
+                    current.Dni != u.Dni ||
                     current.NombreUsuario != u.NombreUsuario ||
                     !string.IsNullOrEmpty(u.Contrasena) ||
                     current.Rol != u.Rol ||
@@ -285,6 +290,7 @@ namespace KioscoApp
             errorProvider.Clear();
             txtNombre.Clear();
             txtApellido.Clear();
+            txtDni.Clear();
             txtUsuario.Clear();
             txtContrasena.Clear();
             txtEmail.Clear();
@@ -312,6 +318,14 @@ namespace KioscoApp
         private void txtApellido_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && !char.IsWhiteSpace(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtDni_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
             {
                 e.Handled = true;
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using KioscoApp.Models;
@@ -99,6 +99,12 @@ namespace KioscoApp.Business
 
             // Apellido
             if (string.IsNullOrWhiteSpace(u.Apellido)) result.AddError("Apellido", "Requerido");
+
+            // Dni
+            if (string.IsNullOrWhiteSpace(u.Dni)) result.AddError("Dni", "Requerido");
+            else if (!Regex.IsMatch(u.Dni, @"^[0-9]+$")) result.AddError("Dni", "El DNI solo puede contener números");
+            else if (u.Dni.Trim().Length < 7) result.AddError("Dni", "El DNI debe tener al menos 7 dígitos");
+            else if (_repository.ExisteDatoUnico("Dni", u.Dni.Trim(), idExcluir)) result.AddError("Dni", "El DNI ingresado ya existe en el sistema");
 
             // Usuario
             if (string.IsNullOrWhiteSpace(u.NombreUsuario)) result.AddError("Usuario", "Requerido");

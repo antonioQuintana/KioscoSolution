@@ -1,33 +1,55 @@
 ﻿using System;
-using System.Data;
 using System.Windows.Forms;
+using KioscoApp.Business;
 
 namespace KioscoApp
 {
     public partial class UcHistorialVentas : UserControl
     {
+        private readonly VentaService _ventaService;
+
         public UcHistorialVentas()
         {
             InitializeComponent();
-            CargarVentasSimuladas();
+            _ventaService = new VentaService();
+            ConfigurarUI();
         }
 
-        private void CargarVentasSimuladas()
+        private void ConfigurarUI()
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Hora", typeof(string));
-            dt.Columns.Add("Cliente", typeof(string));
-            dt.Columns.Add("Productos", typeof(string));
-            dt.Columns.Add("Total", typeof(string));
-            dt.Columns.Add("Medio de Pago", typeof(string));
+            dgvHistorial.AutoGenerateColumns = false;
+            if (dgvHistorial.Columns.Count == 0)
+            {
+                dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ID", DataPropertyName = "Id", Width = 50 });
+                dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Fecha", DataPropertyName = "Fecha", Width = 150 });
+                dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cliente", DataPropertyName = "NombreCliente", Width = 250 });
+                dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Total", DataPropertyName = "Total", Width = 100 });
+                dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Método", DataPropertyName = "MetodoPago", Width = 150 });
+                dgvHistorial.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Estado", DataPropertyName = "Estado", Width = 100 });
+            }
+            CargarVentas();
+        }
 
-            dt.Rows.Add("14:15", "CONSUMIDOR FINAL", "1x Coca-Cola 2L, 2x Alfajor Jorgito", "$ 4500.00", "Efectivo");
-            dt.Rows.Add("14:28", "Juan Pérez", "3x Cerveza Quilmes, 1x Papas Lays", "$ 7200.00", "QR MercadoPago");
-            dt.Rows.Add("15:05", "CONSUMIDOR FINAL", "1x Atado Marlboro 20, 1x Encendedor", "$ 2800.00", "Efectivo");
-            dt.Rows.Add("15:42", "María Gómez", "2x Jugo Baggio, 5x Caramelos", "$ 1150.00", "Tarjeta Débito");
-            dt.Rows.Add("16:10", "CONSUMIDOR FINAL", "1x Yerba Playadito 500g", "$ 1900.00", "Efectivo");
-
-            dgvHistorial.DataSource = dt;
+        public void CargarVentas()
+        {
+            try
+            {
+                var ventas = _ventaService.ObtenerTodas();
+                dgvHistorial.DataSource = ventas;
+                
+                decimal sumaTotal = 0;
+                foreach(var v in ventas) sumaTotal += v.Total;
+                
+                if (lblInfo != null)
+                {
+                    lblInfo.Text = $"Total Ventas (50 más recientes): $ {sumaTotal:N2}";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar ventas: {ex.Message}");
+            }
         }
     }
 }
+

@@ -99,16 +99,22 @@ namespace KioscoApp.Business
 
             // Stocks
             if (p.StockActual < 0)
-            {
+        public Producto ObtenerPorSKU(string sku)
+        {
                 result.AddError("StockActual", "El stock actual no puede ser negativo.");
-            }
+            if (string.IsNullOrWhiteSpace(sku)) return null;
+            return _repository.ObtenerPorSKU(sku.Trim());
+        }
 
             if (p.StockMinimo < 0)
-            {
+        public System.Collections.Generic.List<Producto> BuscarPorNombreOSKU(string term)
+        {
                 result.AddError("StockMinimo", "El stock mínimo no puede ser negativo.");
             }
 
             return result;
+            if (string.IsNullOrWhiteSpace(term)) return new System.Collections.Generic.List<Producto>();
+            return _repository.BuscarPorNombreOSKU(term.Trim());
         }
     }
 }
