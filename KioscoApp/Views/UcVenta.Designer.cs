@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace KioscoApp
@@ -13,6 +13,7 @@ namespace KioscoApp
             dgvCarrito = new DataGridView();
             lblScanner = new Label();
             txtScanner = new TextBox();
+            lstSugerencias = new ListBox();
             lblTotal = new Label();
             btnCobrar = new Button();
             btnCobroQR = new Button();
@@ -55,7 +56,19 @@ namespace KioscoApp
             lblScanner.Name = "lblScanner";
             lblScanner.Size = new Size(214, 21);
             lblScanner.TabIndex = 14;
-            lblScanner.Text = "Escanear Código de Barras:";
+            lblScanner.Text = "Escanear C�digo de Barras:";
+            // 
+                        // 
+            // lstSugerencias
+            // 
+            lstSugerencias.Font = new Font("Segoe UI", 12F);
+            lstSugerencias.FormattingEnabled = true;
+            lstSugerencias.ItemHeight = 21;
+            lstSugerencias.Location = new Point(260, 131);
+            lstSugerencias.Name = "lstSugerencias";
+            lstSugerencias.Size = new Size(460, 130);
+            lstSugerencias.TabIndex = 20;
+            lstSugerencias.Visible = false;
             // 
             // txtScanner
             // 
@@ -85,7 +98,7 @@ namespace KioscoApp
             btnCobrar.Name = "btnCobrar";
             btnCobrar.Size = new Size(300, 55);
             btnCobrar.TabIndex = 3;
-            btnCobrar.Text = "💵 COBRO EFECTIVO (F10)";
+            btnCobrar.Text = "?? COBRO EFECTIVO (F10)";
             btnCobrar.UseVisualStyleBackColor = false;
             // 
             // btnCobroQR
@@ -97,7 +110,7 @@ namespace KioscoApp
             btnCobroQR.Name = "btnCobroQR";
             btnCobroQR.Size = new Size(145, 50);
             btnCobroQR.TabIndex = 2;
-            btnCobroQR.Text = "📱 COBRO QR";
+            btnCobroQR.Text = "?? COBRO QR";
             btnCobroQR.UseVisualStyleBackColor = false;
             // 
             // btnCobroTarjeta
@@ -109,7 +122,7 @@ namespace KioscoApp
             btnCobroTarjeta.Name = "btnCobroTarjeta";
             btnCobroTarjeta.Size = new Size(145, 50);
             btnCobroTarjeta.TabIndex = 1;
-            btnCobroTarjeta.Text = "💳 TARJETA";
+            btnCobroTarjeta.Text = "?? TARJETA";
             btnCobroTarjeta.UseVisualStyleBackColor = false;
             // 
             // btnCuentaCorriente
@@ -120,7 +133,7 @@ namespace KioscoApp
             btnCuentaCorriente.Name = "btnCuentaCorriente";
             btnCuentaCorriente.Size = new Size(145, 40);
             btnCuentaCorriente.TabIndex = 4;
-            btnCuentaCorriente.Text = "📝 Cuenta Corriente";
+            btnCuentaCorriente.Text = "?? Cuenta Corriente";
             btnCuentaCorriente.UseVisualStyleBackColor = false;
             // 
             // btnCancelarVenta
@@ -132,7 +145,7 @@ namespace KioscoApp
             btnCancelarVenta.Name = "btnCancelarVenta";
             btnCancelarVenta.Size = new Size(145, 40);
             btnCancelarVenta.TabIndex = 7;
-            btnCancelarVenta.Text = "❌ Cancelar Venta";
+            btnCancelarVenta.Text = "? Cancelar Venta";
             btnCancelarVenta.UseVisualStyleBackColor = false;
             // 
             // btnArticulosFrecuentes
@@ -144,7 +157,7 @@ namespace KioscoApp
             btnArticulosFrecuentes.Name = "btnArticulosFrecuentes";
             btnArticulosFrecuentes.Size = new Size(300, 45);
             btnArticulosFrecuentes.TabIndex = 10;
-            btnArticulosFrecuentes.Text = "⭐ Artículos Frecuentes (F3)";
+            btnArticulosFrecuentes.Text = "? Art�culos Frecuentes (F3)";
             btnArticulosFrecuentes.UseVisualStyleBackColor = false;
             // 
             // btnBuscarProducto
@@ -156,7 +169,7 @@ namespace KioscoApp
             btnBuscarProducto.Name = "btnBuscarProducto";
             btnBuscarProducto.Size = new Size(300, 45);
             btnBuscarProducto.TabIndex = 11;
-            btnBuscarProducto.Text = "🔍 Buscar Producto (F2)";
+            btnBuscarProducto.Text = "?? Buscar Producto (F2)";
             btnBuscarProducto.UseVisualStyleBackColor = false;
             // 
             // btnAplicarDescuento
@@ -178,7 +191,7 @@ namespace KioscoApp
             btnSuspenderVenta.Name = "btnSuspenderVenta";
             btnSuspenderVenta.Size = new Size(145, 45);
             btnSuspenderVenta.TabIndex = 8;
-            btnSuspenderVenta.Text = "⏸ Suspender";
+            btnSuspenderVenta.Text = "? Suspender";
             btnSuspenderVenta.UseVisualStyleBackColor = false;
             // 
             // btnConsultarPrecio
@@ -239,7 +252,7 @@ namespace KioscoApp
             lblDniBusqueda.Name = "lblDniBusqueda";
             lblDniBusqueda.Size = new Size(86, 15);
             lblDniBusqueda.TabIndex = 0;
-            lblDniBusqueda.Text = "DNI / Teléfono:";
+            lblDniBusqueda.Text = "DNI / Tel�fono:";
             // 
             // txtBusquedaCliente
             // 
@@ -312,6 +325,7 @@ namespace KioscoApp
             Controls.Add(btnArticulosFrecuentes);
             Controls.Add(btnBuscarProducto);
             Controls.Add(dgvCarrito);
+            Controls.Add(lstSugerencias);
             Controls.Add(txtScanner);
             Controls.Add(lblScanner);
             Name = "UcVenta";
@@ -326,6 +340,7 @@ namespace KioscoApp
         private System.Windows.Forms.DataGridView dgvCarrito;
         private System.Windows.Forms.Label lblScanner;
         private System.Windows.Forms.TextBox txtScanner;
+        private System.Windows.Forms.ListBox lstSugerencias;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Label lblSubtotal;
         
@@ -351,3 +366,4 @@ namespace KioscoApp
         private System.Windows.Forms.Button btnNuevoCliente;
     }
 }
+

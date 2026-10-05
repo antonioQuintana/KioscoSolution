@@ -49,8 +49,84 @@ namespace KioscoApp
             if (btnCobroQR != null) btnCobroQR.Click += BtnCobroQR_Click;
             if (btnCobroTarjeta != null) btnCobroTarjeta.Click += BtnCobroTarjeta_Click;
             if (btnBuscarProducto != null) btnBuscarProducto.Click += BtnBuscarProducto_Click;
+            
+            txtScanner.TextChanged += TxtScanner_TextChanged;
+            txtScanner.KeyDown += TxtScanner_KeyDown;
+            if (lstSugerencias != null)
+            {
+                lstSugerencias.KeyDown += LstSugerencias_KeyDown;
+                lstSugerencias.DoubleClick += LstSugerencias_DoubleClick;
+            }
 
             ActualizarTotales();
+        }
+
+        private void TxtScanner_TextChanged(object sender, EventArgs e)
+        {
+            string term = txtScanner.Text.Trim();
+            if (term.Length >= 2)
+            {
+                var sugerencias = _productoService.BuscarPorNombreOSKU(term);
+                if (sugerencias.Any())
+                {
+                    lstSugerencias.DataSource = sugerencias;
+                    lstSugerencias.DisplayMember = "Nombre"; // Mostrar solo el nombre (o podemos formatearlo)
+                    lstSugerencias.ValueMember = "SKU";
+                    lstSugerencias.Visible = true;
+                    lstSugerencias.BringToFront();
+                }
+                else
+                {
+                    lstSugerencias.Visible = false;
+                }
+            }
+            else
+            {
+                lstSugerencias.Visible = false;
+            }
+        }
+
+        private void TxtScanner_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Down && lstSugerencias.Visible && lstSugerencias.Items.Count > 0)
+            {
+                lstSugerencias.Focus();
+                lstSugerencias.SelectedIndex = 0;
+            }
+        }
+
+        private void LstSugerencias_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && lstSugerencias.SelectedItem != null)
+            {
+                e.Handled = true;
+                SeleccionarSugerencia();
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                lstSugerencias.Visible = false;
+                txtScanner.Focus();
+            }
+        }
+
+        private void LstSugerencias_DoubleClick(object sender, EventArgs e)
+        {
+            if (lstSugerencias.SelectedItem != null)
+            {
+                SeleccionarSugerencia();
+            }
+        }
+
+        private void SeleccionarSugerencia()
+        {
+            var sku = lstSugerencias.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(sku))
+            {
+                AgregarAlCarrito(sku);
+            }
+            lstSugerencias.Visible = false;
+            txtScanner.Clear();
+            txtScanner.Focus();
         }
 
         private void TxtScanner_KeyPress(object sender, KeyPressEventArgs e)
@@ -59,13 +135,22 @@ namespace KioscoApp
             if (e.KeyChar == (char)Keys.Enter)
             {
                 e.Handled = true;
-                string sku = txtScanner.Text.Trim();
-                if (!string.IsNullOrEmpty(sku))
+                if (lstSugerencias.Visible && lstSugerencias.Items.Count > 0)
                 {
-                    AgregarAlCarrito(sku);
+                    // Si la lista está visible, elegir el primero por defecto o no hacer nada
+                    lstSugerencias.SelectedIndex = 0;
+                    SeleccionarSugerencia();
                 }
-                txtScanner.Clear();
-                txtScanner.Focus();
+                else
+                {
+                    string sku = txtScanner.Text.Trim();
+                    if (!string.IsNullOrEmpty(sku))
+                    {
+                        AgregarAlCarrito(sku);
+                    }
+                    txtScanner.Clear();
+                    txtScanner.Focus();
+                }
             }
         }
 
