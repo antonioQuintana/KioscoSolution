@@ -24,10 +24,33 @@ namespace KioscoApp.Business
             return _repository.ObtenerPorId(id);
         }
 
+        public Producto? ObtenerPorSKU(string sku)
+        {
+            if (string.IsNullOrWhiteSpace(sku))
+            {
+                return null;
+            }
+
+            return _repository.ObtenerPorSKU(sku.Trim());
+        }
+
+        public List<Producto> BuscarPorNombreOSKU(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+            {
+                return new List<Producto>();
+            }
+
+            return _repository.BuscarPorNombreOSKU(term.Trim());
+        }
+
         public ValidationResult GuardarProducto(Producto p, bool isEdit)
         {
             var result = ValidarProducto(p, isEdit);
-            if (!result.IsValid) return result;
+            if (!result.IsValid)
+            {
+                return result;
+            }
 
             if (isEdit)
             {
@@ -44,7 +67,6 @@ namespace KioscoApp.Business
         public ValidationResult EliminarProducto(int id)
         {
             var result = new ValidationResult();
-
             if (id <= 0)
             {
                 result.AddError("General", "Producto no válido para eliminar.");
@@ -60,7 +82,6 @@ namespace KioscoApp.Business
             var result = new ValidationResult();
             int idExcluir = isEdit ? p.Id : 0;
 
-            // SKU
             if (string.IsNullOrWhiteSpace(p.SKU))
             {
                 result.AddError("SKU", "El código SKU es obligatorio.");
@@ -70,7 +91,6 @@ namespace KioscoApp.Business
                 result.AddError("SKU", "El SKU ingresado ya pertenece a otro producto.");
             }
 
-            // Nombre
             if (string.IsNullOrWhiteSpace(p.Nombre))
             {
                 result.AddError("Nombre", "El nombre del producto es obligatorio.");
@@ -80,13 +100,11 @@ namespace KioscoApp.Business
                 result.AddError("Nombre", "El nombre del producto debe tener al menos 2 caracteres.");
             }
 
-            // Categoría
             if (p.IdCategoria <= 0)
             {
                 result.AddError("Categoria", "Debe seleccionar una categoría válida.");
             }
 
-            // Precios
             if (p.PrecioCosto < 0)
             {
                 result.AddError("PrecioCosto", "El precio de costo no puede ser negativo.");
@@ -97,24 +115,17 @@ namespace KioscoApp.Business
                 result.AddError("PrecioVenta", "El precio de venta no puede ser negativo.");
             }
 
-            // Stocks
             if (p.StockActual < 0)
-        public Producto ObtenerPorSKU(string sku)
-        {
+            {
                 result.AddError("StockActual", "El stock actual no puede ser negativo.");
-            if (string.IsNullOrWhiteSpace(sku)) return null;
-            return _repository.ObtenerPorSKU(sku.Trim());
-        }
+            }
 
             if (p.StockMinimo < 0)
-        public System.Collections.Generic.List<Producto> BuscarPorNombreOSKU(string term)
-        {
+            {
                 result.AddError("StockMinimo", "El stock mínimo no puede ser negativo.");
             }
 
             return result;
-            if (string.IsNullOrWhiteSpace(term)) return new System.Collections.Generic.List<Producto>();
-            return _repository.BuscarPorNombreOSKU(term.Trim());
         }
     }
 }

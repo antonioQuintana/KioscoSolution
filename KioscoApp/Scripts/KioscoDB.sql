@@ -17,7 +17,7 @@ GO
 -- 1. Crear tabla Provincias
 CREATE TABLE Provincias (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(100) NOT NULL UNIQUE
+    Nombre VARCHAR(100) NOT NULL UNIQUE
 );
 GO
 
@@ -25,26 +25,26 @@ GO
 CREATE TABLE Ciudades (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     ProvinciaId INT FOREIGN KEY REFERENCES Provincias(Id),
-    Nombre NVARCHAR(100) NOT NULL
+    Nombre VARCHAR(100) NOT NULL
 );
 GO
 
 -- 3. Crear tabla Usuarios con TODOS los campos
 CREATE TABLE Usuarios (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(100) NOT NULL,
-    Apellido NVARCHAR(100) NULL,
-    Dni NVARCHAR(20) NULL UNIQUE,
-    Usuario NVARCHAR(50) NOT NULL UNIQUE,
-    Contrasena NVARCHAR(100) NOT NULL,
-    Rol NVARCHAR(20) NOT NULL,
-    Email NVARCHAR(100) NULL UNIQUE,
-    Calle NVARCHAR(100) NULL,
-    Numero NVARCHAR(20) NULL,
-    Ciudad NVARCHAR(100) NULL,
-    Provincia NVARCHAR(100) NULL,
-    Telefono NVARCHAR(50) NULL UNIQUE,
-    Sexo NVARCHAR(20) NULL,
+    Nombre VARCHAR(100) NOT NULL,
+    Apellido VARCHAR(100) NULL,
+    Dni VARCHAR(20) NULL UNIQUE,
+    Usuario VARCHAR(50) NOT NULL UNIQUE,
+    Contrasena VARCHAR(100) NOT NULL,
+    Rol VARCHAR(20) NOT NULL,
+    Email VARCHAR(100) NULL UNIQUE,
+    Calle VARCHAR(100) NULL,
+    Numero VARCHAR(20) NULL,
+    Ciudad VARCHAR(100) NULL,
+    Provincia VARCHAR(100) NULL,
+    Telefono VARCHAR(50) NULL UNIQUE,
+    Sexo VARCHAR(20) NULL,
     Nacimiento DATE NULL
 );
 GO
@@ -92,8 +92,8 @@ GO
 -- =============================================
 CREATE TABLE Categorias (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(100) NOT NULL,
-    Descripcion NVARCHAR(255) NULL
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion VARCHAR(255) NULL
 );
 GO
 
@@ -102,9 +102,9 @@ GO
 -- =============================================
 CREATE TABLE Productos (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    SKU NVARCHAR(50) NOT NULL UNIQUE,
-    Nombre NVARCHAR(100) NOT NULL,
-    Descripcion NVARCHAR(255) NULL,
+    SKU VARCHAR(50) NOT NULL UNIQUE,
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion VARCHAR(255) NULL,
     IdCategoria INT NOT NULL FOREIGN KEY REFERENCES Categorias(Id),
     PrecioCosto DECIMAL(18,2) NOT NULL DEFAULT 0,
     PrecioVenta DECIMAL(18,2) NOT NULL DEFAULT 0,
@@ -140,15 +140,15 @@ GO
 -- =============================================
 CREATE TABLE Clientes (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Dni NVARCHAR(20) NOT NULL UNIQUE,
-    Nombre NVARCHAR(100) NOT NULL,
-    Apellido NVARCHAR(100) NOT NULL,
-    Telefono NVARCHAR(50) NULL,
-    Email NVARCHAR(100) NULL,
-    Calle NVARCHAR(100) NULL,
-    Numero NVARCHAR(20) NULL,
-    Ciudad NVARCHAR(100) NULL,
-    Provincia NVARCHAR(100) NULL,
+    Dni VARCHAR(20) NOT NULL UNIQUE,
+    Nombre VARCHAR(100) NOT NULL,
+    Apellido VARCHAR(100) NOT NULL,
+    Telefono VARCHAR(50) NULL,
+    Email VARCHAR(100) NULL,
+    Calle VARCHAR(100) NULL,
+    Numero VARCHAR(20) NULL,
+    Ciudad VARCHAR(100) NULL,
+    Provincia VARCHAR(100) NULL,
     Nacimiento DATE NULL,
     FechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
     Activo BIT NOT NULL DEFAULT 1
