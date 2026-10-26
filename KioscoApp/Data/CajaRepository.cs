@@ -139,7 +139,7 @@ namespace KioscoApp.Data
             }
         }
 
-        public List<CierreCaja> ObtenerHistorialCierres()
+        public List<CierreCaja> ObtenerHistorialCierres(DateTime? desde = null, DateTime? hasta = null, int? idUsuario = null)
         {
             var lista = new List<CierreCaja>();
 
@@ -150,9 +150,16 @@ namespace KioscoApp.Data
                 SELECT c.*, ISNULL(u.NombreUsuario, 'Desconocido') AS NombreUsuario
                 FROM CierresCaja c
                 LEFT JOIN Usuarios u ON c.IdUsuario = u.Id
+                WHERE (@Desde IS NULL OR c.FechaCierre >= @Desde)
+                  AND (@Hasta IS NULL OR c.FechaCierre <= @Hasta)
+                  AND (@IdUsuario IS NULL OR c.IdUsuario = @IdUsuario)
                 ORDER BY c.FechaCierre DESC";
 
             using var cmd = new SqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@Desde", desde.HasValue ? (object)desde.Value.Date : DBNull.Value);
+            cmd.Parameters.AddWithValue("@Hasta", hasta.HasValue ? (object)hasta.Value.Date.AddDays(1).AddTicks(-1) : DBNull.Value);
+            cmd.Parameters.AddWithValue("@IdUsuario", idUsuario.HasValue && idUsuario.Value > 0 ? (object)idUsuario.Value : DBNull.Value);
+
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -161,7 +168,7 @@ namespace KioscoApp.Data
                 {
                     Id = Convert.ToInt32(reader["Id"]),
                     IdUsuario = reader.IsDBNull(reader.GetOrdinal("IdUsuario")) ? null : Convert.ToInt32(reader["IdUsuario"]),
-                    NombreUsuario = reader["NombreUsuario"].ToString(),
+                    NombreUsuario = reader["NombreUsuario"]?.ToString() ?? "Desconocido",
                     FechaApertura = Convert.ToDateTime(reader["FechaApertura"]),
                     FechaCierre = Convert.ToDateTime(reader["FechaCierre"]),
                     FondoInicial = Convert.ToDecimal(reader["FondoInicial"]),
@@ -174,10 +181,141 @@ namespace KioscoApp.Data
                     TotalDeclarado = Convert.ToDecimal(reader["TotalDeclarado"]),
                     Diferencia = Convert.ToDecimal(reader["Diferencia"]),
                     Observaciones = reader.IsDBNull(reader.GetOrdinal("Observaciones")) ? null : reader["Observaciones"].ToString(),
-                    Estado = reader["Estado"].ToString() ?? "Cerrado"
+                    Estado = reader["Estado"]?.ToString() ?? "Cerrado"
                 });
             }
 
+            return lista;
+        }
+
+        public List<DescuadreEmpleadoItem> ObtenerDescuadresPorEmpleado()
+        {
+            var lista = new List<DescuadreEmpleadoItem>();
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            string query = @"
+                SELECT 
+                    ISNULL(u.NombreUsuario, 'Desconocido') AS Empleado,
+                    COUNT(*) AS TotalCierres,
+                    ISNULL(SUM(CASE WHEN c.Diferencia < 0 THEN c.Diferencia ELSE 0 END), 0) AS TotalFaltantes,
+                    ISNULL(SUM(CASE WHEN c.Diferencia > 0 THEN c.Diferencia ELSE 0 END), 0) AS TotalSobrantes,
+                    ISNULL(SUM(c.Diferencia), 0) AS DiferenciaNeta
+                FROM CierresCaja c
+                LEFT JOIN Usuarios u ON c.IdUsuario = u.Id
+                GROUP BY u.NombreUsuario
+                ORDER BY DiferenciaNeta ASC";
+
+            using var cmd = new SqlCommand(query, connection);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lista.Add(new DescuadreEmpleadoItem
+                {
+                    Empleado = reader["Empleado"]?.ToString() ?? "Desconocido",
+                    TotalCierres = Convert.ToInt32(reader["TotalCierres"]),
+                    TotalFaltantes = Convert.ToDecimal(reader["TotalFaltantes"]),
+                    TotalSobrantes = Convert.ToDecimal(reader["TotalSobrantes"]),
+                    DiferenciaNeta = Convert.ToDecimal(reader["DiferenciaNeta"])
+                });
+            }
+            return lista;
+        }
+
+        public List<VentaPorHoraItem> ObtenerVentasPorHora()
+        {
+            var lista = new List<VentaPorHoraItem>();
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            string query = @"
+                SELECT 
+                    DATEPART(HOUR, Fecha) AS Hora,
+                    COUNT(*) AS CantidadVentas,
+                    ISNULL(SUM(Total), 0) AS TotalRecaudado,
+                    ISNULL(AVG(Total), 0) AS TicketPromedio
+                FROM Ventas
+                WHERE Estado <> 'Anulada'
+                GROUP BY DATEPART(HOUR, Fecha)
+                ORDER BY Hora ASC";
+
+            using var cmd = new SqlCommand(query, connection);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lista.Add(new VentaPorHoraItem
+                {
+                    Hora = Convert.ToInt32(reader["Hora"]),
+                    CantidadVentas = Convert.ToInt32(reader["CantidadVentas"]),
+                    TotalRecaudado = Convert.ToDecimal(reader["TotalRecaudado"]),
+                    TicketPromedio = Convert.ToDecimal(reader["TicketPromedio"])
+                });
+            }
+            return lista;
+        }
+
+        public List<VentaAnuladaItem> ObtenerVentasAnuladas()
+        {
+            var lista = new List<VentaAnuladaItem>();
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            string query = @"
+                SELECT v.Id, v.Fecha, ISNULL(u.NombreUsuario, 'Desconocido') AS Cajero, v.Total, v.MetodoPago, v.Estado
+                FROM Ventas v
+                LEFT JOIN Usuarios u ON v.IdUsuario = u.Id
+                WHERE v.Estado = 'Anulada' OR v.Estado = 'Cancelada'
+                ORDER BY v.Fecha DESC";
+
+            using var cmd = new SqlCommand(query, connection);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lista.Add(new VentaAnuladaItem
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    Fecha = Convert.ToDateTime(reader["Fecha"]),
+                    Cajero = reader["Cajero"]?.ToString() ?? "Desconocido",
+                    Total = Convert.ToDecimal(reader["Total"]),
+                    MetodoPago = reader["MetodoPago"]?.ToString() ?? "",
+                    Estado = reader["Estado"]?.ToString() ?? "Anulada"
+                });
+            }
+            return lista;
+        }
+
+        public List<InventarioValorizadoItem> ObtenerInventarioValorizado()
+        {
+            var lista = new List<InventarioValorizadoItem>();
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            string query = @"
+                SELECT 
+                    p.SKU,
+                    p.Nombre,
+                    ISNULL(c.Nombre, 'Sin categoría') AS Categoria,
+                    p.StockActual,
+                    p.PrecioCosto,
+                    p.PrecioVenta
+                FROM Productos p
+                LEFT JOIN Categorias c ON p.IdCategoria = c.Id
+                                ORDER BY (p.StockActual * p.PrecioVenta) DESC";
+
+            using var cmd = new SqlCommand(query, connection);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lista.Add(new InventarioValorizadoItem
+                {
+                    SKU = reader["SKU"]?.ToString() ?? "",
+                    Nombre = reader["Nombre"]?.ToString() ?? "",
+                    Categoria = reader["Categoria"]?.ToString() ?? "",
+                    StockActual = Convert.ToInt32(reader["StockActual"]),
+                    PrecioCosto = Convert.ToDecimal(reader["PrecioCosto"]),
+                    PrecioVenta = Convert.ToDecimal(reader["PrecioVenta"])
+                });
+            }
             return lista;
         }
     }

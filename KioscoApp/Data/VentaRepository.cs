@@ -52,6 +52,16 @@ namespace KioscoApp.Data
                     cmdStock.ExecuteNonQuery();
                 }
 
+                // 4. Si es venta a Cuenta Corriente y no es Consumidor Final, incrementar SaldoDeudor del cliente
+                if (venta.MetodoPago == "Cuenta Corriente" && venta.IdCliente > 1)
+                {
+                    string querySaldo = "UPDATE Clientes SET SaldoDeudor = SaldoDeudor + @Total WHERE Id = @IdCliente";
+                    using var cmdSaldo = new SqlCommand(querySaldo, connection, transaction);
+                    cmdSaldo.Parameters.AddWithValue("@Total", venta.Total);
+                    cmdSaldo.Parameters.AddWithValue("@IdCliente", venta.IdCliente);
+                    cmdSaldo.ExecuteNonQuery();
+                }
+
                 transaction.Commit();
                 return idVenta;
             }

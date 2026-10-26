@@ -13,6 +13,7 @@ namespace KioscoApp.Models
         public decimal VentasEfectivo { get; set; }
         public decimal VentasQR { get; set; }
         public decimal VentasTarjeta { get; set; }
+        public decimal VentasTotales => VentasEfectivo + VentasQR + VentasTarjeta;
         public decimal IngresosVarios { get; set; }
         public decimal GastosRetiros { get; set; }
         public decimal TotalEsperado { get; set; }

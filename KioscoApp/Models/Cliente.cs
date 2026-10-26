@@ -16,6 +16,8 @@ namespace KioscoApp.Models
         public string Provincia { get; set; }
         public DateTime? Nacimiento { get; set; }
         public DateTime FechaRegistro { get; set; }
+        public decimal SaldoDeudor { get; set; }
+        public decimal LimiteCredito { get; set; } = 15000m;
         public bool Activo { get; set; }
         
         public string NombreCompleto => $"{Nombre} {Apellido}";

@@ -1,3 +1,7 @@
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Globalization;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -236,12 +240,163 @@ namespace KioscoApp
 
         private void btnExportarExcel_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad 'Descargar Excel' en desarrollo (Próximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                using var sfd = new SaveFileDialog
+                {
+                    Filter = "Archivo CSV compatible con Excel (*.csv)|*.csv",
+                    FileName = $"Catalogo_Productos_{DateTime.Now:yyyyMMdd_HHmm}.csv",
+                    Title = "Exportar Catálogo de Productos a Excel / CSV"
+                };
+
+                if (sfd.ShowDialog() != DialogResult.OK) return;
+
+                var productos = _productoService.ObtenerTodos();
+                var sb = new StringBuilder();
+
+                // Encabezados estándar con punto y coma para compatibilidad directa con Excel en español
+                sb.AppendLine("SKU;Nombre;Categoria;PrecioCosto;PrecioVenta;StockActual;StockMinimo;Descripcion");
+
+                foreach (var p in productos)
+                {
+                    string categoria = p.CategoriaNombre ?? "";
+                    string desc = (p.Descripcion ?? "").Replace(";", " ").Replace("\r", " ").Replace("\n", " ");
+                    sb.AppendLine($"{p.SKU};{p.Nombre};{categoria};{p.PrecioCosto:F2};{p.PrecioVenta:F2};{p.StockActual};{p.StockMinimo};{desc}");
+                }
+
+                File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+
+                MessageBox.Show(
+                    $"Se exportaron {productos.Count} productos exitosamente a:\n\n{sfd.FileName}\n\nPuede abrir el archivo directamente con Microsoft Excel para consultar o actualizar precios de forma masiva.",
+                    "Exportación Exitosa",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al exportar productos a Excel: {ex.Message}", "Error de Exportación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnImportarExcel_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad 'Actualizar Precios con Excel' en desarrollo (Próximamente)", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                using var ofd = new OpenFileDialog
+                {
+                    Filter = "Archivos CSV o Texto (*.csv;*.txt)|*.csv;*.txt|Todos los archivos (*.*)|*.*",
+                    Title = "Seleccionar archivo CSV / Excel para actualizar precios y productos"
+                };
+
+                if (ofd.ShowDialog() != DialogResult.OK) return;
+
+                var lineas = File.ReadAllLines(ofd.FileName, Encoding.UTF8);
+                if (lineas.Length <= 1)
+                {
+                    MessageBox.Show("El archivo seleccionado no contiene filas de datos o está vacío.", "Archivo sin datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int actualizados = 0;
+                int creados = 0;
+                int errores = 0;
+
+                var categorias = _categoriaService.ObtenerTodas();
+                int defaultCatId = categorias.FirstOrDefault()?.Id ?? 1;
+
+                // Detectar separador (; o ,)
+                char sep = lineas[0].Contains(';') ? ';' : ',';
+
+                for (int i = 1; i < lineas.Length; i++)
+                {
+                    string linea = lineas[i].Trim();
+                    if (string.IsNullOrWhiteSpace(linea)) continue;
+
+                    string[] partes = linea.Split(sep);
+                    if (partes.Length < 4)
+                    {
+                        errores++;
+                        continue;
+                    }
+
+                    string sku = partes[0].Trim();
+                    string nombre = partes.Length > 1 ? partes[1].Trim() : "";
+
+                    if (string.IsNullOrWhiteSpace(sku))
+                    {
+                        errores++;
+                        continue;
+                    }
+
+                    // Parsear precios tolerando coma o punto
+                    string costoStr = partes[3].Replace("$", "").Trim().Replace(',', '.');
+                    decimal.TryParse(costoStr, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal precioCosto);
+
+                    decimal precioVenta = 0;
+                    if (partes.Length > 4)
+                    {
+                        string ventaStr = partes[4].Replace("$", "").Trim().Replace(',', '.');
+                        decimal.TryParse(ventaStr, NumberStyles.Any, CultureInfo.InvariantCulture, out precioVenta);
+                    }
+
+                    int stock = 0;
+                    if (partes.Length > 5) int.TryParse(partes[5].Trim(), out stock);
+
+                    int stockMin = 5;
+                    if (partes.Length > 6) int.TryParse(partes[6].Trim(), out stockMin);
+
+                    var existente = _productoService.ObtenerPorSKU(sku);
+                    if (existente != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(nombre)) existente.Nombre = nombre;
+                        if (precioCosto > 0) existente.PrecioCosto = precioCosto;
+                        if (precioVenta > 0) existente.PrecioVenta = precioVenta;
+                        if (stock > 0) existente.StockActual = stock;
+                        if (stockMin > 0) existente.StockMinimo = stockMin;
+
+                        _productoService.GuardarProducto(existente, true);
+                        actualizados++;
+                    }
+                    else
+                    {
+                        // Nuevo producto si tiene nombre y precio de venta
+                        if (!string.IsNullOrWhiteSpace(nombre) && precioVenta > 0)
+                        {
+                            var nuevo = new Producto
+                            {
+                                SKU = sku,
+                                Nombre = nombre,
+                                IdCategoria = defaultCatId,
+                                PrecioCosto = precioCosto,
+                                PrecioVenta = precioVenta,
+                                StockActual = stock,
+                                StockMinimo = stockMin,
+                                                            };
+                            _productoService.GuardarProducto(nuevo, false);
+                            creados++;
+                        }
+                        else
+                        {
+                            errores++;
+                        }
+                    }
+                }
+
+                CargarProductos();
+
+                MessageBox.Show(
+                    $"Importación masiva completada con éxito:\n\n" +
+                    $"• Productos actualizados (Precios / Stock): {actualizados}\n" +
+                    $"• Nuevos productos dados de alta: {creados}\n" +
+                    $"• Filas omitidas con formato incorrecto: {errores}",
+                    "Actualización Masiva Completa",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al procesar el archivo Excel / CSV: {ex.Message}", "Error de Importación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

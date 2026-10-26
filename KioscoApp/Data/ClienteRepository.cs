@@ -55,6 +55,8 @@ namespace KioscoApp.Data
                 Provincia = reader["Provincia"] != DBNull.Value ? reader["Provincia"].ToString() : null,
                 Nacimiento = reader["Nacimiento"] != DBNull.Value ? Convert.ToDateTime(reader["Nacimiento"]) : (DateTime?)null,
                 FechaRegistro = Convert.ToDateTime(reader["FechaRegistro"]),
+                SaldoDeudor = reader["SaldoDeudor"] != DBNull.Value ? Convert.ToDecimal(reader["SaldoDeudor"]) : 0m,
+                LimiteCredito = reader["LimiteCredito"] != DBNull.Value ? Convert.ToDecimal(reader["LimiteCredito"]) : 15000m,
                 Activo = Convert.ToBoolean(reader["Activo"])
             };
         }

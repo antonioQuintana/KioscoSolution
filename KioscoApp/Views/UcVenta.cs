@@ -12,6 +12,16 @@ namespace KioscoApp
     {
         private readonly ProductoService _productoService;
         private readonly ClienteService _clienteService;
+        private readonly List<VentaSuspendida> _ventasSuspendidas = new List<VentaSuspendida>();
+
+        private class VentaSuspendida
+        {
+            public DateTime Fecha { get; set; } = DateTime.Now;
+            public Cliente Cliente { get; set; }
+            public List<DetalleVenta> Carrito { get; set; }
+            public decimal DescuentoPorcentaje { get; set; }
+            public decimal Total => Carrito.Sum(d => d.Subtotal) * (1 - DescuentoPorcentaje / 100);
+        }
         private readonly VentaService _ventaService;
         private BindingList<DetalleVenta> _carrito;
         private Cliente _clienteActual;
@@ -34,7 +44,16 @@ namespace KioscoApp
         {
             if (lblClienteActual != null)
             {
-                lblClienteActual.Text = $"Cliente: {_clienteActual.NombreCompleto.ToUpper()}";
+                if (_clienteActual != null && _clienteActual.Id > 1)
+                {
+                    lblClienteActual.Text = $"Cliente: {_clienteActual.NombreCompleto.ToUpper()} | Saldo Deudor: $ {_clienteActual.SaldoDeudor:N2}";
+                    lblClienteActual.ForeColor = _clienteActual.SaldoDeudor > 0 ? Color.Khaki : Color.LightSkyBlue;
+                }
+                else
+                {
+                    lblClienteActual.Text = "Cliente: CONSUMIDOR FINAL";
+                    lblClienteActual.ForeColor = Color.White;
+                }
             }
         }
 
@@ -71,6 +90,8 @@ namespace KioscoApp
             if (btnBuscarCliente != null) btnBuscarCliente.Click += BtnBuscarCliente_Click;
             if (btnNuevoCliente != null) btnNuevoCliente.Click += BtnNuevoCliente_Click;
             if (btnRetiroCaja != null) btnRetiroCaja.Click += BtnRetiroCaja_Click;
+            if (btnCuentaCorriente != null) btnCuentaCorriente.Click += BtnCuentaCorriente_Click;
+            if (btnArticulosFrecuentes != null) btnArticulosFrecuentes.Click += BtnArticulosFrecuentes_Click;
             
             txtScanner.TextChanged += TxtScanner_TextChanged;
             txtScanner.KeyDown += TxtScanner_KeyDown;
@@ -372,12 +393,148 @@ namespace KioscoApp
 
         private void BtnSuspenderVenta_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("La funcionalidad de 'Suspender Venta' permitirÃ¡ guardar este carrito temporalmente para atender a otro cliente.\nÂ¡PrÃ³ximamente!", "PrÃ³ximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (_carrito.Count > 0)
+            {
+                var confirm = MessageBox.Show(
+                    "¿Desea suspender la venta actual para atender a otro cliente?\n\nEl carrito se guardará en espera y quedará la pantalla lista.",
+                    "Suspender Venta",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm != DialogResult.Yes) return;
+
+                _ventasSuspendidas.Add(new VentaSuspendida
+                {
+                    Cliente = _clienteActual,
+                    Carrito = _carrito.Select(d => new DetalleVenta
+                    {
+                        IdProducto = d.IdProducto,
+                        Codigo = d.Codigo,
+                        Descripcion = d.Descripcion,
+                        PrecioUnitario = d.PrecioUnitario,
+                        Cantidad = d.Cantidad
+                    }).ToList(),
+                    DescuentoPorcentaje = _descuentoPorcentaje
+                });
+
+                MessageBox.Show($"Venta en espera guardada (Ticket #{_ventasSuspendidas.Count}).\nPantalla liberada para el siguiente cliente.", "Venta Suspendida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CancelarVenta();
+                ActualizarTextoBotonSuspender();
+            }
+            else
+            {
+                if (_ventasSuspendidas.Count == 0)
+                {
+                    MessageBox.Show("No hay ventas en espera actualmente.", "Sin ventas en espera", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Recuperar la última venta suspendida
+                var venta = _ventasSuspendidas.Last();
+                _ventasSuspendidas.RemoveAt(_ventasSuspendidas.Count - 1);
+
+                _clienteActual = venta.Cliente ?? _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Nombre = "Consumidor", Apellido = "Final" };
+                ActualizarUICliente();
+
+                _carrito.Clear();
+                foreach (var item in venta.Carrito)
+                {
+                    _carrito.Add(item);
+                }
+
+                _descuentoPorcentaje = venta.DescuentoPorcentaje;
+                ActualizarTotales();
+                ActualizarTextoBotonSuspender();
+
+                MessageBox.Show($"Venta recuperada con éxito ({venta.Carrito.Count} artículos).\nTotal: $ {venta.Total:N2}", "Venta Reanudada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void ActualizarTextoBotonSuspender()
+        {
+            if (btnSuspenderVenta != null)
+            {
+                btnSuspenderVenta.Text = _ventasSuspendidas.Count > 0
+                    ? $"Reanudar Venta ({_ventasSuspendidas.Count})"
+                    : "Suspender Venta";
+                btnSuspenderVenta.BackColor = _ventasSuspendidas.Count > 0 ? Color.Orange : Color.DarkSeaGreen;
+            }
+        }
+
+        private void AgregarProducto(Producto producto)
+        {
+            if (producto == null || string.IsNullOrEmpty(producto.SKU)) return;
+            AgregarAlCarrito(producto.SKU);
         }
 
         private void BtnBuscarProducto_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("La funcionalidad de 'BÃºsqueda Manual de Productos' se implementarÃ¡ pronto.\nPor ahora usa el buscador predictivo escribiendo en la barra de escÃ¡ner.", "PrÃ³ximamente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            using var modal = new Views.FrmBuscarProductoModal();
+            if (modal.ShowDialog(this) == DialogResult.OK && modal.ProductoSeleccionado != null)
+            {
+                AgregarProducto(modal.ProductoSeleccionado);
+            }
+        }
+
+        private void BtnArticulosFrecuentes_Click(object? sender, EventArgs e)
+        {
+            using var modal = new Views.FrmArticulosFrecuentesModal();
+            if (modal.ShowDialog(this) == DialogResult.OK && modal.ProductoSeleccionado != null)
+            {
+                AgregarProducto(modal.ProductoSeleccionado);
+            }
+        }
+
+        private void BtnCuentaCorriente_Click(object? sender, EventArgs e)
+        {
+            if (_carrito.Count == 0)
+            {
+                MessageBox.Show("El carrito está vacío. Escanee productos antes de cobrar.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (_clienteActual == null || _clienteActual.Id <= 1 || _clienteActual.Dni == "00000000")
+            {
+                MessageBox.Show("Para cobrar con Cuenta Corriente debe seleccionar un cliente registrado (no disponible para Consumidor Final).\n\nBusque al cliente por DNI arriba a la derecha.", "Cliente Requerido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtBusquedaCliente.Focus();
+                return;
+            }
+
+            decimal subtotal = _carrito.Sum(d => d.Subtotal);
+            decimal descuentoMonto = subtotal * (_descuentoPorcentaje / 100);
+            decimal total = subtotal - descuentoMonto;
+
+            decimal nuevoSaldo = _clienteActual.SaldoDeudor + total;
+            if (nuevoSaldo > _clienteActual.LimiteCredito)
+            {
+                var confirmacion = MessageBox.Show(
+                    $"¡Atención! Esta compra supera el límite de crédito del cliente.\n\n" +
+                    $"• Límite de Crédito: $ {_clienteActual.LimiteCredito:N2}\n" +
+                    $"• Saldo Deudor Actual: $ {_clienteActual.SaldoDeudor:N2}\n" +
+                    $"• Compra Actual: $ {total:N2}\n" +
+                    $"• Nuevo Saldo Resultante: $ {nuevoSaldo:N2}\n\n" +
+                    "¿Desea autorizar y registrar la venta fiada de todas formas?",
+                    "Límite de Crédito Excedido",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (confirmacion != DialogResult.Yes) return;
+            }
+            else
+            {
+                var confirmacion = MessageBox.Show(
+                    $"¿Confirma registrar esta venta a Cuenta Corriente (Fiado) para {_clienteActual.NombreCompleto}?\n\n" +
+                    $"• Total a cargar: $ {total:N2}\n" +
+                    $"• Saldo Deudor Actual: $ {_clienteActual.SaldoDeudor:N2}\n" +
+                    $"• Nuevo Saldo Deudor: $ {nuevoSaldo:N2}",
+                    "Confirmar Cuenta Corriente",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmacion != DialogResult.Yes) return;
+            }
+
+            ProcesarCobro("Cuenta Corriente");
         }
 
         private void BtnBuscarCliente_Click(object sender, EventArgs e)

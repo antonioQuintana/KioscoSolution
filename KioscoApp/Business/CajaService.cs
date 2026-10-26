@@ -65,9 +65,29 @@ namespace KioscoApp.Business
             return _cajaRepository.RegistrarCierreCaja(cierre);
         }
 
-        public List<CierreCaja> ObtenerHistorialCierres()
+        public List<CierreCaja> ObtenerHistorialCierres(DateTime? desde = null, DateTime? hasta = null, int? idUsuario = null)
         {
-            return _cajaRepository.ObtenerHistorialCierres();
+            return _cajaRepository.ObtenerHistorialCierres(desde, hasta, idUsuario);
+        }
+
+        public List<DescuadreEmpleadoItem> ObtenerDescuadresPorEmpleado()
+        {
+            return _cajaRepository.ObtenerDescuadresPorEmpleado();
+        }
+
+        public List<VentaPorHoraItem> ObtenerVentasPorHora()
+        {
+            return _cajaRepository.ObtenerVentasPorHora();
+        }
+
+        public List<VentaAnuladaItem> ObtenerVentasAnuladas()
+        {
+            return _cajaRepository.ObtenerVentasAnuladas();
+        }
+
+        public List<InventarioValorizadoItem> ObtenerInventarioValorizado()
+        {
+            return _cajaRepository.ObtenerInventarioValorizado();
         }
     }
 }
