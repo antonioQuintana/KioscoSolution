@@ -70,6 +70,7 @@ namespace KioscoApp
             if (btnSuspenderVenta != null) btnSuspenderVenta.Click += BtnSuspenderVenta_Click;
             if (btnBuscarCliente != null) btnBuscarCliente.Click += BtnBuscarCliente_Click;
             if (btnNuevoCliente != null) btnNuevoCliente.Click += BtnNuevoCliente_Click;
+            if (btnRetiroCaja != null) btnRetiroCaja.Click += BtnRetiroCaja_Click;
             
             txtScanner.TextChanged += TxtScanner_TextChanged;
             txtScanner.KeyDown += TxtScanner_KeyDown;
@@ -292,6 +293,7 @@ namespace KioscoApp
             var nuevaVenta = new Venta
             {
                 IdCliente = _clienteActual.Id,
+                IdUsuario = UserSession.IdUsuario > 0 ? UserSession.IdUsuario : null,
                 Total = total,
                 Descuento = descuentoMonto,
                 MetodoPago = metodoPago,
@@ -419,6 +421,25 @@ namespace KioscoApp
         private void BtnNuevoCliente_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Diríjase a la pestaña 'Clientes' en el menú principal para registrar un nuevo cliente.", "Nuevo Cliente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void BtnRetiroCaja_Click(object? sender, EventArgs e)
+        {
+            using var modal = new Views.FrmMovimientoCaja("Retiro");
+            if (modal.ShowDialog(this) == DialogResult.OK)
+            {
+                try
+                {
+                    int? idUsuario = UserSession.IdUsuario > 0 ? UserSession.IdUsuario : null;
+                    var cajaService = new Business.CajaService();
+                    cajaService.RegistrarRetiro(modal.Monto, modal.Motivo, idUsuario);
+                    MessageBox.Show($"Retiro de $ {modal.Monto:N2} registrado en caja correctamente.\n\nMotivo: {modal.Motivo}", "Retiro Registrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al registrar retiro: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void ConfigurarAutocompletadoClientes()

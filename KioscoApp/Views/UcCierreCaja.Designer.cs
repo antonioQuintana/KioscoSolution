@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace KioscoApp
@@ -76,7 +76,7 @@ namespace KioscoApp
             lblFondoCaja.Name = "lblFondoCaja";
             lblFondoCaja.Size = new Size(225, 20);
             lblFondoCaja.TabIndex = 0;
-            lblFondoCaja.Text = "Fondo de Caja (Inicio): $ 5000.00";
+            lblFondoCaja.Text = "Fondo de Caja (Inicio): $ 0.00";
             // 
             // lblVentasEfectivo
             // 
@@ -87,7 +87,7 @@ namespace KioscoApp
             lblVentasEfectivo.Name = "lblVentasEfectivo";
             lblVentasEfectivo.Size = new Size(211, 20);
             lblVentasEfectivo.TabIndex = 1;
-            lblVentasEfectivo.Text = "(+) Ventas Efectivo: $ 12500.00";
+            lblVentasEfectivo.Text = "(+) Ventas Efectivo: $ 0.00";
             // 
             // lblVentasQR
             // 
@@ -97,7 +97,7 @@ namespace KioscoApp
             lblVentasQR.Name = "lblVentasQR";
             lblVentasQR.Size = new Size(170, 20);
             lblVentasQR.TabIndex = 2;
-            lblVentasQR.Text = "(+) Ventas QR: $ 8400.00";
+            lblVentasQR.Text = "(+) Ventas QR: $ 0.00";
             // 
             // lblVentasTarjeta
             // 
@@ -107,7 +107,7 @@ namespace KioscoApp
             lblVentasTarjeta.Name = "lblVentasTarjeta";
             lblVentasTarjeta.Size = new Size(202, 20);
             lblVentasTarjeta.TabIndex = 3;
-            lblVentasTarjeta.Text = "(+) Ventas Tarjeta: $ 15300.00";
+            lblVentasTarjeta.Text = "(+) Ventas Tarjeta: $ 0.00";
             // 
             // lblGastos
             // 
@@ -118,7 +118,7 @@ namespace KioscoApp
             lblGastos.Name = "lblGastos";
             lblGastos.Size = new Size(203, 20);
             lblGastos.TabIndex = 4;
-            lblGastos.Text = "(-) Gastos / Retiros: $ 2000.00";
+            lblGastos.Text = "(-) Gastos / Retiros: $ 0.00";
             // 
             // gbBilletes
             // 
@@ -279,7 +279,7 @@ namespace KioscoApp
             lblEsperado.Name = "lblEsperado";
             lblEsperado.Size = new Size(218, 21);
             lblEsperado.TabIndex = 0;
-            lblEsperado.Text = "Efectivo Esperado: $ 15500.00";
+            lblEsperado.Text = "Efectivo Esperado: $ 0.00";
             // 
             // lblDeclarado
             // 
@@ -295,12 +295,12 @@ namespace KioscoApp
             // 
             lblDiferencia.AutoSize = true;
             lblDiferencia.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            lblDiferencia.ForeColor = Color.LightCoral;
+            lblDiferencia.ForeColor = Color.DarkGray;
             lblDiferencia.Location = new Point(20, 150);
             lblDiferencia.Name = "lblDiferencia";
             lblDiferencia.Size = new Size(275, 30);
             lblDiferencia.TabIndex = 2;
-            lblDiferencia.Text = "DIFERENCIA: $ -15500.00";
+            lblDiferencia.Text = "DIFERENCIA: $ 0.00";
             // 
             // btnRegistrarGasto
             // 
@@ -347,6 +347,10 @@ namespace KioscoApp
             // 
             // UcCierreCaja
             // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
+            AutoScrollMinSize = new Size(1020, 640);
             BackColor = SystemColors.ControlDarkDark;
             Controls.Add(btnIngresoCaja);
             Controls.Add(btnRegistrarGasto);
