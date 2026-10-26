@@ -1,4 +1,4 @@
-﻿namespace KioscoApp
+namespace KioscoApp
 {
     partial class UcABMCategorias
     {
@@ -44,6 +44,7 @@
             // 
             dgvCategorias.AllowUserToAddRows = false;
             dgvCategorias.AllowUserToDeleteRows = false;
+            dgvCategorias.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvCategorias.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvCategorias.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvCategorias.Location = new Point(20, 70);
@@ -56,6 +57,7 @@
             // 
             // gbFormulario
             // 
+            gbFormulario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             gbFormulario.Controls.Add(btnLimpiar);
             gbFormulario.Controls.Add(btnEliminar);
             gbFormulario.Controls.Add(btnGuardar);
@@ -148,12 +150,14 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
+            AutoScrollMinSize = new Size(950, 580);
             BackColor = SystemColors.ControlDarkDark;
             Controls.Add(gbFormulario);
             Controls.Add(dgvCategorias);
             Controls.Add(lblTitulo);
             Name = "UcABMCategorias";
-            Size = new Size(1247, 643);
+            Size = new Size(1000, 640);
             ((System.ComponentModel.ISupportInitialize)dgvCategorias).EndInit();
             gbFormulario.ResumeLayout(false);
             gbFormulario.PerformLayout();

@@ -1,4 +1,4 @@
-﻿namespace KioscoApp
+namespace KioscoApp
 {
     partial class UcMovimientosStock
     {
@@ -64,18 +64,21 @@
             // 
             dgvStock.AllowUserToAddRows = false;
             dgvStock.AllowUserToDeleteRows = false;
+            dgvStock.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvStock.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvStock.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvStock.Location = new Point(20, 110);
             dgvStock.MultiSelect = false;
             dgvStock.Name = "dgvStock";
             dgvStock.ReadOnly = true;
             dgvStock.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvStock.Size = new Size(887, 480);
+            dgvStock.Size = new Size(650, 500);
             dgvStock.TabIndex = 3;
             dgvStock.SelectionChanged += dgvStock_SelectionChanged;
             // 
             // groupBoxModificar
             // 
+            groupBoxModificar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             groupBoxModificar.Controls.Add(btnGuardar);
             groupBoxModificar.Controls.Add(numStockMinimo);
             groupBoxModificar.Controls.Add(lblStockMinimo);
@@ -84,9 +87,9 @@
             groupBoxModificar.Controls.Add(lblProductoSeleccionado);
             groupBoxModificar.Controls.Add(lblProductoLabel);
             groupBoxModificar.ForeColor = SystemColors.ControlLightLight;
-            groupBoxModificar.Location = new Point(932, 110);
+            groupBoxModificar.Location = new Point(690, 110);
             groupBoxModificar.Name = "groupBoxModificar";
-            groupBoxModificar.Size = new Size(280, 280);
+            groupBoxModificar.Size = new Size(290, 290);
             groupBoxModificar.TabIndex = 4;
             groupBoxModificar.TabStop = false;
             groupBoxModificar.Text = "Ajuste de Stock";
@@ -98,7 +101,7 @@
             btnGuardar.ForeColor = Color.White;
             btnGuardar.Location = new Point(20, 225);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(240, 40);
+            btnGuardar.Size = new Size(250, 42);
             btnGuardar.TabIndex = 6;
             btnGuardar.Text = "💾 Guardar Stock";
             btnGuardar.UseVisualStyleBackColor = false;
@@ -110,7 +113,7 @@
             numStockMinimo.Location = new Point(20, 180);
             numStockMinimo.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
             numStockMinimo.Name = "numStockMinimo";
-            numStockMinimo.Size = new Size(120, 27);
+            numStockMinimo.Size = new Size(130, 27);
             numStockMinimo.TabIndex = 5;
             // 
             // lblStockMinimo
@@ -129,7 +132,7 @@
             numStockActual.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
             numStockActual.Minimum = new decimal(new int[] { 99999, 0, 0, int.MinValue });
             numStockActual.Name = "numStockActual";
-            numStockActual.Size = new Size(120, 27);
+            numStockActual.Size = new Size(130, 27);
             numStockActual.TabIndex = 3;
             // 
             // lblStockActual
@@ -147,7 +150,7 @@
             lblProductoSeleccionado.ForeColor = Color.LightSkyBlue;
             lblProductoSeleccionado.Location = new Point(20, 50);
             lblProductoSeleccionado.Name = "lblProductoSeleccionado";
-            lblProductoSeleccionado.Size = new Size(240, 45);
+            lblProductoSeleccionado.Size = new Size(250, 45);
             lblProductoSeleccionado.TabIndex = 1;
             lblProductoSeleccionado.Text = "Seleccione un producto";
             // 
@@ -164,13 +167,15 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
+            AutoScrollMinSize = new Size(950, 580);
             Controls.Add(groupBoxModificar);
             Controls.Add(dgvStock);
             Controls.Add(txtBuscar);
             Controls.Add(lblBuscar);
             Controls.Add(lblTitulo);
             Name = "UcMovimientosStock";
-            Size = new Size(1241, 643);
+            Size = new Size(1000, 640);
             ((System.ComponentModel.ISupportInitialize)dgvStock).EndInit();
             groupBoxModificar.ResumeLayout(false);
             groupBoxModificar.PerformLayout();
@@ -178,7 +183,6 @@
             ((System.ComponentModel.ISupportInitialize)numStockActual).EndInit();
             ResumeLayout(false);
             PerformLayout();
-
         }
 
         private System.Windows.Forms.Label lblTitulo;

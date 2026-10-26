@@ -1,4 +1,4 @@
-﻿namespace KioscoApp
+namespace KioscoApp
 {
     partial class UcABMProductos
     {
@@ -59,18 +59,20 @@
             // 
             dgvProductos.AllowUserToAddRows = false;
             dgvProductos.AllowUserToDeleteRows = false;
+            dgvProductos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvProductos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProductos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvProductos.Location = new Point(20, 50);
             dgvProductos.Name = "dgvProductos";
             dgvProductos.ReadOnly = true;
             dgvProductos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProductos.Size = new Size(834, 480);
+            dgvProductos.Size = new Size(615, 470);
             dgvProductos.TabIndex = 1;
             dgvProductos.CellClick += dgvProductos_CellClick;
             // 
             // gbFormulario
             // 
+            gbFormulario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             gbFormulario.Controls.Add(btnLimpiar);
             gbFormulario.Controls.Add(btnEliminar);
             gbFormulario.Controls.Add(btnGuardar);
@@ -92,9 +94,9 @@
             gbFormulario.Controls.Add(lblSKU);
             gbFormulario.Font = new Font("Segoe UI", 10F);
             gbFormulario.ForeColor = SystemColors.ControlLightLight;
-            gbFormulario.Location = new Point(873, 40);
+            gbFormulario.Location = new Point(655, 40);
             gbFormulario.Name = "gbFormulario";
-            gbFormulario.Size = new Size(360, 580);
+            gbFormulario.Size = new Size(325, 580);
             gbFormulario.TabIndex = 2;
             gbFormulario.TabStop = false;
             gbFormulario.Text = "Detalles del Producto";
@@ -104,9 +106,9 @@
             btnLimpiar.BackColor = Color.FromArgb(149, 165, 166);
             btnLimpiar.FlatStyle = FlatStyle.Flat;
             btnLimpiar.ForeColor = Color.White;
-            btnLimpiar.Location = new Point(20, 500);
+            btnLimpiar.Location = new Point(15, 500);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(320, 45);
+            btnLimpiar.Size = new Size(295, 45);
             btnLimpiar.TabIndex = 18;
             btnLimpiar.Text = "Limpiar Formulario";
             btnLimpiar.UseVisualStyleBackColor = false;
@@ -117,9 +119,9 @@
             btnEliminar.BackColor = Color.FromArgb(231, 76, 60);
             btnEliminar.FlatStyle = FlatStyle.Flat;
             btnEliminar.ForeColor = Color.White;
-            btnEliminar.Location = new Point(20, 440);
+            btnEliminar.Location = new Point(15, 440);
             btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(320, 45);
+            btnEliminar.Size = new Size(295, 45);
             btnEliminar.TabIndex = 17;
             btnEliminar.Text = "Eliminar Producto";
             btnEliminar.UseVisualStyleBackColor = false;
@@ -130,9 +132,9 @@
             btnGuardar.BackColor = Color.FromArgb(46, 204, 113);
             btnGuardar.FlatStyle = FlatStyle.Flat;
             btnGuardar.ForeColor = Color.White;
-            btnGuardar.Location = new Point(20, 380);
+            btnGuardar.Location = new Point(15, 380);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(320, 45);
+            btnGuardar.Size = new Size(295, 45);
             btnGuardar.TabIndex = 16;
             btnGuardar.Text = "Guardar Producto";
             btnGuardar.UseVisualStyleBackColor = false;
@@ -140,15 +142,15 @@
             // 
             // txtStockMin
             // 
-            txtStockMin.Location = new Point(120, 317);
+            txtStockMin.Location = new Point(110, 317);
             txtStockMin.Name = "txtStockMin";
-            txtStockMin.Size = new Size(100, 25);
+            txtStockMin.Size = new Size(90, 25);
             txtStockMin.TabIndex = 15;
             // 
             // lblStockMin
             // 
             lblStockMin.AutoSize = true;
-            lblStockMin.Location = new Point(20, 320);
+            lblStockMin.Location = new Point(15, 320);
             lblStockMin.Name = "lblStockMin";
             lblStockMin.Size = new Size(96, 19);
             lblStockMin.TabIndex = 14;
@@ -156,15 +158,15 @@
             // 
             // txtStock
             // 
-            txtStock.Location = new Point(120, 277);
+            txtStock.Location = new Point(110, 277);
             txtStock.Name = "txtStock";
-            txtStock.Size = new Size(100, 25);
+            txtStock.Size = new Size(90, 25);
             txtStock.TabIndex = 13;
             // 
             // lblStock
             // 
             lblStock.AutoSize = true;
-            lblStock.Location = new Point(20, 280);
+            lblStock.Location = new Point(15, 280);
             lblStock.Name = "lblStock";
             lblStock.Size = new Size(87, 19);
             lblStock.TabIndex = 12;
@@ -172,15 +174,15 @@
             // 
             // txtVenta
             // 
-            txtVenta.Location = new Point(120, 237);
+            txtVenta.Location = new Point(110, 237);
             txtVenta.Name = "txtVenta";
-            txtVenta.Size = new Size(100, 25);
+            txtVenta.Size = new Size(90, 25);
             txtVenta.TabIndex = 11;
             // 
             // lblVenta
             // 
             lblVenta.AutoSize = true;
-            lblVenta.Location = new Point(20, 240);
+            lblVenta.Location = new Point(15, 240);
             lblVenta.Name = "lblVenta";
             lblVenta.Size = new Size(62, 19);
             lblVenta.TabIndex = 10;
@@ -188,15 +190,15 @@
             // 
             // txtCosto
             // 
-            txtCosto.Location = new Point(120, 197);
+            txtCosto.Location = new Point(110, 197);
             txtCosto.Name = "txtCosto";
-            txtCosto.Size = new Size(100, 25);
+            txtCosto.Size = new Size(90, 25);
             txtCosto.TabIndex = 9;
             // 
             // lblCosto
             // 
             lblCosto.AutoSize = true;
-            lblCosto.Location = new Point(20, 200);
+            lblCosto.Location = new Point(15, 200);
             lblCosto.Name = "lblCosto";
             lblCosto.Size = new Size(63, 19);
             lblCosto.TabIndex = 8;
@@ -206,15 +208,15 @@
             // 
             cmbCategoria.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategoria.FormattingEnabled = true;
-            cmbCategoria.Location = new Point(120, 157);
+            cmbCategoria.Location = new Point(110, 157);
             cmbCategoria.Name = "cmbCategoria";
-            cmbCategoria.Size = new Size(220, 25);
+            cmbCategoria.Size = new Size(200, 25);
             cmbCategoria.TabIndex = 7;
             // 
             // lblCategoria
             // 
             lblCategoria.AutoSize = true;
-            lblCategoria.Location = new Point(20, 160);
+            lblCategoria.Location = new Point(15, 160);
             lblCategoria.Name = "lblCategoria";
             lblCategoria.Size = new Size(71, 19);
             lblCategoria.TabIndex = 6;
@@ -222,15 +224,15 @@
             // 
             // txtDesc
             // 
-            txtDesc.Location = new Point(120, 117);
+            txtDesc.Location = new Point(110, 117);
             txtDesc.Name = "txtDesc";
-            txtDesc.Size = new Size(220, 25);
+            txtDesc.Size = new Size(200, 25);
             txtDesc.TabIndex = 5;
             // 
             // lblDesc
             // 
             lblDesc.AutoSize = true;
-            lblDesc.Location = new Point(20, 120);
+            lblDesc.Location = new Point(15, 120);
             lblDesc.Name = "lblDesc";
             lblDesc.Size = new Size(82, 19);
             lblDesc.TabIndex = 4;
@@ -238,15 +240,15 @@
             // 
             // txtNombre
             // 
-            txtNombre.Location = new Point(120, 77);
+            txtNombre.Location = new Point(110, 77);
             txtNombre.Name = "txtNombre";
-            txtNombre.Size = new Size(220, 25);
+            txtNombre.Size = new Size(200, 25);
             txtNombre.TabIndex = 3;
             // 
             // lblNombre
             // 
             lblNombre.AutoSize = true;
-            lblNombre.Location = new Point(20, 80);
+            lblNombre.Location = new Point(15, 80);
             lblNombre.Name = "lblNombre";
             lblNombre.Size = new Size(62, 19);
             lblNombre.TabIndex = 2;
@@ -254,15 +256,15 @@
             // 
             // txtSKU
             // 
-            txtSKU.Location = new Point(120, 37);
+            txtSKU.Location = new Point(110, 37);
             txtSKU.Name = "txtSKU";
-            txtSKU.Size = new Size(220, 25);
+            txtSKU.Size = new Size(200, 25);
             txtSKU.TabIndex = 1;
             // 
             // lblSKU
             // 
             lblSKU.AutoSize = true;
-            lblSKU.Location = new Point(20, 40);
+            lblSKU.Location = new Point(15, 40);
             lblSKU.Name = "lblSKU";
             lblSKU.Size = new Size(37, 19);
             lblSKU.TabIndex = 0;
@@ -270,12 +272,13 @@
             // 
             // gbHerramientas
             // 
+            gbHerramientas.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             gbHerramientas.Controls.Add(btnExportarExcel);
             gbHerramientas.Controls.Add(btnImportarExcel);
             gbHerramientas.ForeColor = SystemColors.ControlLightLight;
-            gbHerramientas.Location = new Point(127, 540);
+            gbHerramientas.Location = new Point(20, 535);
             gbHerramientas.Name = "gbHerramientas";
-            gbHerramientas.Size = new Size(580, 80);
+            gbHerramientas.Size = new Size(615, 85);
             gbHerramientas.TabIndex = 3;
             gbHerramientas.TabStop = false;
             gbHerramientas.Text = "Herramientas Masivas (Excel)";
@@ -287,7 +290,7 @@
             btnExportarExcel.ForeColor = Color.White;
             btnExportarExcel.Location = new Point(20, 30);
             btnExportarExcel.Name = "btnExportarExcel";
-            btnExportarExcel.Size = new Size(250, 35);
+            btnExportarExcel.Size = new Size(260, 38);
             btnExportarExcel.TabIndex = 0;
             btnExportarExcel.Text = "Descargar Plantilla Excel";
             btnExportarExcel.UseVisualStyleBackColor = false;
@@ -298,9 +301,9 @@
             btnImportarExcel.BackColor = Color.FromArgb(39, 174, 96);
             btnImportarExcel.FlatStyle = FlatStyle.Flat;
             btnImportarExcel.ForeColor = Color.White;
-            btnImportarExcel.Location = new Point(310, 30);
+            btnImportarExcel.Location = new Point(300, 30);
             btnImportarExcel.Name = "btnImportarExcel";
-            btnImportarExcel.Size = new Size(250, 35);
+            btnImportarExcel.Size = new Size(260, 38);
             btnImportarExcel.TabIndex = 1;
             btnImportarExcel.Text = "Subir y Actualizar Precios";
             btnImportarExcel.UseVisualStyleBackColor = false;
@@ -310,13 +313,15 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
+            AutoScrollMinSize = new Size(960, 620);
             BackColor = SystemColors.ControlDarkDark;
             Controls.Add(gbFormulario);
             Controls.Add(gbHerramientas);
             Controls.Add(dgvProductos);
             Controls.Add(lblTitulo);
             Name = "UcABMProductos";
-            Size = new Size(1254, 643);
+            Size = new Size(1000, 640);
             ((System.ComponentModel.ISupportInitialize)dgvProductos).EndInit();
             gbFormulario.ResumeLayout(false);
             gbFormulario.PerformLayout();
