@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using KioscoApp.Models;
 
@@ -11,8 +12,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT * FROM Clientes WHERE Dni = @Dni AND Activo = 1";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Clientes_ObtenerPorDni", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Dni", dni);
 
             using var reader = cmd.ExecuteReader();
@@ -27,8 +28,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT * FROM Clientes WHERE Id = @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Clientes_ObtenerPorId", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
 
             using var reader = cmd.ExecuteReader();
@@ -64,8 +65,8 @@ namespace KioscoApp.Data
             var lista = new List<Cliente>();
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT * FROM Clientes WHERE Activo = 1 AND Dni != '00000000'";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Clientes_ObtenerTodos", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -78,9 +79,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = @"INSERT INTO Clientes (Dni, Nombre, Apellido, Telefono, Email, Calle, Numero, Ciudad, Provincia, Nacimiento) 
-                             VALUES (@Dni, @Nombre, @Apellido, @Telefono, @Email, @Calle, @Numero, @Ciudad, @Provincia, @Nacimiento)";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Clientes_Insertar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             AsignarParametros(cmd, cliente);
             cmd.ExecuteNonQuery();
         }
@@ -89,11 +89,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = @"UPDATE Clientes SET Dni = @Dni, Nombre = @Nombre, Apellido = @Apellido, 
-                             Telefono = @Telefono, Email = @Email, Calle = @Calle, Numero = @Numero, 
-                             Ciudad = @Ciudad, Provincia = @Provincia, Nacimiento = @Nacimiento 
-                             WHERE Id = @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Clientes_Actualizar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             AsignarParametros(cmd, cliente);
             cmd.Parameters.AddWithValue("@Id", cliente.Id);
             cmd.ExecuteNonQuery();
@@ -103,8 +100,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "UPDATE Clientes SET Activo = 0 WHERE Id = @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Clientes_EliminarLogico", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
             cmd.ExecuteNonQuery();
         }

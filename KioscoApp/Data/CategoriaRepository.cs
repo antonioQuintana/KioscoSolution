@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using KioscoApp.Models;
 
@@ -12,8 +13,8 @@ namespace KioscoApp.Data
             var categorias = new List<Categoria>();
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT Id, Nombre, Descripcion FROM Categorias ORDER BY Nombre";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Categorias_ObtenerTodas", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -27,8 +28,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT Id, Nombre, Descripcion FROM Categorias WHERE Id = @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Categorias_ObtenerPorId", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
 
             using var reader = cmd.ExecuteReader();
@@ -43,8 +44,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT COUNT(1) FROM Categorias WHERE LOWER(Nombre) = LOWER(@Nombre) AND Id != @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Categorias_ExisteNombre", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Nombre", nombre.Trim());
             cmd.Parameters.AddWithValue("@Id", idExcluir);
 
@@ -56,8 +57,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT COUNT(1) FROM Productos WHERE IdCategoria = @IdCategoria";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Categorias_TieneProductosAsociados", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@IdCategoria", idCategoria);
 
             int count = Convert.ToInt32(cmd.ExecuteScalar());
@@ -68,8 +69,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "INSERT INTO Categorias (Nombre, Descripcion) VALUES (@Nombre, @Descripcion)";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Categorias_Insertar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Nombre", c.Nombre.Trim());
             cmd.Parameters.AddWithValue("@Descripcion", (object?)c.Descripcion ?? DBNull.Value);
             cmd.ExecuteNonQuery();
@@ -79,8 +80,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "UPDATE Categorias SET Nombre = @Nombre, Descripcion = @Descripcion WHERE Id = @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Categorias_Actualizar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", c.Id);
             cmd.Parameters.AddWithValue("@Nombre", c.Nombre.Trim());
             cmd.Parameters.AddWithValue("@Descripcion", (object?)c.Descripcion ?? DBNull.Value);
@@ -91,8 +92,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "DELETE FROM Categorias WHERE Id = @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Categorias_Eliminar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
             cmd.ExecuteNonQuery();
         }
