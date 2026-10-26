@@ -147,7 +147,7 @@ namespace KioscoApp.Data
             connection.Open();
 
             string query = @"
-                SELECT c.*, ISNULL(u.NombreUsuario, 'Desconocido') AS NombreUsuario
+                SELECT c.*, ISNULL(u.Usuario, 'Desconocido') AS NombreUsuario
                 FROM CierresCaja c
                 LEFT JOIN Usuarios u ON c.IdUsuario = u.Id
                 WHERE (@Desde IS NULL OR c.FechaCierre >= @Desde)
@@ -196,14 +196,14 @@ namespace KioscoApp.Data
 
             string query = @"
                 SELECT 
-                    ISNULL(u.NombreUsuario, 'Desconocido') AS Empleado,
+                    ISNULL(u.Usuario, 'Desconocido') AS Empleado,
                     COUNT(*) AS TotalCierres,
                     ISNULL(SUM(CASE WHEN c.Diferencia < 0 THEN c.Diferencia ELSE 0 END), 0) AS TotalFaltantes,
                     ISNULL(SUM(CASE WHEN c.Diferencia > 0 THEN c.Diferencia ELSE 0 END), 0) AS TotalSobrantes,
                     ISNULL(SUM(c.Diferencia), 0) AS DiferenciaNeta
                 FROM CierresCaja c
                 LEFT JOIN Usuarios u ON c.IdUsuario = u.Id
-                GROUP BY u.NombreUsuario
+                GROUP BY u.Usuario
                 ORDER BY DiferenciaNeta ASC";
 
             using var cmd = new SqlCommand(query, connection);
@@ -261,7 +261,7 @@ namespace KioscoApp.Data
             connection.Open();
 
             string query = @"
-                SELECT v.Id, v.Fecha, ISNULL(u.NombreUsuario, 'Desconocido') AS Cajero, v.Total, v.MetodoPago, v.Estado
+                SELECT v.Id, v.Fecha, ISNULL(u.Usuario, 'Desconocido') AS Cajero, v.Total, v.MetodoPago, v.Estado
                 FROM Ventas v
                 LEFT JOIN Usuarios u ON v.IdUsuario = u.Id
                 WHERE v.Estado = 'Anulada' OR v.Estado = 'Cancelada'
