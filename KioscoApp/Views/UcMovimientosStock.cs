@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
+using Microsoft.Data.SqlClient;
 
 namespace KioscoApp
 {
     public partial class UcMovimientosStock : UserControl
     {
-        private string connectionString = "Server=localhost\\SQLEXPRESS;Database=KioscoDB;Integrated Security=True;";
         private int idProductoSeleccionado = -1;
 
         public UcMovimientosStock()
@@ -35,18 +34,12 @@ namespace KioscoApp
         {
             try
             {
-                using (SqlConnection con = new SqlConnection(connectionString))
+                using (SqlConnection con = DatabaseHelper.GetConnection())
                 {
                     con.Open();
-                    string query = @"
-                        SELECT p.Id, p.SKU, p.Nombre, c.Nombre AS Categoria, p.StockActual, p.StockMinimo 
-                        FROM Productos p
-                        LEFT JOIN Categorias c ON p.IdCategoria = c.Id
-                        WHERE p.Nombre LIKE @Filtro OR p.SKU LIKE @Filtro
-                        ORDER BY p.Nombre";
-                    
-                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    using (SqlCommand cmd = new SqlCommand("sp_Productos_FiltrarStock", con))
                     {
+                        cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@Filtro", "%" + filtro + "%");
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
@@ -96,12 +89,12 @@ namespace KioscoApp
 
             try
             {
-                using (SqlConnection con = new SqlConnection(connectionString))
+                using (SqlConnection con = DatabaseHelper.GetConnection())
                 {
                     con.Open();
-                    string query = "UPDATE Productos SET StockActual = @Actual, StockMinimo = @Minimo WHERE Id = @Id";
-                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    using (SqlCommand cmd = new SqlCommand("sp_Productos_ActualizarStock", con))
                     {
+                        cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@Actual", (int)numStockActual.Value);
                         cmd.Parameters.AddWithValue("@Minimo", (int)numStockMinimo.Value);
                         cmd.Parameters.AddWithValue("@Id", idProductoSeleccionado);
