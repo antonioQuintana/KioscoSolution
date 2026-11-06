@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Views;
 
 namespace KioscoApp
 {
@@ -22,9 +24,11 @@ namespace KioscoApp
             public decimal DescuentoPorcentaje { get; set; }
             public decimal Total => Carrito.Sum(d => d.Subtotal) * (1 - DescuentoPorcentaje / 100);
         }
+
         private readonly VentaService _ventaService;
         private BindingList<DetalleVenta> _carrito;
         private Cliente _clienteActual;
+        private decimal _descuentoPorcentaje = 0;
 
         public UcVenta()
         {
@@ -36,8 +40,12 @@ namespace KioscoApp
 
             ConfigurarUI();
 
-            _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Nombre = "Consumidor", Apellido = "Final" };
+            _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Id = 1, Nombre = "Consumidor", Apellido = "Final", Dni = "00000000" };
             ActualizarUICliente();
+            ActualizarTextoBotonSuspender();
+
+            // Asegurar foco inicial al mostrar el control
+            this.Load += (s, e) => EnfocarEscaner();
         }
 
         private void ActualizarUICliente()
@@ -46,7 +54,7 @@ namespace KioscoApp
             {
                 if (_clienteActual != null && _clienteActual.Id > 1)
                 {
-                    lblClienteActual.Text = $"Cliente: {_clienteActual.NombreCompleto.ToUpper()} | Saldo Deudor: $ {_clienteActual.SaldoDeudor:N2}";
+                    lblClienteActual.Text = $"Cliente: {_clienteActual.NombreCompleto.ToUpper()} | Saldo Deudor: $ {_clienteActual.SaldoDeudor:N2} | Límite: $ {_clienteActual.LimiteCredito:N2}";
                     lblClienteActual.ForeColor = _clienteActual.SaldoDeudor > 0 ? Color.Khaki : Color.LightSkyBlue;
                 }
                 else
@@ -60,12 +68,12 @@ namespace KioscoApp
         private void ConfigurarUI()
         {
             dgvCarrito.AutoGenerateColumns = false;
-            
-            // Si el DataGridView no tiene columnas diseñadas, las creamos. 
-            // Si ya las tiene en el diseñador, esto no hará daño si los DataPropertyName coinciden.
+            dgvCarrito.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvCarrito.MultiSelect = false;
+
             if (dgvCarrito.Columns.Count == 0)
             {
-                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cód/SKU", DataPropertyName = "Codigo", Width = 100, ReadOnly = true });
+                dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cód/SKU", DataPropertyName = "Codigo", Width = 110, ReadOnly = true });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Descripción", DataPropertyName = "Descripcion", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, ReadOnly = true });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "PrecioUnitario", Width = 100, DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }, ReadOnly = true });
                 dgvCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cant.", DataPropertyName = "Cantidad", Width = 80 });
@@ -73,11 +81,15 @@ namespace KioscoApp
             }
 
             dgvCarrito.DataSource = _carrito;
-            
-            // Eventos
+
+            // Eventos de controles
             txtScanner.KeyPress += TxtScanner_KeyPress;
+            txtScanner.TextChanged += TxtScanner_TextChanged;
+            txtScanner.KeyDown += TxtScanner_KeyDown;
+
             dgvCarrito.CellValueChanged += DgvCarrito_CellValueChanged;
             dgvCarrito.UserDeletedRow += DgvCarrito_UserDeletedRow;
+            dgvCarrito.KeyDown += DgvCarrito_KeyDown;
 
             if (btnCancelarVenta != null) btnCancelarVenta.Click += BtnCancelarVenta_Click;
             if (btnCobrar != null) btnCobrar.Click += BtnCobrar_Click;
@@ -92,11 +104,10 @@ namespace KioscoApp
             if (btnRetiroCaja != null) btnRetiroCaja.Click += BtnRetiroCaja_Click;
             if (btnCuentaCorriente != null) btnCuentaCorriente.Click += BtnCuentaCorriente_Click;
             if (btnArticulosFrecuentes != null) btnArticulosFrecuentes.Click += BtnArticulosFrecuentes_Click;
-            
-            txtScanner.TextChanged += TxtScanner_TextChanged;
-            txtScanner.KeyDown += TxtScanner_KeyDown;
+
             if (txtBusquedaCliente != null) txtBusquedaCliente.KeyPress += TxtBusquedaCliente_KeyPress;
             ConfigurarAutocompletadoClientes();
+
             if (lstSugerencias != null)
             {
                 lstSugerencias.KeyDown += LstSugerencias_KeyDown;
@@ -106,16 +117,123 @@ namespace KioscoApp
             ActualizarTotales();
         }
 
+        private void EnfocarEscaner()
+        {
+            if (txtScanner != null && txtScanner.CanFocus)
+            {
+                txtScanner.Focus();
+                txtScanner.SelectAll();
+            }
+        }
+
+        #region Atajos de Teclado Globales (ProcessCmdKey)
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.F1:
+                    BtnBuscarProducto_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F2:
+                    BtnArticulosFrecuentes_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F3:
+                    BtnConsultarPrecio_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F4:
+                    BtnSuspenderVenta_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F5:
+                    BtnCobrar_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F6:
+                    BtnCobroQR_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F7:
+                    BtnCobroTarjeta_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F8:
+                    BtnCuentaCorriente_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F9:
+                    BtnRetiroCaja_Click(this, EventArgs.Empty);
+                    return true;
+                case Keys.F10:
+                    if (txtBusquedaCliente != null)
+                    {
+                        txtBusquedaCliente.Focus();
+                        txtBusquedaCliente.SelectAll();
+                    }
+                    return true;
+                case Keys.Escape:
+                    if (lstSugerencias != null && lstSugerencias.Visible)
+                    {
+                        lstSugerencias.Visible = false;
+                        EnfocarEscaner();
+                        return true;
+                    }
+                    if (_carrito.Count > 0)
+                    {
+                        BtnCancelarVenta_Click(this, EventArgs.Empty);
+                        return true;
+                    }
+                    txtScanner.Clear();
+                    EnfocarEscaner();
+                    return true;
+                case Keys.Delete:
+                    // Quitar ítem del carrito si no estamos escribiendo en los textboxes
+                    if (!txtScanner.Focused && !(txtBusquedaCliente?.Focused ?? false))
+                    {
+                        EliminarItemSeleccionado();
+                        return true;
+                    }
+                    break;
+                case Keys.Add:
+                case Keys.Oemplus:
+                    // Incrementar cantidad del ítem seleccionado si no estamos escribiendo en el escáner
+                    if (!txtScanner.Focused && !(txtBusquedaCliente?.Focused ?? false))
+                    {
+                        ModificarCantidadSeleccionada(1);
+                        return true;
+                    }
+                    break;
+                case Keys.Subtract:
+                case Keys.OemMinus:
+                    // Decrementar cantidad del ítem seleccionado
+                    if (!txtScanner.Focused && !(txtBusquedaCliente?.Focused ?? false))
+                    {
+                        ModificarCantidadSeleccionada(-1);
+                        return true;
+                    }
+                    break;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #endregion
+
+        #region Búsqueda Predictiva y Escáner con Multiplicador
+
         private void TxtScanner_TextChanged(object sender, EventArgs e)
         {
             string term = txtScanner.Text.Trim();
-            if (term.Length >= 2)
+
+            // Si contiene asterisco para multiplicar, no mostrar sugerencias de texto para no entorpecer
+            if (term.Contains('*'))
+            {
+                if (lstSugerencias != null) lstSugerencias.Visible = false;
+                return;
+            }
+
+            if (term.Length >= 2 && lstSugerencias != null)
             {
                 var sugerencias = _productoService.BuscarPorNombreOSKU(term);
                 if (sugerencias.Any())
                 {
                     lstSugerencias.DataSource = sugerencias;
-                    lstSugerencias.DisplayMember = "Nombre"; // Mostrar solo el nombre (o podemos formatearlo)
+                    lstSugerencias.DisplayMember = "Nombre";
                     lstSugerencias.ValueMember = "SKU";
                     lstSugerencias.Visible = true;
                     lstSugerencias.BringToFront();
@@ -125,7 +243,7 @@ namespace KioscoApp
                     lstSugerencias.Visible = false;
                 }
             }
-            else
+            else if (lstSugerencias != null)
             {
                 lstSugerencias.Visible = false;
             }
@@ -133,7 +251,7 @@ namespace KioscoApp
 
         private void TxtScanner_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down && lstSugerencias.Visible && lstSugerencias.Items.Count > 0)
+            if (e.KeyCode == Keys.Down && lstSugerencias != null && lstSugerencias.Visible && lstSugerencias.Items.Count > 0)
             {
                 lstSugerencias.Focus();
                 lstSugerencias.SelectedIndex = 0;
@@ -150,7 +268,7 @@ namespace KioscoApp
             else if (e.KeyCode == Keys.Escape)
             {
                 lstSugerencias.Visible = false;
-                txtScanner.Focus();
+                EnfocarEscaner();
             }
         }
 
@@ -167,52 +285,121 @@ namespace KioscoApp
             var sku = lstSugerencias.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(sku))
             {
-                AgregarAlCarrito(sku);
+                AgregarAlCarrito(sku, 1);
             }
             lstSugerencias.Visible = false;
             txtScanner.Clear();
-            txtScanner.Focus();
+            EnfocarEscaner();
         }
 
         private void TxtScanner_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Detectar si el usuario presionÃ³ Enter (como un lector de cÃ³digos de barras)
             if (e.KeyChar == (char)Keys.Enter)
             {
                 e.Handled = true;
-                if (lstSugerencias.Visible && lstSugerencias.Items.Count > 0)
+
+                if (lstSugerencias != null && lstSugerencias.Visible && lstSugerencias.Items.Count > 0)
                 {
-                    // Si la lista estÃ¡ visible, elegir el primero por defecto o no hacer nada
                     lstSugerencias.SelectedIndex = 0;
                     SeleccionarSugerencia();
+                    return;
                 }
-                else
+
+                string input = txtScanner.Text.Trim();
+                if (string.IsNullOrEmpty(input)) return;
+
+                int cantidad = 1;
+                string sku = input;
+
+                // Soporte para multiplicador por teclado: cant*código (ej: 3*77912345 o 5*coca)
+                if (input.Contains('*'))
                 {
-                    string sku = txtScanner.Text.Trim();
-                    if (!string.IsNullOrEmpty(sku))
+                    var partes = input.Split('*');
+                    if (partes.Length == 2 && int.TryParse(partes[0].Trim(), out int cantParsed) && cantParsed > 0)
                     {
-                        AgregarAlCarrito(sku);
+                        cantidad = cantParsed;
+                        sku = partes[1].Trim();
                     }
-                    txtScanner.Clear();
-                    txtScanner.Focus();
+                    else
+                    {
+                        MessageBox.Show(
+                            "Formato de multiplicador no válido.\n\nUtilice el formato: [cantidad]*[código]\nEjemplo: 3*77912345 (para agregar 3 unidades).",
+                            "Formato Incorrecto",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        txtScanner.SelectAll();
+                        return;
+                    }
                 }
+
+                if (!string.IsNullOrEmpty(sku))
+                {
+                    AgregarAlCarrito(sku, cantidad);
+                }
+
+                txtScanner.Clear();
+                EnfocarEscaner();
             }
         }
 
-        private void AgregarAlCarrito(string sku)
+        #endregion
+
+        #region Manejo del Carrito y Validación Rigurosa de Stock
+
+        private void AgregarProducto(Producto producto, int cantidad = 1)
         {
-            var producto = _productoService.ObtenerPorSKU(sku);
-            if (producto == null)
+            if (producto == null || string.IsNullOrEmpty(producto.SKU)) return;
+            AgregarAlCarrito(producto.SKU, cantidad);
+        }
+
+        private void AgregarAlCarrito(string sku, int cantidad = 1)
+        {
+            if (cantidad <= 0)
             {
-                MessageBox.Show($"No se encontró ningún producto con el SKU: {sku}", "Producto no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("La cantidad a agregar debe ser mayor a 0.", "Cantidad inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            var producto = _productoService.ObtenerPorSKU(sku);
+            if (producto == null)
+            {
+                // Si no coincide con SKU exacto, intentar por nombre
+                var coincidencia = _productoService.BuscarPorNombreOSKU(sku);
+                if (coincidencia.Count == 1)
+                {
+                    producto = coincidencia[0];
+                }
+                else
+                {
+                    MessageBox.Show($"No se encontró ningún producto con el código o SKU: {sku}", "Producto no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            // Validación rigurosa de Stock en tiempo real
             var itemExistente = _carrito.FirstOrDefault(d => d.IdProducto == producto.Id);
+            int enCarritoActual = itemExistente?.Cantidad ?? 0;
+            int totalRequerido = enCarritoActual + cantidad;
+
+            if (totalRequerido > producto.StockActual)
+            {
+                string advertencia =
+                    $"ALERTA DE STOCK INSUFICIENTE:\n\n" +
+                    $"• Producto: {producto.Nombre}\n" +
+                    $"• Stock en Sistema: {producto.StockActual} unidades\n" +
+                    $"• Total Solicitado: {totalRequerido} unidades ({enCarritoActual} en carrito + {cantidad} nuevos)\n\n" +
+                    $"¿Desea agregarlo de todas formas y registrar la venta con stock deficitario para regularizar luego?";
+
+                var respuesta = MessageBox.Show(advertencia, "Alerta de Stock Físico", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (respuesta != DialogResult.Yes)
+                {
+                    return;
+                }
+            }
+
             if (itemExistente != null)
             {
-                itemExistente.Cantidad += 1;
-                // Forzar actualizaciÃ³n de la fila para que recalcule subtotal
+                itemExistente.Cantidad += cantidad;
                 dgvCarrito.Refresh();
             }
             else
@@ -223,20 +410,46 @@ namespace KioscoApp
                     Codigo = producto.SKU,
                     Descripcion = producto.Nombre,
                     PrecioUnitario = producto.PrecioVenta,
-                    Cantidad = 1
+                    Cantidad = cantidad
                 });
             }
 
             ActualizarTotales();
+            EnfocarEscaner();
         }
-
-        private decimal _descuentoPorcentaje = 0;
 
         private void DgvCarrito_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (e.RowIndex >= 0 && e.RowIndex < _carrito.Count)
             {
-                // Forzar que el grid se redibuje para actualizar la columna calculada "Subtotal"
+                var item = _carrito[e.RowIndex];
+
+                if (item.Cantidad <= 0)
+                {
+                    MessageBox.Show("La cantidad debe ser mayor a 0. Para quitar el producto presione Supr.", "Cantidad Inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    item.Cantidad = 1;
+                    dgvCarrito.Refresh();
+                }
+                else
+                {
+                    // Validar stock al editar cantidad manual en la grilla
+                    var producto = _productoService.ObtenerPorId(item.IdProducto);
+                    if (producto != null && item.Cantidad > producto.StockActual)
+                    {
+                        var confirm = MessageBox.Show(
+                            $"La cantidad ingresada ({item.Cantidad}) supera el stock disponible ({producto.StockActual}) de '{item.Descripcion}'.\n\n¿Desea mantenerla de todas formas?",
+                            "Alerta de Stock",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning);
+
+                        if (confirm != DialogResult.Yes)
+                        {
+                            item.Cantidad = Math.Max(1, producto.StockActual);
+                            dgvCarrito.Refresh();
+                        }
+                    }
+                }
+
                 dgvCarrito.InvalidateRow(e.RowIndex);
                 ActualizarTotales();
             }
@@ -245,6 +458,67 @@ namespace KioscoApp
         private void DgvCarrito_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
         {
             ActualizarTotales();
+            EnfocarEscaner();
+        }
+
+        private void DgvCarrito_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                e.Handled = true;
+                EliminarItemSeleccionado();
+            }
+        }
+
+        private void EliminarItemSeleccionado()
+        {
+            if (dgvCarrito.CurrentRow != null && dgvCarrito.CurrentRow.Index >= 0 && dgvCarrito.CurrentRow.Index < _carrito.Count)
+            {
+                var item = _carrito[dgvCarrito.CurrentRow.Index];
+                var confirm = MessageBox.Show($"¿Desea quitar '{item.Descripcion}' del carrito?", "Quitar producto", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confirm == DialogResult.Yes)
+                {
+                    _carrito.RemoveAt(dgvCarrito.CurrentRow.Index);
+                    ActualizarTotales();
+                    EnfocarEscaner();
+                }
+            }
+        }
+
+        private void ModificarCantidadSeleccionada(int delta)
+        {
+            if (dgvCarrito.CurrentRow != null && dgvCarrito.CurrentRow.Index >= 0 && dgvCarrito.CurrentRow.Index < _carrito.Count)
+            {
+                var item = _carrito[dgvCarrito.CurrentRow.Index];
+                int nuevaCant = item.Cantidad + delta;
+
+                if (nuevaCant <= 0)
+                {
+                    EliminarItemSeleccionado();
+                }
+                else
+                {
+                    // Validar si sube cantidad
+                    if (delta > 0)
+                    {
+                        var producto = _productoService.ObtenerPorId(item.IdProducto);
+                        if (producto != null && nuevaCant > producto.StockActual)
+                        {
+                            var confirm = MessageBox.Show(
+                                $"Stock superado: solo quedan {producto.StockActual} unidades en sistema.\n\n¿Continuar sumando?",
+                                "Stock Insuficiente",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Warning);
+
+                            if (confirm != DialogResult.Yes) return;
+                        }
+                    }
+
+                    item.Cantidad = nuevaCant;
+                    dgvCarrito.Refresh();
+                    ActualizarTotales();
+                }
+            }
         }
 
         private void ActualizarTotales()
@@ -255,62 +529,153 @@ namespace KioscoApp
 
             if (lblSubtotal != null)
             {
-                lblSubtotal.Text = $"$ {subtotal:N2}";
+                lblSubtotal.Text = $"Subtotal: $ {subtotal:N2}\nDescuento ({_descuentoPorcentaje}%): $ {descuento:N2}";
             }
             if (lblTotal != null)
             {
-                lblTotal.Text = $"$ {total:N2}";
+                lblTotal.Text = $"TOTAL: $ {total:N2}";
             }
         }
 
-        private void BtnCancelarVenta_Click(object sender, EventArgs e)
-        {
-            if (_carrito.Count > 0)
-            {
-                var result = MessageBox.Show("Â¿EstÃ¡ seguro que desea cancelar la venta actual?", "Cancelar Venta", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    CancelarVenta();
-                }
-            }
-        }
+        #endregion
 
-        private void CancelarVenta()
-        {
-            _carrito.Clear();
-            _descuentoPorcentaje = 0;
-            ActualizarTotales();
-            txtScanner.Clear();
-            txtScanner.Focus();
-        }
+        #region Cobro y Procesamiento de Venta con Validación Rigurosa
 
-        private void BtnCobrar_Click(object sender, EventArgs e)
-        {
-            ProcesarCobro("Efectivo");
-        }
-
-        private void BtnCobroQR_Click(object sender, EventArgs e)
-        {
-            ProcesarCobro("MercadoPago / QR");
-        }
-
-        private void BtnCobroTarjeta_Click(object sender, EventArgs e)
-        {
-            ProcesarCobro("Tarjeta (DÃ©bito/CrÃ©dito)");
-        }
-
-        private void ProcesarCobro(string metodoPago)
+        private void BtnCobrar_Click(object? sender, EventArgs e)
         {
             if (_carrito.Count == 0)
             {
-                MessageBox.Show("El carrito estÃ¡ vacÃ­o. Escanee productos antes de cobrar.", "Carrito vacÃ­o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("El carrito está vacío. Escanee productos antes de cobrar.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                EnfocarEscaner();
                 return;
             }
 
             decimal subtotal = _carrito.Sum(d => d.Subtotal);
             decimal descuentoMonto = subtotal * (_descuentoPorcentaje / 100);
             decimal total = subtotal - descuentoMonto;
-            
+
+            // Abrir calculadora de vuelto profesional para cobro en efectivo
+            using var modal = new FrmCobroEfectivo(total);
+            if (modal.ShowDialog(this) != DialogResult.OK)
+            {
+                EnfocarEscaner();
+                return;
+            }
+
+            ProcesarCobro("Efectivo", modal.MontoAbonado, modal.Vuelto);
+        }
+
+        private void BtnCobroQR_Click(object? sender, EventArgs e)
+        {
+            if (_carrito.Count == 0)
+            {
+                MessageBox.Show("El carrito está vacío. Escanee productos antes de cobrar.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                EnfocarEscaner();
+                return;
+            }
+
+            decimal total = _carrito.Sum(d => d.Subtotal) * (1 - _descuentoPorcentaje / 100);
+            var confirm = MessageBox.Show(
+                $"Total a Cobrar por Mercado Pago / QR: $ {total:N2}\n\n¿El cliente ya escaneó el código y el pago figura acreditado?",
+                "Confirmar Cobro QR",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                ProcesarCobro("MercadoPago / QR", total, 0m);
+            }
+        }
+
+        private void BtnCobroTarjeta_Click(object? sender, EventArgs e)
+        {
+            if (_carrito.Count == 0)
+            {
+                MessageBox.Show("El carrito está vacío. Escanee productos antes de cobrar.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                EnfocarEscaner();
+                return;
+            }
+
+            decimal total = _carrito.Sum(d => d.Subtotal) * (1 - _descuentoPorcentaje / 100);
+            var confirm = MessageBox.Show(
+                $"Total a Cobrar por Tarjeta de Débito/Crédito: $ {total:N2}\n\n¿La transacción fue aprobada en la terminal / posnet?",
+                "Confirmar Cobro con Tarjeta",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                ProcesarCobro("Tarjeta (Débito/Crédito)", total, 0m);
+            }
+        }
+
+        private void BtnCuentaCorriente_Click(object? sender, EventArgs e)
+        {
+            if (_carrito.Count == 0)
+            {
+                MessageBox.Show("El carrito está vacío. Escanee productos antes de cobrar.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                EnfocarEscaner();
+                return;
+            }
+
+            if (_clienteActual == null || _clienteActual.Id <= 1 || _clienteActual.Dni == "00000000")
+            {
+                MessageBox.Show(
+                    "Para cobrar con Cuenta Corriente debe seleccionar un cliente registrado (no disponible para Consumidor Final).\n\nBusque al cliente por DNI arriba a la derecha [F10].",
+                    "Cliente Requerido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                if (txtBusquedaCliente != null)
+                {
+                    txtBusquedaCliente.Focus();
+                    txtBusquedaCliente.SelectAll();
+                }
+                return;
+            }
+
+            decimal subtotal = _carrito.Sum(d => d.Subtotal);
+            decimal descuentoMonto = subtotal * (_descuentoPorcentaje / 100);
+            decimal total = subtotal - descuentoMonto;
+
+            decimal nuevoSaldo = _clienteActual.SaldoDeudor + total;
+            if (_clienteActual.LimiteCredito > 0 && nuevoSaldo > _clienteActual.LimiteCredito)
+            {
+                var confirmacion = MessageBox.Show(
+                    $"¡Atención! Esta compra supera el límite de crédito del cliente:\n\n" +
+                    $"• Límite de Crédito: $ {_clienteActual.LimiteCredito:N2}\n" +
+                    $"• Saldo Deudor Actual: $ {_clienteActual.SaldoDeudor:N2}\n" +
+                    $"• Compra Actual: $ {total:N2}\n" +
+                    $"• Nuevo Saldo Resultante: $ {nuevoSaldo:N2}\n\n" +
+                    "¿Desea autorizar y registrar la venta fiada de todas formas?",
+                    "Límite de Crédito Excedido",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (confirmacion != DialogResult.Yes) return;
+            }
+            else
+            {
+                var confirmacion = MessageBox.Show(
+                    $"¿Confirma registrar esta venta fiada a Cuenta Corriente para {_clienteActual.NombreCompleto}?\n\n" +
+                    $"• Total a cargar: $ {total:N2}\n" +
+                    $"• Saldo Deudor Actual: $ {_clienteActual.SaldoDeudor:N2}\n" +
+                    $"• Nuevo Saldo Deudor: $ {nuevoSaldo:N2}",
+                    "Confirmar Cuenta Corriente",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmacion != DialogResult.Yes) return;
+            }
+
+            ProcesarCobro("Cuenta Corriente", total, 0m);
+        }
+
+        private void ProcesarCobro(string metodoPago, decimal abonado, decimal vuelto)
+        {
+            decimal subtotal = _carrito.Sum(d => d.Subtotal);
+            decimal descuentoMonto = subtotal * (_descuentoPorcentaje / 100);
+            decimal total = subtotal - descuentoMonto;
+
             var nuevaVenta = new Venta
             {
                 IdCliente = _clienteActual.Id,
@@ -324,80 +689,79 @@ namespace KioscoApp
 
             try
             {
-                _ventaService.RegistrarVenta(nuevaVenta);
+                int idVenta = _ventaService.RegistrarVenta(nuevaVenta);
 
-                string msg = $"Venta registrada con Ã©xito.\n\nMÃ©todo: {metodoPago}\nTotal Cobrado: $ {total:N2}";
-                if (_descuentoPorcentaje > 0) msg += $"\n(Incluye descuento del {_descuentoPorcentaje}%)";
+                string msg = $"¡Venta #{idVenta} Registrada con Éxito!\n\n" +
+                             $"• Método de Pago: {metodoPago}\n" +
+                             $"• Total Cobrado:  $ {total:N2}\n";
 
-                MessageBox.Show(msg, "Venta Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                
-                CancelarVenta(); // Limpia la pantalla para el siguiente cliente
+                if (metodoPago == "Efectivo")
+                {
+                    msg += $"• Abonó con:      $ {abonado:N2}\n" +
+                           $"----------------------------------------\n" +
+                           $"• ENTREGAR VUELTO: $ {vuelto:N2}";
+                }
+                else if (metodoPago == "Cuenta Corriente")
+                {
+                    msg += $"• Nuevo saldo del cliente: $ {(_clienteActual.SaldoDeudor + total):N2}";
+                }
+
+                MessageBox.Show(msg, "Operación Finalizada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Limpiar pantalla y resetear para el siguiente cliente
+                CancelarVenta();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al registrar la venta: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al registrar la venta:\n\n{ex.Message}", "Error de Venta", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void BtnConsultarPrecio_Click(object sender, EventArgs e)
+        private void BtnCancelarVenta_Click(object? sender, EventArgs e)
         {
-            string sku = txtScanner.Text.Trim();
-            if (string.IsNullOrEmpty(sku))
+            if (_carrito.Count > 0)
             {
-                MessageBox.Show("Primero escanee o escriba un cÃ³digo en el buscador para consultar su precio.", "Consultar Precio", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtScanner.Focus();
-                return;
-            }
+                var result = MessageBox.Show(
+                    "¿Está seguro que desea cancelar la venta actual y vaciar el carrito?",
+                    "Cancelar Venta",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
 
-            var producto = _productoService.ObtenerPorSKU(sku);
-            if (producto != null)
-            {
-                MessageBox.Show($"Producto: {producto.Nombre}\nPrecio: $ {producto.PrecioVenta:N2}", "Consulta de Precio", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtScanner.Clear();
-                txtScanner.Focus();
-            }
-            else
-            {
-                MessageBox.Show($"No se encontrÃ³ el producto con cÃ³digo: {sku}", "No encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void BtnAplicarDescuento_Click(object sender, EventArgs e)
-        {
-            if (_carrito.Count == 0)
-            {
-                MessageBox.Show("Agregue productos al carrito antes de aplicar un descuento.", "Carrito vacÃ­o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (_descuentoPorcentaje > 0)
-            {
-                var remove = MessageBox.Show($"Ya existe un descuento del {_descuentoPorcentaje}%. Â¿Desea quitarlo?", "Quitar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (remove == DialogResult.Yes)
+                if (result == DialogResult.Yes)
                 {
-                    _descuentoPorcentaje = 0;
-                    ActualizarTotales();
+                    CancelarVenta();
                 }
             }
             else
             {
-                var res = MessageBox.Show("Â¿Desea aplicar un 10% de descuento a esta compra?", "Aplicar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (res == DialogResult.Yes)
-                {
-                    _descuentoPorcentaje = 10;
-                    ActualizarTotales();
-                }
+                CancelarVenta();
             }
-            txtScanner.Focus();
         }
 
-        private void BtnSuspenderVenta_Click(object sender, EventArgs e)
+        private void CancelarVenta()
+        {
+            _carrito.Clear();
+            _descuentoPorcentaje = 0;
+            _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Id = 1, Nombre = "Consumidor", Apellido = "Final", Dni = "00000000" };
+            ActualizarUICliente();
+            ActualizarTotales();
+            ActualizarTextoBotonSuspender();
+            if (txtScanner != null) txtScanner.Clear();
+            if (txtBusquedaCliente != null) txtBusquedaCliente.Clear();
+            EnfocarEscaner();
+        }
+
+        #endregion
+
+        #region Suspender y Reanudar Venta
+
+        private void BtnSuspenderVenta_Click(object? sender, EventArgs e)
         {
             if (_carrito.Count > 0)
             {
                 var confirm = MessageBox.Show(
-                    "¿Desea suspender la venta actual para atender a otro cliente?\n\nEl carrito se guardará en espera y quedará la pantalla lista.",
-                    "Suspender Venta",
+                    "¿Desea suspender la venta actual para atender a otro cliente?\n\nEl ticket quedará en espera y la pantalla se liberará de inmediato.",
+                    "Suspender Venta [F4]",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -417,15 +781,26 @@ namespace KioscoApp
                     DescuentoPorcentaje = _descuentoPorcentaje
                 });
 
-                MessageBox.Show($"Venta en espera guardada (Ticket #{_ventasSuspendidas.Count}).\nPantalla liberada para el siguiente cliente.", "Venta Suspendida", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CancelarVenta();
+                MessageBox.Show(
+                    $"Venta guardada en espera (Ticket #{_ventasSuspendidas.Count}).\nPantalla libre para el siguiente cliente.",
+                    "Venta Suspendida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                _carrito.Clear();
+                _descuentoPorcentaje = 0;
+                _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Id = 1, Nombre = "Consumidor", Apellido = "Final", Dni = "00000000" };
+                ActualizarUICliente();
+                ActualizarTotales();
                 ActualizarTextoBotonSuspender();
+                EnfocarEscaner();
             }
             else
             {
                 if (_ventasSuspendidas.Count == 0)
                 {
-                    MessageBox.Show("No hay ventas en espera actualmente.", "Sin ventas en espera", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("No hay ninguna venta en espera actualmente.", "Sin ventas en espera", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    EnfocarEscaner();
                     return;
                 }
 
@@ -433,7 +808,7 @@ namespace KioscoApp
                 var venta = _ventasSuspendidas.Last();
                 _ventasSuspendidas.RemoveAt(_ventasSuspendidas.Count - 1);
 
-                _clienteActual = venta.Cliente ?? _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Nombre = "Consumidor", Apellido = "Final" };
+                _clienteActual = venta.Cliente ?? _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Id = 1, Nombre = "Consumidor", Apellido = "Final" };
                 ActualizarUICliente();
 
                 _carrito.Clear();
@@ -446,7 +821,13 @@ namespace KioscoApp
                 ActualizarTotales();
                 ActualizarTextoBotonSuspender();
 
-                MessageBox.Show($"Venta recuperada con éxito ({venta.Carrito.Count} artículos).\nTotal: $ {venta.Total:N2}", "Venta Reanudada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    $"Venta recuperada con éxito ({venta.Carrito.Count} artículos).\nTotal a Cobrar: $ {venta.Total:N2}",
+                    "Venta Reanudada",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                EnfocarEscaner();
             }
         }
 
@@ -455,25 +836,24 @@ namespace KioscoApp
             if (btnSuspenderVenta != null)
             {
                 btnSuspenderVenta.Text = _ventasSuspendidas.Count > 0
-                    ? $"Reanudar Venta ({_ventasSuspendidas.Count})"
-                    : "Suspender Venta";
+                    ? $"Reanudar Venta ({_ventasSuspendidas.Count}) [F4]"
+                    : "Suspender Venta [F4]";
                 btnSuspenderVenta.BackColor = _ventasSuspendidas.Count > 0 ? Color.Orange : Color.DarkSeaGreen;
             }
         }
 
-        private void AgregarProducto(Producto producto)
-        {
-            if (producto == null || string.IsNullOrEmpty(producto.SKU)) return;
-            AgregarAlCarrito(producto.SKU);
-        }
+        #endregion
 
-        private void BtnBuscarProducto_Click(object sender, EventArgs e)
+        #region Modales Complementarios y Utilidades
+
+        private void BtnBuscarProducto_Click(object? sender, EventArgs e)
         {
             using var modal = new Views.FrmBuscarProductoModal();
             if (modal.ShowDialog(this) == DialogResult.OK && modal.ProductoSeleccionado != null)
             {
                 AgregarProducto(modal.ProductoSeleccionado);
             }
+            EnfocarEscaner();
         }
 
         private void BtnArticulosFrecuentes_Click(object? sender, EventArgs e)
@@ -483,66 +863,78 @@ namespace KioscoApp
             {
                 AgregarProducto(modal.ProductoSeleccionado);
             }
+            EnfocarEscaner();
         }
 
-        private void BtnCuentaCorriente_Click(object? sender, EventArgs e)
+        private void BtnConsultarPrecio_Click(object? sender, EventArgs e)
         {
-            if (_carrito.Count == 0)
+            string sku = txtScanner.Text.Trim();
+            if (string.IsNullOrEmpty(sku))
             {
-                MessageBox.Show("El carrito está vacío. Escanee productos antes de cobrar.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Escanee o escriba un código en el buscador para consultar su precio.", "Consultar Precio [F3]", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                EnfocarEscaner();
                 return;
             }
 
-            if (_clienteActual == null || _clienteActual.Id <= 1 || _clienteActual.Dni == "00000000")
+            var producto = _productoService.ObtenerPorSKU(sku) ?? _productoService.BuscarPorNombreOSKU(sku).FirstOrDefault();
+            if (producto != null)
             {
-                MessageBox.Show("Para cobrar con Cuenta Corriente debe seleccionar un cliente registrado (no disponible para Consumidor Final).\n\nBusque al cliente por DNI arriba a la derecha.", "Cliente Requerido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtBusquedaCliente.Focus();
-                return;
-            }
+                MessageBox.Show(
+                    $"• Producto: {producto.Nombre}\n" +
+                    $"• SKU: {producto.SKU}\n" +
+                    $"• Categoría: {producto.CategoriaNombre}\n" +
+                    $"• Stock Actual: {producto.StockActual} unidades\n\n" +
+                    $"PRECIO DE VENTA: $ {producto.PrecioVenta:N2}",
+                    "Consulta de Precio",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
-            decimal subtotal = _carrito.Sum(d => d.Subtotal);
-            decimal descuentoMonto = subtotal * (_descuentoPorcentaje / 100);
-            decimal total = subtotal - descuentoMonto;
-
-            decimal nuevoSaldo = _clienteActual.SaldoDeudor + total;
-            if (nuevoSaldo > _clienteActual.LimiteCredito)
-            {
-                var confirmacion = MessageBox.Show(
-                    $"¡Atención! Esta compra supera el límite de crédito del cliente.\n\n" +
-                    $"• Límite de Crédito: $ {_clienteActual.LimiteCredito:N2}\n" +
-                    $"• Saldo Deudor Actual: $ {_clienteActual.SaldoDeudor:N2}\n" +
-                    $"• Compra Actual: $ {total:N2}\n" +
-                    $"• Nuevo Saldo Resultante: $ {nuevoSaldo:N2}\n\n" +
-                    "¿Desea autorizar y registrar la venta fiada de todas formas?",
-                    "Límite de Crédito Excedido",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning);
-
-                if (confirmacion != DialogResult.Yes) return;
+                txtScanner.Clear();
+                EnfocarEscaner();
             }
             else
             {
-                var confirmacion = MessageBox.Show(
-                    $"¿Confirma registrar esta venta a Cuenta Corriente (Fiado) para {_clienteActual.NombreCompleto}?\n\n" +
-                    $"• Total a cargar: $ {total:N2}\n" +
-                    $"• Saldo Deudor Actual: $ {_clienteActual.SaldoDeudor:N2}\n" +
-                    $"• Nuevo Saldo Deudor: $ {nuevoSaldo:N2}",
-                    "Confirmar Cuenta Corriente",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (confirmacion != DialogResult.Yes) return;
+                MessageBox.Show($"No se encontró ningún producto con el código: {sku}", "No encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                EnfocarEscaner();
             }
-
-            ProcesarCobro("Cuenta Corriente");
         }
 
-        private void BtnBuscarCliente_Click(object sender, EventArgs e)
+        private void BtnAplicarDescuento_Click(object? sender, EventArgs e)
+        {
+            if (_carrito.Count == 0)
+            {
+                MessageBox.Show("Agregue productos al carrito antes de aplicar un descuento.", "Carrito vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                EnfocarEscaner();
+                return;
+            }
+
+            if (_descuentoPorcentaje > 0)
+            {
+                var remove = MessageBox.Show($"Actualmente hay un descuento del {_descuentoPorcentaje}%. ¿Desea quitarlo?", "Quitar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (remove == DialogResult.Yes)
+                {
+                    _descuentoPorcentaje = 0;
+                    ActualizarTotales();
+                }
+            }
+            else
+            {
+                var res = MessageBox.Show("¿Desea aplicar un 10% de descuento a esta compra?", "Aplicar Descuento", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (res == DialogResult.Yes)
+                {
+                    _descuentoPorcentaje = 10;
+                    ActualizarTotales();
+                }
+            }
+            EnfocarEscaner();
+        }
+
+        private void BtnBuscarCliente_Click(object? sender, EventArgs e)
         {
             BuscarCliente();
         }
 
-        private void TxtBusquedaCliente_KeyPress(object sender, KeyPressEventArgs e)
+        private void TxtBusquedaCliente_KeyPress(object? sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
@@ -556,9 +948,9 @@ namespace KioscoApp
             string dni = txtBusquedaCliente.Text.Trim();
             if (string.IsNullOrEmpty(dni))
             {
-                // Volver a Consumidor Final
-                _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Nombre = "Consumidor", Apellido = "Final" };
+                _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Id = 1, Nombre = "Consumidor", Apellido = "Final", Dni = "00000000" };
                 ActualizarUICliente();
+                EnfocarEscaner();
                 return;
             }
 
@@ -567,17 +959,20 @@ namespace KioscoApp
             {
                 _clienteActual = cliente;
                 ActualizarUICliente();
-                txtScanner.Focus(); // Volver foco al escÃ¡ner
+                EnfocarEscaner();
             }
             else
             {
                 MessageBox.Show($"No se encontró ningún cliente activo con el DNI {dni}.", "Cliente no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtBusquedaCliente.SelectAll();
+                txtBusquedaCliente.Focus();
             }
         }
 
-        private void BtnNuevoCliente_Click(object sender, EventArgs e)
+        private void BtnNuevoCliente_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("Diríjase a la pestaña 'Clientes' en el menú principal para registrar un nuevo cliente.", "Nuevo Cliente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            EnfocarEscaner();
         }
 
         private void BtnRetiroCaja_Click(object? sender, EventArgs e)
@@ -590,33 +985,37 @@ namespace KioscoApp
                     int? idUsuario = UserSession.IdUsuario > 0 ? UserSession.IdUsuario : null;
                     var cajaService = new Business.CajaService();
                     cajaService.RegistrarRetiro(modal.Monto, modal.Motivo, idUsuario);
-                    MessageBox.Show($"Retiro de $ {modal.Monto:N2} registrado en caja correctamente.\n\nMotivo: {modal.Motivo}", "Retiro Registrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        $"Retiro de $ {modal.Monto:N2} registrado en caja correctamente.\n\nMotivo: {modal.Motivo}",
+                        "Retiro Registrado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Error al registrar retiro: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            EnfocarEscaner();
         }
 
         private void ConfigurarAutocompletadoClientes()
         {
             if (txtBusquedaCliente != null)
             {
-                AutoCompleteStringCollection data = new AutoCompleteStringCollection();
+                var data = new AutoCompleteStringCollection();
                 var clientes = _clienteService.ObtenerTodos();
                 foreach (var c in clientes)
                 {
                     data.Add(c.Dni);
                 }
-                
+
                 txtBusquedaCliente.AutoCompleteCustomSource = data;
                 txtBusquedaCliente.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                 txtBusquedaCliente.AutoCompleteSource = AutoCompleteSource.CustomSource;
             }
         }
+
+        #endregion
     }
 }
-
-
-

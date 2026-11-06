@@ -88,5 +88,30 @@ namespace KioscoApp.Data
             }
             return ventas;
         }
+
+        public List<DetalleVenta> ObtenerDetallesPorVenta(int idVenta)
+        {
+            var detalles = new List<DetalleVenta>();
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            using var cmd = new SqlCommand("sp_Ventas_ObtenerDetalles", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@IdVenta", idVenta);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                detalles.Add(new DetalleVenta
+                {
+                    IdProducto = Convert.ToInt32(reader["IdProducto"]),
+                    Codigo = reader["Codigo"]?.ToString() ?? "",
+                    Descripcion = reader["Descripcion"]?.ToString() ?? "",
+                    PrecioUnitario = Convert.ToDecimal(reader["PrecioUnitario"]),
+                    Cantidad = Convert.ToInt32(reader["Cantidad"])
+                });
+            }
+            return detalles;
+        }
     }
 }

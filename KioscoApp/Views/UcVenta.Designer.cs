@@ -56,7 +56,7 @@ namespace KioscoApp
             lblScanner.Name = "lblScanner";
             lblScanner.Size = new Size(214, 21);
             lblScanner.TabIndex = 14;
-            lblScanner.Text = "Escanear Código de Barras:";
+            lblScanner.Text = "Escanear Cdigo de Barras:";
             // 
                         // 
             // lstSugerencias
@@ -98,7 +98,7 @@ namespace KioscoApp
             btnCobrar.Name = "btnCobrar";
             btnCobrar.Size = new Size(300, 55);
             btnCobrar.TabIndex = 3;
-            btnCobrar.Text = "?? COBRO EFECTIVO (F10)";
+            btnCobrar.Text = "Efectivo [F5]";
             btnCobrar.UseVisualStyleBackColor = false;
             // 
             // btnCobroQR
@@ -110,7 +110,7 @@ namespace KioscoApp
             btnCobroQR.Name = "btnCobroQR";
             btnCobroQR.Size = new Size(145, 50);
             btnCobroQR.TabIndex = 2;
-            btnCobroQR.Text = "?? COBRO QR";
+            btnCobroQR.Text = "MercadoPago / QR [F6]";
             btnCobroQR.UseVisualStyleBackColor = false;
             // 
             // btnCobroTarjeta
@@ -122,7 +122,7 @@ namespace KioscoApp
             btnCobroTarjeta.Name = "btnCobroTarjeta";
             btnCobroTarjeta.Size = new Size(145, 50);
             btnCobroTarjeta.TabIndex = 1;
-            btnCobroTarjeta.Text = "?? TARJETA";
+            btnCobroTarjeta.Text = "Tarjeta [F7]";
             btnCobroTarjeta.UseVisualStyleBackColor = false;
             // 
             // btnCuentaCorriente
@@ -133,7 +133,7 @@ namespace KioscoApp
             btnCuentaCorriente.Name = "btnCuentaCorriente";
             btnCuentaCorriente.Size = new Size(145, 40);
             btnCuentaCorriente.TabIndex = 4;
-            btnCuentaCorriente.Text = "?? Cuenta Corriente";
+            btnCuentaCorriente.Text = "Cta. Corriente [F8]";
             btnCuentaCorriente.UseVisualStyleBackColor = false;
             // 
             // btnCancelarVenta
@@ -145,7 +145,7 @@ namespace KioscoApp
             btnCancelarVenta.Name = "btnCancelarVenta";
             btnCancelarVenta.Size = new Size(145, 40);
             btnCancelarVenta.TabIndex = 7;
-            btnCancelarVenta.Text = "? Cancelar Venta";
+            btnCancelarVenta.Text = "Cancelar Ticket [Esc]";
             btnCancelarVenta.UseVisualStyleBackColor = false;
             // 
             // btnArticulosFrecuentes
@@ -157,7 +157,7 @@ namespace KioscoApp
             btnArticulosFrecuentes.Name = "btnArticulosFrecuentes";
             btnArticulosFrecuentes.Size = new Size(300, 45);
             btnArticulosFrecuentes.TabIndex = 10;
-            btnArticulosFrecuentes.Text = "? Artículos Frecuentes (F3)";
+            btnArticulosFrecuentes.Text = "Art. Frecuentes [F2]";
             btnArticulosFrecuentes.UseVisualStyleBackColor = false;
             // 
             // btnBuscarProducto
@@ -169,7 +169,7 @@ namespace KioscoApp
             btnBuscarProducto.Name = "btnBuscarProducto";
             btnBuscarProducto.Size = new Size(300, 45);
             btnBuscarProducto.TabIndex = 11;
-            btnBuscarProducto.Text = "?? Buscar Producto (F2)";
+            btnBuscarProducto.Text = "Buscar Prod. [F1]";
             btnBuscarProducto.UseVisualStyleBackColor = false;
             // 
             // btnAplicarDescuento
@@ -191,7 +191,7 @@ namespace KioscoApp
             btnSuspenderVenta.Name = "btnSuspenderVenta";
             btnSuspenderVenta.Size = new Size(145, 45);
             btnSuspenderVenta.TabIndex = 8;
-            btnSuspenderVenta.Text = "? Suspender";
+            btnSuspenderVenta.Text = "Suspender Venta [F4]";
             btnSuspenderVenta.UseVisualStyleBackColor = false;
             // 
             // btnConsultarPrecio
@@ -203,7 +203,7 @@ namespace KioscoApp
             btnConsultarPrecio.Name = "btnConsultarPrecio";
             btnConsultarPrecio.Size = new Size(145, 45);
             btnConsultarPrecio.TabIndex = 9;
-            btnConsultarPrecio.Text = "Consulta Precio";
+            btnConsultarPrecio.Text = "Consultar Precio [F3]";
             btnConsultarPrecio.UseVisualStyleBackColor = false;
             // 
             // btnRetiroCaja
@@ -215,7 +215,7 @@ namespace KioscoApp
             btnRetiroCaja.Name = "btnRetiroCaja";
             btnRetiroCaja.Size = new Size(145, 45);
             btnRetiroCaja.TabIndex = 10;
-            btnRetiroCaja.Text = "Retiro / Gasto";
+            btnRetiroCaja.Text = "Retiro Caja [F9]";
             btnRetiroCaja.UseVisualStyleBackColor = false;
             // 
             // btnAutorizacion
@@ -252,7 +252,7 @@ namespace KioscoApp
             lblDniBusqueda.Name = "lblDniBusqueda";
             lblDniBusqueda.Size = new Size(86, 15);
             lblDniBusqueda.TabIndex = 0;
-            lblDniBusqueda.Text = "DNI / Teléfono:";
+            lblDniBusqueda.Text = "DNI / Telfono:";
             // 
             // txtBusquedaCliente
             // 
@@ -270,7 +270,7 @@ namespace KioscoApp
             btnBuscarCliente.Name = "btnBuscarCliente";
             btnBuscarCliente.Size = new Size(100, 30);
             btnBuscarCliente.TabIndex = 2;
-            btnBuscarCliente.Text = "Buscar (F4)";
+            btnBuscarCliente.Text = "Buscar [F10]";
             btnBuscarCliente.UseVisualStyleBackColor = false;
             // 
             // lblClienteActual

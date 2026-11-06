@@ -660,3 +660,22 @@ BEGIN
         TotalFacturado DESC;
 END
 GO
+
+CREATE OR ALTER PROCEDURE sp_Ventas_ObtenerDetalles
+    @IdVenta INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+        dv.IdProducto,
+        ISNULL(p.SKU, 'S/SKU') AS Codigo,
+        ISNULL(p.Nombre, 'Producto Eliminado') AS Descripcion,
+        dv.PrecioUnitario,
+        dv.Cantidad,
+        dv.Subtotal
+    FROM DetallesVenta dv
+    LEFT JOIN Productos p ON dv.IdProducto = p.Id
+    WHERE dv.IdVenta = @IdVenta
+    ORDER BY dv.Id ASC;
+END
+GO
