@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using KioscoApp.Models;
 using Microsoft.Data.SqlClient;
 
@@ -13,14 +14,8 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            const string query = @"SELECT p.Id, p.SKU, p.Nombre, p.Descripcion, p.IdCategoria,
-                                          c.Nombre AS CategoriaNombre, p.PrecioCosto, p.PrecioVenta,
-                                          p.StockActual, p.StockMinimo
-                                   FROM Productos p
-                                   INNER JOIN Categorias c ON p.IdCategoria = c.Id
-                                   ORDER BY p.Nombre";
-
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Productos_ObtenerTodos", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -35,14 +30,8 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            const string query = @"SELECT p.Id, p.SKU, p.Nombre, p.Descripcion, p.IdCategoria,
-                                          c.Nombre AS CategoriaNombre, p.PrecioCosto, p.PrecioVenta,
-                                          p.StockActual, p.StockMinimo
-                                   FROM Productos p
-                                   INNER JOIN Categorias c ON p.IdCategoria = c.Id
-                                   WHERE p.SKU = @SKU";
-
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Productos_ObtenerPorSKU", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@SKU", sku.Trim());
             using var reader = cmd.ExecuteReader();
 
@@ -54,14 +43,8 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            const string query = @"SELECT p.Id, p.SKU, p.Nombre, p.Descripcion, p.IdCategoria,
-                                          c.Nombre AS CategoriaNombre, p.PrecioCosto, p.PrecioVenta,
-                                          p.StockActual, p.StockMinimo
-                                   FROM Productos p
-                                   INNER JOIN Categorias c ON p.IdCategoria = c.Id
-                                   WHERE p.Id = @Id";
-
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Productos_ObtenerPorId", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
             using var reader = cmd.ExecuteReader();
 
@@ -73,8 +56,8 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            const string query = "SELECT COUNT(1) FROM Productos WHERE LOWER(SKU) = LOWER(@SKU) AND Id != @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Productos_ExisteSKU", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@SKU", sku.Trim());
             cmd.Parameters.AddWithValue("@Id", idExcluir);
 
@@ -86,11 +69,8 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            const string query = @"INSERT INTO Productos
-                (SKU, Nombre, Descripcion, IdCategoria, PrecioCosto, PrecioVenta, StockActual, StockMinimo)
-                VALUES (@SKU, @Nombre, @Descripcion, @IdCategoria, @PrecioCosto, @PrecioVenta, @StockActual, @StockMinimo)";
-
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Productos_Insertar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             SetCommandParameters(cmd, p);
             cmd.ExecuteNonQuery();
         }
@@ -100,13 +80,8 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            const string query = @"UPDATE Productos SET
-                SKU = @SKU, Nombre = @Nombre, Descripcion = @Descripcion,
-                IdCategoria = @IdCategoria, PrecioCosto = @PrecioCosto, PrecioVenta = @PrecioVenta,
-                StockActual = @StockActual, StockMinimo = @StockMinimo
-                WHERE Id = @Id";
-
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Productos_Actualizar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", p.Id);
             SetCommandParameters(cmd, p);
             cmd.ExecuteNonQuery();
@@ -117,8 +92,8 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            const string query = "DELETE FROM Productos WHERE Id = @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Productos_Eliminar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
             cmd.ExecuteNonQuery();
         }
@@ -129,15 +104,8 @@ namespace KioscoApp.Data
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            const string query = @"SELECT TOP 10 p.Id, p.SKU, p.Nombre, p.Descripcion, p.IdCategoria,
-                                          c.Nombre AS CategoriaNombre, p.PrecioCosto, p.PrecioVenta,
-                                          p.StockActual, p.StockMinimo
-                                   FROM Productos p
-                                   INNER JOIN Categorias c ON p.IdCategoria = c.Id
-                                   WHERE p.Nombre LIKE @Term OR p.SKU LIKE @Term
-                                   ORDER BY p.Nombre";
-
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Productos_BuscarPorNombreOSKU", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Term", "%" + term.Trim() + "%");
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -146,6 +114,34 @@ namespace KioscoApp.Data
             }
 
             return productos;
+        }
+
+        public DataTable FiltrarStock(string filtro = "")
+        {
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            using var cmd = new SqlCommand("sp_Productos_FiltrarStock", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Filtro", "%" + filtro + "%");
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+
+        public void ActualizarStock(int id, int actual, int minimo)
+        {
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            using var cmd = new SqlCommand("sp_Productos_ActualizarStock", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.Parameters.AddWithValue("@Actual", actual);
+            cmd.Parameters.AddWithValue("@Minimo", minimo);
+            cmd.ExecuteNonQuery();
         }
 
         private static void SetCommandParameters(SqlCommand cmd, Producto p)

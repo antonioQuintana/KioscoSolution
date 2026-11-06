@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using KioscoApp.Models;
 
@@ -14,8 +15,8 @@ namespace KioscoApp.Data
             {
                 using var connection = DatabaseHelper.GetConnection();
                 connection.Open();
-                string query = "SELECT Id, Nombre FROM Provincias ORDER BY Nombre";
-                using var cmd = new SqlCommand(query, connection);
+                using var cmd = new SqlCommand("sp_Ubicaciones_ObtenerProvincias", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
                 using var reader = cmd.ExecuteReader();
                 
                 while (reader.Read())
@@ -41,8 +42,8 @@ namespace KioscoApp.Data
             {
                 using var connection = DatabaseHelper.GetConnection();
                 connection.Open();
-                string query = "SELECT Id, ProvinciaId, Nombre FROM Ciudades WHERE ProvinciaId = @ProvinciaId ORDER BY Nombre";
-                using var cmd = new SqlCommand(query, connection);
+                using var cmd = new SqlCommand("sp_Ubicaciones_ObtenerCiudadesPorProvincia", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ProvinciaId", provinciaId);
                 
                 using var reader = cmd.ExecuteReader();

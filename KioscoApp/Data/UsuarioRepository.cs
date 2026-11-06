@@ -13,8 +13,8 @@ namespace KioscoApp.Data
             var usuarios = new List<Usuario>();
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT Id, Nombre, Apellido, Dni, Usuario, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento FROM Usuarios";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Usuarios_ObtenerTodos", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -28,8 +28,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "SELECT Id, Nombre, Apellido, Dni, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento FROM Usuarios WHERE Usuario = @Usuario";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Usuarios_ObtenerPorUsuario", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Usuario", nombreUsuario);
 
             using var reader = cmd.ExecuteReader();
@@ -42,14 +42,15 @@ namespace KioscoApp.Data
 
         public bool ExisteDatoUnico(string campo, string valor, int idExcluir)
         {
-            // Validar el campo para prevenir inyección SQL en el nombre de la columna
+            // Validar el campo para prevenir valores no esperados
             var allowedColumns = new HashSet<string> { "Usuario", "Email", "Telefono", "Dni" };
             if (!allowedColumns.Contains(campo)) throw new ArgumentException("Campo inválido");
 
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = $"SELECT COUNT(1) FROM Usuarios WHERE {campo} = @Valor AND Id != @Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Usuarios_ExisteDatoUnico", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Campo", campo);
             cmd.Parameters.AddWithValue("@Valor", valor);
             cmd.Parameters.AddWithValue("@Id", idExcluir);
 
@@ -61,12 +62,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = @"INSERT INTO Usuarios 
-                (Nombre, Apellido, Dni, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento) 
-                VALUES 
-                (@Nombre, @Apellido, @Dni, @Usuario, @Contrasena, @Rol, @Email, @Telefono, @Calle, @Numero, @Ciudad, @Provincia, @Sexo, @Nacimiento)";
-                
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Usuarios_Insertar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             SetCommandParameters(cmd, u, true);
             cmd.ExecuteNonQuery();
         }
@@ -75,14 +72,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = @"UPDATE Usuarios SET 
-                Nombre=@Nombre, Apellido=@Apellido, Dni=@Dni, Usuario=@Usuario, Rol=@Rol, 
-                Email=@Email, Telefono=@Telefono, Calle=@Calle, Numero=@Numero, 
-                Ciudad=@Ciudad, Provincia=@Provincia, Sexo=@Sexo, Nacimiento=@Nacimiento " + 
-                (string.IsNullOrEmpty(u.Contrasena) ? "" : ", Contrasena=@Contrasena ") + 
-                "WHERE Id=@Id";
-                
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Usuarios_Actualizar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", u.Id);
             SetCommandParameters(cmd, u, !string.IsNullOrEmpty(u.Contrasena));
             cmd.ExecuteNonQuery();
@@ -92,8 +83,8 @@ namespace KioscoApp.Data
         {
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
-            string query = "DELETE FROM Usuarios WHERE Id=@Id";
-            using var cmd = new SqlCommand(query, connection);
+            using var cmd = new SqlCommand("sp_Usuarios_Eliminar", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
             cmd.ExecuteNonQuery();
         }
