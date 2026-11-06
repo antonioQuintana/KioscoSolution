@@ -10,114 +10,130 @@ namespace KioscoApp.Views
 {
     public class FrmDetalleVentaModal : Form
     {
-        private readonly Venta _venta;
         private readonly VentaService _ventaService;
+        private readonly ConfiguracionService _configService;
+        private readonly Venta _venta;
         private List<DetalleVenta> _detalles = new List<DetalleVenta>();
 
-        private Label lblTitulo;
-        private Label lblInfoVenta;
-        private DataGridView dgvDetalles;
-        private Label lblTotales;
-        private Button btnCopiarTicket;
-        private Button btnCerrar;
+        private DataGridView dgvDetalles = null!;
+        private Label lblTotales = null!;
+        private Button btnCopiarTicket = null!;
+        private Button btnCerrar = null!;
 
         public FrmDetalleVentaModal(Venta venta)
         {
             _venta = venta ?? throw new ArgumentNullException(nameof(venta));
             _ventaService = new VentaService();
-            InitializeComponent();
+            _configService = new ConfiguracionService();
+
+            InitializeCustomComponents();
             CargarDetalles();
         }
 
-        private void InitializeComponent()
+        private void InitializeCustomComponents()
         {
-            Text = $"Detalle del Ticket de Venta #{_venta.Id}";
+            Text = $"Detalle del Ticket de Venta N° {_venta.Id}";
             Size = new Size(620, 560);
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            KeyPreview = true;
-            BackColor = Color.FromArgb(34, 47, 62);
+            BackColor = Color.FromArgb(30, 30, 30);
             ForeColor = Color.White;
+            Font = new Font("Segoe UI", 9.5F);
 
-            lblTitulo = new Label
+            var lblTitulo = new Label
             {
-                Text = $"COMPROBANTE DE VENTA #{_venta.Id}",
-                Font = new Font("Segoe UI", 15F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(241, 196, 15),
+                Text = $"📄 Comprobante de Venta #{_venta.Id}",
+                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(0, 168, 255),
                 Location = new Point(20, 15),
-                Size = new Size(565, 30),
-                TextAlign = ContentAlignment.MiddleCenter
+                AutoSize = true
             };
 
             var pnlCabecera = new Panel
             {
                 Location = new Point(20, 50),
                 Size = new Size(565, 80),
-                BackColor = Color.FromArgb(44, 62, 80),
-                BorderStyle = BorderStyle.FixedSingle
+                BackColor = Color.FromArgb(45, 45, 48)
             };
 
-            lblInfoVenta = new Label
+            var lblFecha = new Label
             {
-                Text = $"• Fecha y Hora: {_venta.Fecha:dd/MM/yyyy HH:mm:ss}\n" +
-                       $"• Cliente: {_venta.NombreCliente}\n" +
-                       $"• Método de Pago: {_venta.MetodoPago}  |  Estado: {_venta.Estado}",
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
-                ForeColor = Color.White,
-                Location = new Point(10, 10),
-                Size = new Size(540, 60)
+                Text = $"Fecha: {_venta.Fecha:dd/MM/yyyy HH:mm:ss}",
+                Location = new Point(15, 12),
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.White
             };
-            pnlCabecera.Controls.Add(lblInfoVenta);
+
+            var lblCliente = new Label
+            {
+                Text = $"Cliente: {_venta.NombreCliente}",
+                Location = new Point(15, 42),
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9.5F),
+                ForeColor = Color.FromArgb(220, 220, 220)
+            };
+
+            var lblMetodo = new Label
+            {
+                Text = $"Método de Pago: {_venta.MetodoPago}",
+                Location = new Point(320, 12),
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(46, 204, 113)
+            };
+
+            var lblEstado = new Label
+            {
+                Text = $"Estado: {_venta.Estado}",
+                Location = new Point(320, 42),
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9.5F),
+                ForeColor = Color.FromArgb(241, 196, 15)
+            };
+
+            pnlCabecera.Controls.Add(lblFecha);
+            pnlCabecera.Controls.Add(lblCliente);
+            pnlCabecera.Controls.Add(lblMetodo);
+            pnlCabecera.Controls.Add(lblEstado);
 
             dgvDetalles = new DataGridView
             {
                 Location = new Point(20, 140),
                 Size = new Size(565, 250),
-                BackgroundColor = Color.FromArgb(45, 52, 54),
-                BorderStyle = BorderStyle.None,
                 ReadOnly = true,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
+                MultiSelect = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                RowHeadersVisible = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.FromArgb(45, 45, 48),
+                ForeColor = Color.Black
             };
 
-            dgvDetalles.DefaultCellStyle.BackColor = Color.FromArgb(53, 59, 72);
-            dgvDetalles.DefaultCellStyle.ForeColor = Color.White;
-            dgvDetalles.DefaultCellStyle.SelectionBackColor = Color.FromArgb(41, 128, 185);
-            dgvDetalles.DefaultCellStyle.SelectionForeColor = Color.White;
-            dgvDetalles.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 39, 46);
-            dgvDetalles.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvDetalles.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            dgvDetalles.EnableHeadersVisualStyles = false;
+            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Cantidad", HeaderText = "Cant.", FillWeight = 15 });
+            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Codigo", HeaderText = "Código / SKU", FillWeight = 25 });
+            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "Descripcion", HeaderText = "Descripción", FillWeight = 35 });
+            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "PrecioUnitarioStr", HeaderText = "P. Unit", FillWeight = 20 });
+            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SubtotalStr", HeaderText = "Subtotal", FillWeight = 20 });
 
-            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cant.", DataPropertyName = "Cantidad", FillWeight = 30 });
-            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Código / SKU", DataPropertyName = "Codigo", FillWeight = 50 });
-            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Descripción", DataPropertyName = "Descripcion", FillWeight = 110 });
-            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "P. Unitario", DataPropertyName = "PrecioUnitarioStr", FillWeight = 50 });
-            dgvDetalles.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Subtotal", DataPropertyName = "SubtotalStr", FillWeight = 50 });
-
-            // Panel Totales
             lblTotales = new Label
             {
                 Location = new Point(20, 400),
                 Size = new Size(565, 40),
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(46, 204, 113),
-                BackColor = Color.FromArgb(30, 39, 46),
-                BorderStyle = BorderStyle.FixedSingle,
                 TextAlign = ContentAlignment.MiddleRight,
-                Text = $"Descuento: $ {_venta.Descuento:N2}    TOTAL: $ {_venta.Total:N2}  "
+                ForeColor = Color.FromArgb(46, 204, 113),
+                Text = $"Total Cobrado: $ {_venta.Total:N2}"
             };
 
             btnCopiarTicket = new Button
             {
-                Text = "Copiar / Imprimir Ticket Digital",
+                Text = "📋 Copiar / Imprimir Ticket",
                 Location = new Point(20, 455),
-                Size = new Size(320, 45),
+                Size = new Size(330, 45),
                 BackColor = Color.FromArgb(41, 128, 185),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
@@ -178,9 +194,17 @@ namespace KioscoApp.Views
         {
             try
             {
+                var config = _configService.Obtener();
+                string tituloNegocio = string.IsNullOrWhiteSpace(config.NombreFantasia) ? "KIOSCO EXPRESS" : config.NombreFantasia.Trim();
+                string pie = string.IsNullOrWhiteSpace(config.MensajePieTicket) ? "¡GRACIAS POR SU COMPRA!" : config.MensajePieTicket.Trim();
+
                 var sb = new StringBuilder();
                 sb.AppendLine("========================================");
-                sb.AppendLine("             KIOSCO EXPRESS             ");
+                sb.AppendLine(CentrarTexto(tituloNegocio, 40));
+                if (!string.IsNullOrEmpty(config.RazonSocial)) sb.AppendLine(CentrarTexto(config.RazonSocial, 40));
+                if (!string.IsNullOrEmpty(config.Cuit)) sb.AppendLine(CentrarTexto($"CUIT: {config.Cuit}", 40));
+                if (!string.IsNullOrEmpty(config.Direccion)) sb.AppendLine(CentrarTexto(config.Direccion, 40));
+                if (!string.IsNullOrEmpty(config.Telefono)) sb.AppendLine(CentrarTexto($"Tel: {config.Telefono}", 40));
                 sb.AppendLine("        TICKET NO FISCAL DE VENTA       ");
                 sb.AppendLine("========================================");
                 sb.AppendLine($"Ticket N°: {_venta.Id}");
@@ -204,7 +228,7 @@ namespace KioscoApp.Views
                 }
                 sb.AppendLine($"TOTAL A PAGAR:            $ {_venta.Total,9:N2}");
                 sb.AppendLine("========================================");
-                sb.AppendLine("      ¡GRACIAS POR SU COMPRA!           ");
+                sb.AppendLine(CentrarTexto(pie, 40));
                 sb.AppendLine("========================================");
 
                 Clipboard.SetText(sb.ToString());
@@ -214,6 +238,13 @@ namespace KioscoApp.Views
             {
                 MessageBox.Show($"Error al generar ticket: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private string CentrarTexto(string texto, int ancho)
+        {
+            if (texto.Length >= ancho) return texto;
+            int espacios = (ancho - texto.Length) / 2;
+            return new string(' ', espacios) + texto;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

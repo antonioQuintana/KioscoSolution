@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using KioscoApp.Business;
 
@@ -17,15 +17,18 @@ namespace KioscoApp
 
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
-            var user = _usuarioService.Login(txtUsuario.Text.Trim(), txtContrasena.Text, out string errorMsg);
+            string username = txtUsuario.Text.Trim();
+            var user = _usuarioService.Login(username, txtContrasena.Text, out string errorMsg);
 
             if (user == null)
             {
+                AuditoriaService.Registrar("Seguridad", "Intento Fallido de Inicio de Sesión", $"Usuario: {username}");
                 MessageBox.Show(errorMsg, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             UserSession.IniciarSesion(user.Id, user.Nombre, user.NombreUsuario, user.Rol);
+            AuditoriaService.Registrar("Seguridad", "Inicio de Sesión Exitoso", $"Usuario: {user.NombreUsuario}, Rol: {user.Rol}");
             
             txtUsuario.Text = null;
             txtContrasena.Text = null;
@@ -74,6 +77,11 @@ namespace KioscoApp
 
         public static void CerrarSesion()
         {
+            if (IdUsuario > 0)
+            {
+                AuditoriaService.Registrar("Seguridad", "Cierre de Sesión", $"Usuario: {Usuario}");
+            }
+
             IdUsuario = 0;
             Nombre = string.Empty;
             Usuario = string.Empty;

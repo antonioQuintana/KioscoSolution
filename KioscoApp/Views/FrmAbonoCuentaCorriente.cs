@@ -301,9 +301,14 @@ namespace KioscoApp.Views
                 _cliente.SaldoDeudor = saldoRestante;
                 MetodoPagoSeleccionado = metodo;
 
+                var config = new ConfiguracionService().Obtener();
+                string tituloNegocio = string.IsNullOrWhiteSpace(config.NombreFantasia) ? "KIOSCO EXPRESS" : config.NombreFantasia.Trim();
+
                 var recibo = new StringBuilder();
                 recibo.AppendLine("========================================");
-                recibo.AppendLine("             KIOSCO EXPRESS             ");
+                recibo.AppendLine(CentrarTexto(tituloNegocio, 40));
+                if (!string.IsNullOrEmpty(config.RazonSocial)) recibo.AppendLine(CentrarTexto(config.RazonSocial, 40));
+                if (!string.IsNullOrEmpty(config.Cuit)) recibo.AppendLine(CentrarTexto($"CUIT: {config.Cuit}", 40));
                 recibo.AppendLine("     RECIBO DE PAGO CUENTA CORRIENTE    ");
                 recibo.AppendLine("========================================");
                 recibo.AppendLine($"Fecha:          {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
@@ -315,6 +320,11 @@ namespace KioscoApp.Views
                 recibo.AppendLine("----------------------------------------");
                 recibo.AppendLine($"Saldo Restante: $ {saldoRestante,10:N2}");
                 recibo.AppendLine("========================================");
+                if (!string.IsNullOrWhiteSpace(config.MensajePieTicket))
+                {
+                    recibo.AppendLine(CentrarTexto(config.MensajePieTicket.Trim(), 40));
+                    recibo.AppendLine("========================================");
+                }
 
                 Clipboard.SetText(recibo.ToString());
 
@@ -334,6 +344,13 @@ namespace KioscoApp.Views
             {
                 MessageBox.Show($"Error al registrar el cobro: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private string CentrarTexto(string texto, int ancho)
+        {
+            if (texto.Length >= ancho) return texto;
+            int espacios = (ancho - texto.Length) / 2;
+            return new string(' ', espacios) + texto;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

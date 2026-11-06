@@ -1,4 +1,4 @@
-﻿namespace KioscoApp
+namespace KioscoApp
 {
     partial class UcConfiguracion
     {
@@ -66,9 +66,9 @@
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(240, 50);
             btnLimpiar.TabIndex = 2;
-            btnLimpiar.Text = "Limpiar Datos Antiguos";
+            btnLimpiar.Text = "Mantenimiento / Compactar BD";
             btnLimpiar.UseVisualStyleBackColor = false;
-            btnLimpiar.Click += MostrarProximamente;
+            btnLimpiar.Click += btnLimpiar_Click;
             // 
             // btnRestore
             // 
@@ -81,7 +81,7 @@
             btnRestore.TabIndex = 1;
             btnRestore.Text = "Restaurar Base de Datos";
             btnRestore.UseVisualStyleBackColor = false;
-            btnRestore.Click += MostrarProximamente;
+            btnRestore.Click += btnRestore_Click;
             // 
             // btnBackup
             // 
@@ -94,7 +94,7 @@
             btnBackup.TabIndex = 0;
             btnBackup.Text = "Crear Copia de Seguridad";
             btnBackup.UseVisualStyleBackColor = false;
-            btnBackup.Click += MostrarProximamente;
+            btnBackup.Click += btnBackup_Click;
             // 
             // gbEmpresa
             // 
@@ -121,7 +121,7 @@
             btnLicencia.TabIndex = 2;
             btnLicencia.Text = "Licencia y Acerca De...";
             btnLicencia.UseVisualStyleBackColor = false;
-            btnLicencia.Click += MostrarProximamente;
+            btnLicencia.Click += btnLicencia_Click;
             // 
             // btnImpresora
             // 
@@ -134,7 +134,7 @@
             btnImpresora.TabIndex = 1;
             btnImpresora.Text = "Configurar Impresora";
             btnImpresora.UseVisualStyleBackColor = false;
-            btnImpresora.Click += MostrarProximamente;
+            btnImpresora.Click += btnImpresora_Click;
             // 
             // btnDatosEmpresa
             // 
@@ -147,7 +147,7 @@
             btnDatosEmpresa.TabIndex = 0;
             btnDatosEmpresa.Text = "Info del Negocio (Ticket)";
             btnDatosEmpresa.UseVisualStyleBackColor = false;
-            btnDatosEmpresa.Click += MostrarProximamente;
+            btnDatosEmpresa.Click += btnDatosEmpresa_Click;
             // 
             // gbHerramientas
             // 
@@ -173,7 +173,7 @@
             btnLogs.TabIndex = 2;
             btnLogs.Text = "Ver Registro de Errores (Logs)";
             btnLogs.UseVisualStyleBackColor = false;
-            btnLogs.Click += MostrarProximamente;
+            btnLogs.Click += btnLogs_Click;
             // 
             // btnTrazabilidad
             // 
@@ -186,7 +186,7 @@
             btnTrazabilidad.TabIndex = 0;
             btnTrazabilidad.Text = "Trazabilidad de Seguridad";
             btnTrazabilidad.UseVisualStyleBackColor = false;
-            btnTrazabilidad.Click += MostrarProximamente;
+            btnTrazabilidad.Click += btnTrazabilidad_Click;
             // 
             // UcConfiguracion
             // 

@@ -18,6 +18,8 @@ namespace KioscoApp
             lblTitulo = new Label();
             lblBuscar = new Label();
             txtBuscar = new TextBox();
+            chkSoloAlertas = new CheckBox();
+            lblResumenStock = new Label();
             dgvStock = new DataGridView();
             groupBoxModificar = new GroupBox();
             btnGuardar = new Button();
@@ -56,9 +58,22 @@ namespace KioscoApp
             // 
             txtBuscar.Location = new Point(190, 67);
             txtBuscar.Name = "txtBuscar";
-            txtBuscar.Size = new Size(300, 23);
+            txtBuscar.Size = new Size(280, 23);
             txtBuscar.TabIndex = 2;
             txtBuscar.TextChanged += txtBuscar_TextChanged;
+            // 
+            // chkSoloAlertas
+            // 
+            chkSoloAlertas.AutoSize = true;
+            chkSoloAlertas.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            chkSoloAlertas.ForeColor = Color.Gold;
+            chkSoloAlertas.Location = new Point(490, 68);
+            chkSoloAlertas.Name = "chkSoloAlertas";
+            chkSoloAlertas.Size = new Size(240, 21);
+            chkSoloAlertas.TabIndex = 5;
+            chkSoloAlertas.Text = "⚠️ Solo Alertas (Bajo stock / Agotado)";
+            chkSoloAlertas.UseVisualStyleBackColor = true;
+            chkSoloAlertas.CheckedChanged += chkSoloAlertas_CheckedChanged;
             // 
             // dgvStock
             // 
@@ -67,14 +82,26 @@ namespace KioscoApp
             dgvStock.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvStock.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvStock.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvStock.Location = new Point(20, 110);
+            dgvStock.Location = new Point(20, 105);
             dgvStock.MultiSelect = false;
             dgvStock.Name = "dgvStock";
             dgvStock.ReadOnly = true;
             dgvStock.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvStock.Size = new Size(650, 500);
+            dgvStock.Size = new Size(650, 490);
             dgvStock.TabIndex = 3;
             dgvStock.SelectionChanged += dgvStock_SelectionChanged;
+            // 
+            // lblResumenStock
+            // 
+            lblResumenStock.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblResumenStock.AutoSize = true;
+            lblResumenStock.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblResumenStock.ForeColor = Color.FromArgb(220, 220, 220);
+            lblResumenStock.Location = new Point(20, 608);
+            lblResumenStock.Name = "lblResumenStock";
+            lblResumenStock.Size = new Size(280, 17);
+            lblResumenStock.TabIndex = 6;
+            lblResumenStock.Text = "Cargando estado del inventario...";
             // 
             // groupBoxModificar
             // 
@@ -87,7 +114,7 @@ namespace KioscoApp
             groupBoxModificar.Controls.Add(lblProductoSeleccionado);
             groupBoxModificar.Controls.Add(lblProductoLabel);
             groupBoxModificar.ForeColor = SystemColors.ControlLightLight;
-            groupBoxModificar.Location = new Point(690, 110);
+            groupBoxModificar.Location = new Point(690, 105);
             groupBoxModificar.Name = "groupBoxModificar";
             groupBoxModificar.Size = new Size(290, 290);
             groupBoxModificar.TabIndex = 4;
@@ -98,22 +125,21 @@ namespace KioscoApp
             // 
             btnGuardar.BackColor = Color.MediumSeaGreen;
             btnGuardar.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnGuardar.ForeColor = Color.White;
-            btnGuardar.Location = new Point(20, 225);
+            btnGuardar.ForeColor = SystemColors.ButtonHighlight;
+            btnGuardar.Location = new Point(20, 220);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(250, 42);
+            btnGuardar.Size = new Size(250, 45);
             btnGuardar.TabIndex = 6;
-            btnGuardar.Text = "💾 Guardar Stock";
+            btnGuardar.Text = "Guardar Cambios";
             btnGuardar.UseVisualStyleBackColor = false;
             btnGuardar.Click += btnGuardar_Click;
             // 
             // numStockMinimo
             // 
-            numStockMinimo.Font = new Font("Segoe UI", 11F);
-            numStockMinimo.Location = new Point(20, 180);
-            numStockMinimo.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
+            numStockMinimo.Location = new Point(130, 157);
+            numStockMinimo.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
             numStockMinimo.Name = "numStockMinimo";
-            numStockMinimo.Size = new Size(130, 27);
+            numStockMinimo.Size = new Size(140, 23);
             numStockMinimo.TabIndex = 5;
             // 
             // lblStockMinimo
@@ -121,24 +147,23 @@ namespace KioscoApp
             lblStockMinimo.AutoSize = true;
             lblStockMinimo.Location = new Point(20, 160);
             lblStockMinimo.Name = "lblStockMinimo";
-            lblStockMinimo.Size = new Size(84, 15);
+            lblStockMinimo.Size = new Size(85, 15);
             lblStockMinimo.TabIndex = 4;
             lblStockMinimo.Text = "Stock Mínimo:";
             // 
             // numStockActual
             // 
-            numStockActual.Font = new Font("Segoe UI", 11F);
-            numStockActual.Location = new Point(20, 120);
-            numStockActual.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
-            numStockActual.Minimum = new decimal(new int[] { 99999, 0, 0, int.MinValue });
+            numStockActual.Location = new Point(130, 107);
+            numStockActual.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
+            numStockActual.Minimum = new decimal(new int[] { 100000, 0, 0, int.MinValue });
             numStockActual.Name = "numStockActual";
-            numStockActual.Size = new Size(130, 27);
+            numStockActual.Size = new Size(140, 23);
             numStockActual.TabIndex = 3;
             // 
             // lblStockActual
             // 
             lblStockActual.AutoSize = true;
-            lblStockActual.Location = new Point(20, 100);
+            lblStockActual.Location = new Point(20, 110);
             lblStockActual.Name = "lblStockActual";
             lblStockActual.Size = new Size(76, 15);
             lblStockActual.TabIndex = 2;
@@ -146,22 +171,23 @@ namespace KioscoApp
             // 
             // lblProductoSeleccionado
             // 
-            lblProductoSeleccionado.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblProductoSeleccionado.ForeColor = Color.LightSkyBlue;
-            lblProductoSeleccionado.Location = new Point(20, 50);
+            lblProductoSeleccionado.AutoSize = true;
+            lblProductoSeleccionado.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblProductoSeleccionado.Location = new Point(20, 60);
+            lblProductoSeleccionado.MaximumSize = new Size(250, 0);
             lblProductoSeleccionado.Name = "lblProductoSeleccionado";
-            lblProductoSeleccionado.Size = new Size(250, 45);
+            lblProductoSeleccionado.Size = new Size(175, 15);
             lblProductoSeleccionado.TabIndex = 1;
-            lblProductoSeleccionado.Text = "Seleccione un producto";
+            lblProductoSeleccionado.Text = "Ningún producto seleccionado";
             // 
             // lblProductoLabel
             // 
             lblProductoLabel.AutoSize = true;
-            lblProductoLabel.Location = new Point(20, 30);
+            lblProductoLabel.Location = new Point(20, 35);
             lblProductoLabel.Name = "lblProductoLabel";
-            lblProductoLabel.Size = new Size(59, 15);
+            lblProductoLabel.Size = new Size(128, 15);
             lblProductoLabel.TabIndex = 0;
-            lblProductoLabel.Text = "Producto:";
+            lblProductoLabel.Text = "Producto seleccionado:";
             // 
             // UcMovimientosStock
             // 
@@ -169,6 +195,8 @@ namespace KioscoApp
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
             AutoScrollMinSize = new Size(950, 580);
+            Controls.Add(lblResumenStock);
+            Controls.Add(chkSoloAlertas);
             Controls.Add(groupBoxModificar);
             Controls.Add(dgvStock);
             Controls.Add(txtBuscar);
@@ -188,6 +216,8 @@ namespace KioscoApp
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.Label lblBuscar;
         private System.Windows.Forms.TextBox txtBuscar;
+        private System.Windows.Forms.CheckBox chkSoloAlertas;
+        private System.Windows.Forms.Label lblResumenStock;
         private System.Windows.Forms.DataGridView dgvStock;
         private System.Windows.Forms.GroupBox groupBoxModificar;
         private System.Windows.Forms.Label lblProductoLabel;

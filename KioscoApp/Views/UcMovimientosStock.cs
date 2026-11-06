@@ -3,12 +3,14 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
+using KioscoApp.Business;
 
 namespace KioscoApp
 {
     public partial class UcMovimientosStock : UserControl
     {
         private int idProductoSeleccionado = -1;
+        private DataTable _dtStock = new DataTable();
 
         public UcMovimientosStock()
         {
@@ -78,9 +80,9 @@ namespace KioscoApp
                         cmd.Parameters.AddWithValue("@Filtro", "%" + filtro + "%");
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
-                            DataTable dt = new DataTable();
-                            da.Fill(dt);
-                            dgvStock.DataSource = dt;
+                            _dtStock = new DataTable();
+                            da.Fill(_dtStock);
+                            AplicarFiltroLocal();
                         }
                     }
                 }
@@ -91,19 +93,62 @@ namespace KioscoApp
             }
         }
 
+        private void AplicarFiltroLocal()
+        {
+            if (_dtStock == null) return;
+
+            var dv = _dtStock.DefaultView;
+            if (chkSoloAlertas != null && chkSoloAlertas.Checked)
+            {
+                dv.RowFilter = "StockActual <= StockMinimo";
+            }
+            else
+            {
+                dv.RowFilter = "";
+            }
+
+            dgvStock.DataSource = dv;
+
+            // Calcular contadores
+            int total = _dtStock.Rows.Count;
+            int agotados = 0;
+            int criticos = 0;
+
+            foreach (DataRow row in _dtStock.Rows)
+            {
+                if (row["StockActual"] != DBNull.Value && row["StockMinimo"] != DBNull.Value)
+                {
+                    int act = Convert.ToInt32(row["StockActual"]);
+                    int min = Convert.ToInt32(row["StockMinimo"]);
+                    if (act <= 0) agotados++;
+                    else if (act <= min) criticos++;
+                }
+            }
+
+            if (lblResumenStock != null)
+            {
+                lblResumenStock.Text = $"Total artículos: {total}  |  🔴 Agotados: {agotados}  |  🟡 Bajo Stock: {criticos}  |  Mostrando en grilla: {dv.Count}";
+            }
+        }
+
         private void txtBuscar_TextChanged(object sender, EventArgs e)
         {
             CargarStock(txtBuscar.Text);
         }
 
+        private void chkSoloAlertas_CheckedChanged(object? sender, EventArgs e)
+        {
+            AplicarFiltroLocal();
+        }
+
         private void dgvStock_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvStock.CurrentRow != null)
+            if (dgvStock.CurrentRow != null && dgvStock.CurrentRow.Cells[0].Value != null)
             {
                 idProductoSeleccionado = Convert.ToInt32(dgvStock.CurrentRow.Cells[0].Value);
-                lblProductoSeleccionado.Text = dgvStock.CurrentRow.Cells[2].Value.ToString();
-                numStockActual.Value = Convert.ToDecimal(dgvStock.CurrentRow.Cells[4].Value);
-                numStockMinimo.Value = Convert.ToDecimal(dgvStock.CurrentRow.Cells[5].Value);
+                lblProductoSeleccionado.Text = dgvStock.CurrentRow.Cells[2].Value?.ToString() ?? string.Empty;
+                numStockActual.Value = Convert.ToDecimal(dgvStock.CurrentRow.Cells[4].Value ?? 0);
+                numStockMinimo.Value = Convert.ToDecimal(dgvStock.CurrentRow.Cells[5].Value ?? 0);
             }
             else
             {
@@ -157,6 +202,10 @@ namespace KioscoApp
                         cmd.ExecuteNonQuery();
                     }
                 }
+
+                AuditoriaService.Registrar("Stock", "Ajuste de Stock",
+                    $"Producto: '{lblProductoSeleccionado.Text}', Stock Actual: {stockActual}, Stock Mínimo: {stockMinimo}");
+
                 MessageBox.Show(
                     $"Stock de '{lblProductoSeleccionado.Text}' actualizado exitosamente:\n\n• Stock Actual: {stockActual}\n• Stock Mínimo: {stockMinimo}",
                     "Stock Guardado",
