@@ -52,5 +52,27 @@ namespace KioscoApp.Business
             if (id <= 0) throw new ArgumentException("ID no válido");
             _repository.EliminarLogico(id);
         }
+
+        public void RegistrarAbono(int idCliente, decimal monto, string metodoPago, int? idUsuario)
+        {
+            if (idCliente <= 1)
+                throw new ArgumentException("No se puede registrar abono al cliente Consumidor Final.");
+
+            if (monto <= 0)
+                throw new ArgumentException("El monto a abonar debe ser mayor a $ 0.00.");
+
+            var cliente = _repository.ObtenerPorId(idCliente);
+            if (cliente == null || !cliente.Activo)
+                throw new ArgumentException("El cliente seleccionado no existe o está inactivo.");
+
+            if (cliente.SaldoDeudor <= 0)
+                throw new InvalidOperationException($"El cliente '{cliente.NombreCompleto}' no posee deuda pendiente (Saldo actual: $ 0.00).");
+
+            if (monto > cliente.SaldoDeudor)
+                throw new InvalidOperationException(
+                    $"El importe a abonar ($ {monto:N2}) supera la deuda total pendiente ($ {cliente.SaldoDeudor:N2}) de {cliente.NombreCompleto}.");
+
+            _repository.RegistrarAbonoCuentaCorriente(idCliente, monto, metodoPago, idUsuario);
+        }
     }
 }

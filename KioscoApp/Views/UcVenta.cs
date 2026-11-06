@@ -54,13 +54,24 @@ namespace KioscoApp
             {
                 if (_clienteActual != null && _clienteActual.Id > 1)
                 {
-                    lblClienteActual.Text = $"Cliente: {_clienteActual.NombreCompleto.ToUpper()} | Saldo Deudor: $ {_clienteActual.SaldoDeudor:N2} | Límite: $ {_clienteActual.LimiteCredito:N2}";
-                    lblClienteActual.ForeColor = _clienteActual.SaldoDeudor > 0 ? Color.Khaki : Color.LightSkyBlue;
+                    if (_clienteActual.SaldoDeudor > 0)
+                    {
+                        lblClienteActual.Text = $"Cliente: {_clienteActual.NombreCompleto.ToUpper()} | DEUDA PENDIENTE: $ {_clienteActual.SaldoDeudor:N2} (Clic aquí para cobrar deuda)";
+                        lblClienteActual.ForeColor = Color.FromArgb(243, 156, 18);
+                        lblClienteActual.Cursor = Cursors.Hand;
+                    }
+                    else
+                    {
+                        lblClienteActual.Text = $"Cliente: {_clienteActual.NombreCompleto.ToUpper()} | Al día (Saldo: $ 0.00)";
+                        lblClienteActual.ForeColor = Color.LightSkyBlue;
+                        lblClienteActual.Cursor = Cursors.Default;
+                    }
                 }
                 else
                 {
                     lblClienteActual.Text = "Cliente: CONSUMIDOR FINAL";
                     lblClienteActual.ForeColor = Color.White;
+                    lblClienteActual.Cursor = Cursors.Default;
                 }
             }
         }
@@ -107,6 +118,7 @@ namespace KioscoApp
 
             if (txtBusquedaCliente != null) txtBusquedaCliente.KeyPress += TxtBusquedaCliente_KeyPress;
             ConfigurarAutocompletadoClientes();
+            if (lblClienteActual != null) lblClienteActual.Click += LblClienteActual_Click;
 
             if (lstSugerencias != null)
             {
@@ -115,6 +127,19 @@ namespace KioscoApp
             }
 
             ActualizarTotales();
+        }
+
+        private void LblClienteActual_Click(object? sender, EventArgs e)
+        {
+            if (_clienteActual != null && _clienteActual.Id > 1 && _clienteActual.SaldoDeudor > 0)
+            {
+                using var modal = new FrmAbonoCuentaCorriente(_clienteActual);
+                if (modal.ShowDialog(this) == DialogResult.OK)
+                {
+                    ActualizarUICliente();
+                }
+                EnfocarEscaner();
+            }
         }
 
         private void EnfocarEscaner()

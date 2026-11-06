@@ -108,6 +108,43 @@ namespace KioscoApp.Data
             cmd.ExecuteNonQuery();
         }
 
+        public void RegistrarAbonoCuentaCorriente(int idCliente, decimal monto, string metodoPago, int? idUsuario)
+        {
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+
+            try
+            {
+                // 1. Reducir SaldoDeudor del cliente
+                string sqlCliente = "UPDATE Clientes SET SaldoDeudor = CASE WHEN SaldoDeudor - @Monto < 0 THEN 0 ELSE SaldoDeudor - @Monto END WHERE Id = @Id";
+                using var cmdCliente = new SqlCommand(sqlCliente, connection, transaction);
+                cmdCliente.Parameters.AddWithValue("@Monto", monto);
+                cmdCliente.Parameters.AddWithValue("@Id", idCliente);
+                cmdCliente.ExecuteNonQuery();
+
+                // 2. Si es en efectivo, impactar en la caja actual como Ingreso de fondos
+                if (string.Equals(metodoPago, "Efectivo", StringComparison.OrdinalIgnoreCase))
+                {
+                    string sqlMov = @"
+                        INSERT INTO MovimientosCaja (IdUsuario, Fecha, Tipo, Monto, Motivo)
+                        VALUES (@IdUsuario, GETDATE(), 'Ingreso', @Monto, @Motivo)";
+                    using var cmdMov = new SqlCommand(sqlMov, connection, transaction);
+                    cmdMov.Parameters.AddWithValue("@IdUsuario", idUsuario.HasValue && idUsuario.Value > 0 ? (object)idUsuario.Value : DBNull.Value);
+                    cmdMov.Parameters.AddWithValue("@Monto", monto);
+                    cmdMov.Parameters.AddWithValue("@Motivo", $"Cobranza Cta. Cte. - Cliente #{idCliente}");
+                    cmdMov.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+
         private void AsignarParametros(SqlCommand cmd, Cliente cliente)
         {
             cmd.Parameters.AddWithValue("@Dni", cliente.Dni);
