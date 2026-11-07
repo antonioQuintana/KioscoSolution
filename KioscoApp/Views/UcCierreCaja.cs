@@ -65,11 +65,21 @@ namespace KioscoApp
 
         private void LblFondoCaja_Click(object? sender, EventArgs e)
         {
-            using var modal = new Views.FrmMovimientoCaja("Ingreso");
-            modal.Text = "Configurar Fondo Inicial de Caja";
+            AbrirModalFondoInicial();
+        }
+
+        private void btnDeclararFondo_Click(object? sender, EventArgs e)
+        {
+            AbrirModalFondoInicial();
+        }
+
+        private void AbrirModalFondoInicial()
+        {
+            using var modal = new Views.FrmMovimientoCaja("FondoInicial");
             if (modal.ShowDialog(this) == DialogResult.OK)
             {
                 _fondoInicialConfigurado = modal.Monto;
+                AuditoriaService.Registrar("Caja", "Fondo Inicial de Turno Declarado", $"Monto: ${_fondoInicialConfigurado:N2}");
                 CargarResumenTurno();
             }
         }

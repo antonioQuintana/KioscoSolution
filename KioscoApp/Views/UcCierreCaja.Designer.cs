@@ -20,6 +20,7 @@ namespace KioscoApp
         {
             gbSistema = new GroupBox();
             lblFondoCaja = new Label();
+            btnDeclararFondo = new Button();
             lblVentasEfectivo = new Label();
             lblVentasQR = new Label();
             lblVentasTarjeta = new Label();
@@ -55,6 +56,7 @@ namespace KioscoApp
             // gbSistema
             // 
             gbSistema.Controls.Add(lblFondoCaja);
+            gbSistema.Controls.Add(btnDeclararFondo);
             gbSistema.Controls.Add(lblVentasEfectivo);
             gbSistema.Controls.Add(lblVentasQR);
             gbSistema.Controls.Add(lblVentasTarjeta);
@@ -71,19 +73,34 @@ namespace KioscoApp
             // lblFondoCaja
             // 
             lblFondoCaja.AutoSize = true;
-            lblFondoCaja.Font = new Font("Segoe UI", 11F);
-            lblFondoCaja.Location = new Point(20, 50);
+            lblFondoCaja.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            lblFondoCaja.ForeColor = Color.FromArgb(0, 168, 255);
+            lblFondoCaja.Location = new Point(15, 35);
             lblFondoCaja.Name = "lblFondoCaja";
             lblFondoCaja.Size = new Size(225, 20);
             lblFondoCaja.TabIndex = 0;
             lblFondoCaja.Text = "Fondo de Caja (Inicio): $ 0.00";
+            // 
+            // btnDeclararFondo
+            // 
+            btnDeclararFondo.BackColor = Color.FromArgb(41, 128, 185);
+            btnDeclararFondo.FlatStyle = FlatStyle.Flat;
+            btnDeclararFondo.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnDeclararFondo.ForeColor = Color.White;
+            btnDeclararFondo.Location = new Point(15, 62);
+            btnDeclararFondo.Name = "btnDeclararFondo";
+            btnDeclararFondo.Size = new Size(285, 32);
+            btnDeclararFondo.TabIndex = 5;
+            btnDeclararFondo.Text = "💵 Declarar Fondo Inicial (Cambio)";
+            btnDeclararFondo.UseVisualStyleBackColor = false;
+            btnDeclararFondo.Click += btnDeclararFondo_Click;
             // 
             // lblVentasEfectivo
             // 
             lblVentasEfectivo.AutoSize = true;
             lblVentasEfectivo.Font = new Font("Segoe UI", 11F);
             lblVentasEfectivo.ForeColor = Color.PaleGreen;
-            lblVentasEfectivo.Location = new Point(20, 100);
+            lblVentasEfectivo.Location = new Point(15, 115);
             lblVentasEfectivo.Name = "lblVentasEfectivo";
             lblVentasEfectivo.Size = new Size(211, 20);
             lblVentasEfectivo.TabIndex = 1;
@@ -93,7 +110,7 @@ namespace KioscoApp
             // 
             lblVentasQR.AutoSize = true;
             lblVentasQR.Font = new Font("Segoe UI", 11F);
-            lblVentasQR.Location = new Point(20, 150);
+            lblVentasQR.Location = new Point(15, 165);
             lblVentasQR.Name = "lblVentasQR";
             lblVentasQR.Size = new Size(170, 20);
             lblVentasQR.TabIndex = 2;
@@ -103,7 +120,7 @@ namespace KioscoApp
             // 
             lblVentasTarjeta.AutoSize = true;
             lblVentasTarjeta.Font = new Font("Segoe UI", 11F);
-            lblVentasTarjeta.Location = new Point(20, 200);
+            lblVentasTarjeta.Location = new Point(15, 215);
             lblVentasTarjeta.Name = "lblVentasTarjeta";
             lblVentasTarjeta.Size = new Size(202, 20);
             lblVentasTarjeta.TabIndex = 3;
@@ -114,7 +131,7 @@ namespace KioscoApp
             lblGastos.AutoSize = true;
             lblGastos.Font = new Font("Segoe UI", 11F);
             lblGastos.ForeColor = Color.LightCoral;
-            lblGastos.Location = new Point(20, 250);
+            lblGastos.Location = new Point(15, 265);
             lblGastos.Name = "lblGastos";
             lblGastos.Size = new Size(203, 20);
             lblGastos.TabIndex = 4;
@@ -198,7 +215,7 @@ namespace KioscoApp
             lblBilletes500.AutoSize = true;
             lblBilletes500.Location = new Point(20, 185);
             lblBilletes500.Name = "lblBilletes500";
-            lblBilletes500.Size = new Size(63, 21);
+            lblBilletes500.Size = new Size(62, 21);
             lblBilletes500.TabIndex = 6;
             lblBilletes500.Text = "$ 500 x";
             // 
@@ -214,7 +231,7 @@ namespace KioscoApp
             lblBilletes200.AutoSize = true;
             lblBilletes200.Location = new Point(20, 230);
             lblBilletes200.Name = "lblBilletes200";
-            lblBilletes200.Size = new Size(63, 21);
+            lblBilletes200.Size = new Size(62, 21);
             lblBilletes200.TabIndex = 8;
             lblBilletes200.Text = "$ 200 x";
             // 
@@ -230,7 +247,7 @@ namespace KioscoApp
             lblBilletes100.AutoSize = true;
             lblBilletes100.Location = new Point(20, 275);
             lblBilletes100.Name = "lblBilletes100";
-            lblBilletes100.Size = new Size(63, 21);
+            lblBilletes100.Size = new Size(62, 21);
             lblBilletes100.TabIndex = 10;
             lblBilletes100.Text = "$ 100 x";
             // 
@@ -246,9 +263,9 @@ namespace KioscoApp
             lblMonedas.AutoSize = true;
             lblMonedas.Location = new Point(20, 320);
             lblMonedas.Name = "lblMonedas";
-            lblMonedas.Size = new Size(93, 21);
+            lblMonedas.Size = new Size(84, 21);
             lblMonedas.TabIndex = 12;
-            lblMonedas.Text = "Monedas $";
+            lblMonedas.Text = "Monedas:";
             // 
             // txtMonedas
             // 
@@ -269,15 +286,15 @@ namespace KioscoApp
             gbResultados.Size = new Size(360, 220);
             gbResultados.TabIndex = 4;
             gbResultados.TabStop = false;
-            gbResultados.Text = "Resultado del Cierre";
+            gbResultados.Text = "Balance de Caja";
             // 
             // lblEsperado
             // 
             lblEsperado.AutoSize = true;
             lblEsperado.Font = new Font("Segoe UI", 12F);
-            lblEsperado.Location = new Point(20, 50);
+            lblEsperado.Location = new Point(20, 45);
             lblEsperado.Name = "lblEsperado";
-            lblEsperado.Size = new Size(218, 21);
+            lblEsperado.Size = new Size(198, 21);
             lblEsperado.TabIndex = 0;
             lblEsperado.Text = "Efectivo Esperado: $ 0.00";
             // 
@@ -285,17 +302,16 @@ namespace KioscoApp
             // 
             lblDeclarado.AutoSize = true;
             lblDeclarado.Font = new Font("Segoe UI", 12F);
-            lblDeclarado.Location = new Point(20, 100);
+            lblDeclarado.Location = new Point(20, 95);
             lblDeclarado.Name = "lblDeclarado";
-            lblDeclarado.Size = new Size(177, 21);
+            lblDeclarado.Size = new Size(190, 21);
             lblDeclarado.TabIndex = 1;
             lblDeclarado.Text = "Efectivo Contado: $ 0.00";
             // 
             // lblDiferencia
             // 
             lblDiferencia.AutoSize = true;
-            lblDiferencia.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            lblDiferencia.ForeColor = Color.DarkGray;
+            lblDiferencia.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblDiferencia.Location = new Point(20, 150);
             lblDiferencia.Name = "lblDiferencia";
             lblDiferencia.Size = new Size(275, 30);
@@ -372,6 +388,7 @@ namespace KioscoApp
 
         private System.Windows.Forms.GroupBox gbSistema;
         private System.Windows.Forms.Label lblFondoCaja;
+        private System.Windows.Forms.Button btnDeclararFondo;
         private System.Windows.Forms.Label lblVentasEfectivo;
         private System.Windows.Forms.Label lblVentasQR;
         private System.Windows.Forms.Label lblVentasTarjeta;
