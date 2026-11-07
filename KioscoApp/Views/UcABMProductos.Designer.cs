@@ -16,6 +16,10 @@ namespace KioscoApp
         private void InitializeComponent()
         {
             lblTitulo = new Label();
+            lblBuscarRapido = new Label();
+            txtBuscarRapido = new TextBox();
+            cmbFiltroCat = new ComboBox();
+            btnLimpiarFiltro = new Button();
             dgvProductos = new DataGridView();
             gbFormulario = new GroupBox();
             btnLimpiar = new Button();
@@ -25,8 +29,11 @@ namespace KioscoApp
             lblStockMin = new Label();
             txtStock = new TextBox();
             lblStock = new Label();
+            lblGananciaNeta = new Label();
             txtVenta = new TextBox();
             lblVenta = new Label();
+            txtMargenInput = new TextBox();
+            lblMargenInput = new Label();
             txtCosto = new TextBox();
             lblCosto = new Label();
             cmbCategoria = new ComboBox();
@@ -55,6 +62,51 @@ namespace KioscoApp
             lblTitulo.TabIndex = 0;
             lblTitulo.Text = "Catálogo de Productos";
             // 
+            // lblBuscarRapido
+            // 
+            lblBuscarRapido.AutoSize = true;
+            lblBuscarRapido.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblBuscarRapido.ForeColor = Color.White;
+            lblBuscarRapido.Location = new Point(20, 48);
+            lblBuscarRapido.Name = "lblBuscarRapido";
+            lblBuscarRapido.Size = new Size(145, 17);
+            lblBuscarRapido.TabIndex = 4;
+            lblBuscarRapido.Text = "🔍 Buscar / Escanear:";
+            // 
+            // txtBuscarRapido
+            // 
+            txtBuscarRapido.Location = new Point(170, 46);
+            txtBuscarRapido.Name = "txtBuscarRapido";
+            txtBuscarRapido.PlaceholderText = "Código SKU o Nombre...";
+            txtBuscarRapido.Size = new Size(240, 23);
+            txtBuscarRapido.TabIndex = 5;
+            txtBuscarRapido.TextChanged += txtBuscarRapido_TextChanged;
+            txtBuscarRapido.KeyDown += txtBuscarRapido_KeyDown;
+            // 
+            // cmbFiltroCat
+            // 
+            cmbFiltroCat.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbFiltroCat.FormattingEnabled = true;
+            cmbFiltroCat.Location = new Point(420, 46);
+            cmbFiltroCat.Name = "cmbFiltroCat";
+            cmbFiltroCat.Size = new Size(160, 23);
+            cmbFiltroCat.TabIndex = 6;
+            cmbFiltroCat.SelectedIndexChanged += cmbFiltroCat_SelectedIndexChanged;
+            // 
+            // btnLimpiarFiltro
+            // 
+            btnLimpiarFiltro.BackColor = Color.FromArgb(127, 140, 141);
+            btnLimpiarFiltro.FlatStyle = FlatStyle.Flat;
+            btnLimpiarFiltro.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            btnLimpiarFiltro.ForeColor = Color.White;
+            btnLimpiarFiltro.Location = new Point(585, 45);
+            btnLimpiarFiltro.Name = "btnLimpiarFiltro";
+            btnLimpiarFiltro.Size = new Size(50, 25);
+            btnLimpiarFiltro.TabIndex = 7;
+            btnLimpiarFiltro.Text = "Ver Todo";
+            btnLimpiarFiltro.UseVisualStyleBackColor = false;
+            btnLimpiarFiltro.Click += btnLimpiarFiltro_Click;
+            // 
             // dgvProductos
             // 
             dgvProductos.AllowUserToAddRows = false;
@@ -62,11 +114,11 @@ namespace KioscoApp
             dgvProductos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvProductos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProductos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvProductos.Location = new Point(20, 50);
+            dgvProductos.Location = new Point(20, 78);
             dgvProductos.Name = "dgvProductos";
             dgvProductos.ReadOnly = true;
             dgvProductos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProductos.Size = new Size(615, 470);
+            dgvProductos.Size = new Size(615, 445);
             dgvProductos.TabIndex = 1;
             dgvProductos.CellClick += dgvProductos_CellClick;
             // 
@@ -80,8 +132,11 @@ namespace KioscoApp
             gbFormulario.Controls.Add(lblStockMin);
             gbFormulario.Controls.Add(txtStock);
             gbFormulario.Controls.Add(lblStock);
+            gbFormulario.Controls.Add(lblGananciaNeta);
             gbFormulario.Controls.Add(txtVenta);
             gbFormulario.Controls.Add(lblVenta);
+            gbFormulario.Controls.Add(txtMargenInput);
+            gbFormulario.Controls.Add(lblMargenInput);
             gbFormulario.Controls.Add(txtCosto);
             gbFormulario.Controls.Add(lblCosto);
             gbFormulario.Controls.Add(cmbCategoria);
@@ -108,7 +163,7 @@ namespace KioscoApp
             btnLimpiar.ForeColor = Color.White;
             btnLimpiar.Location = new Point(15, 500);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(295, 45);
+            btnLimpiar.Size = new Size(295, 35);
             btnLimpiar.TabIndex = 18;
             btnLimpiar.Text = "Limpiar Formulario";
             btnLimpiar.UseVisualStyleBackColor = false;
@@ -119,9 +174,9 @@ namespace KioscoApp
             btnEliminar.BackColor = Color.FromArgb(231, 76, 60);
             btnEliminar.FlatStyle = FlatStyle.Flat;
             btnEliminar.ForeColor = Color.White;
-            btnEliminar.Location = new Point(15, 440);
+            btnEliminar.Location = new Point(15, 455);
             btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(295, 45);
+            btnEliminar.Size = new Size(295, 35);
             btnEliminar.TabIndex = 17;
             btnEliminar.Text = "Eliminar Producto";
             btnEliminar.UseVisualStyleBackColor = false;
@@ -129,10 +184,11 @@ namespace KioscoApp
             // 
             // btnGuardar
             // 
-            btnGuardar.BackColor = Color.FromArgb(46, 204, 113);
+            btnGuardar.BackColor = Color.FromArgb(39, 174, 96);
             btnGuardar.FlatStyle = FlatStyle.Flat;
+            btnGuardar.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnGuardar.ForeColor = Color.White;
-            btnGuardar.Location = new Point(15, 380);
+            btnGuardar.Location = new Point(15, 395);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(295, 45);
             btnGuardar.TabIndex = 16;
@@ -172,12 +228,24 @@ namespace KioscoApp
             lblStock.TabIndex = 12;
             lblStock.Text = "Stock Actual:";
             // 
+            // lblGananciaNeta
+            // 
+            lblGananciaNeta.AutoSize = true;
+            lblGananciaNeta.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            lblGananciaNeta.ForeColor = Color.FromArgb(46, 204, 113);
+            lblGananciaNeta.Location = new Point(205, 242);
+            lblGananciaNeta.Name = "lblGananciaNeta";
+            lblGananciaNeta.Size = new Size(54, 15);
+            lblGananciaNeta.TabIndex = 19;
+            lblGananciaNeta.Text = "+ $ 0.00";
+            // 
             // txtVenta
             // 
             txtVenta.Location = new Point(110, 237);
             txtVenta.Name = "txtVenta";
             txtVenta.Size = new Size(90, 25);
             txtVenta.TabIndex = 11;
+            txtVenta.TextChanged += txtVenta_TextChanged;
             // 
             // lblVenta
             // 
@@ -188,12 +256,30 @@ namespace KioscoApp
             lblVenta.TabIndex = 10;
             lblVenta.Text = "P. Venta:";
             // 
+            // txtMargenInput
+            // 
+            txtMargenInput.Location = new Point(255, 197);
+            txtMargenInput.Name = "txtMargenInput";
+            txtMargenInput.Size = new Size(55, 25);
+            txtMargenInput.TabIndex = 21;
+            txtMargenInput.TextChanged += txtMargenInput_TextChanged;
+            // 
+            // lblMargenInput
+            // 
+            lblMargenInput.AutoSize = true;
+            lblMargenInput.Location = new Point(205, 200);
+            lblMargenInput.Name = "lblMargenInput";
+            lblMargenInput.Size = new Size(49, 19);
+            lblMargenInput.TabIndex = 20;
+            lblMargenInput.Text = "% Gan:";
+            // 
             // txtCosto
             // 
             txtCosto.Location = new Point(110, 197);
             txtCosto.Name = "txtCosto";
             txtCosto.Size = new Size(90, 25);
             txtCosto.TabIndex = 9;
+            txtCosto.TextChanged += txtCosto_TextChanged;
             // 
             // lblCosto
             // 
@@ -316,6 +402,10 @@ namespace KioscoApp
             AutoScroll = true;
             AutoScrollMinSize = new Size(960, 620);
             BackColor = SystemColors.ControlDarkDark;
+            Controls.Add(btnLimpiarFiltro);
+            Controls.Add(cmbFiltroCat);
+            Controls.Add(txtBuscarRapido);
+            Controls.Add(lblBuscarRapido);
             Controls.Add(gbFormulario);
             Controls.Add(gbHerramientas);
             Controls.Add(dgvProductos);
@@ -330,30 +420,37 @@ namespace KioscoApp
             PerformLayout();
         }
 
-        private System.Windows.Forms.Label lblTitulo;
-        private System.Windows.Forms.DataGridView dgvProductos;
-        private System.Windows.Forms.GroupBox gbFormulario;
-        private System.Windows.Forms.Label lblSKU;
-        private System.Windows.Forms.TextBox txtSKU;
-        private System.Windows.Forms.Label lblNombre;
-        private System.Windows.Forms.TextBox txtNombre;
-        private System.Windows.Forms.Label lblDesc;
-        private System.Windows.Forms.TextBox txtDesc;
-        private System.Windows.Forms.Label lblCategoria;
-        private System.Windows.Forms.ComboBox cmbCategoria;
-        private System.Windows.Forms.Label lblCosto;
-        private System.Windows.Forms.TextBox txtCosto;
-        private System.Windows.Forms.Label lblVenta;
-        private System.Windows.Forms.TextBox txtVenta;
-        private System.Windows.Forms.Label lblStock;
-        private System.Windows.Forms.TextBox txtStock;
-        private System.Windows.Forms.Label lblStockMin;
-        private System.Windows.Forms.TextBox txtStockMin;
-        private System.Windows.Forms.Button btnGuardar;
-        private System.Windows.Forms.Button btnEliminar;
-        private System.Windows.Forms.Button btnLimpiar;
-        private System.Windows.Forms.GroupBox gbHerramientas;
-        private System.Windows.Forms.Button btnExportarExcel;
-        private System.Windows.Forms.Button btnImportarExcel;
+        private Label lblTitulo;
+        private Label lblBuscarRapido;
+        private TextBox txtBuscarRapido;
+        private ComboBox cmbFiltroCat;
+        private Button btnLimpiarFiltro;
+        private DataGridView dgvProductos;
+        private GroupBox gbFormulario;
+        private Label lblSKU;
+        private TextBox txtSKU;
+        private Label lblNombre;
+        private TextBox txtNombre;
+        private Label lblDesc;
+        private TextBox txtDesc;
+        private Label lblCategoria;
+        private ComboBox cmbCategoria;
+        private Label lblCosto;
+        private TextBox txtCosto;
+        private Label lblMargenInput;
+        private TextBox txtMargenInput;
+        private Label lblVenta;
+        private TextBox txtVenta;
+        private Label lblGananciaNeta;
+        private Label lblStock;
+        private TextBox txtStock;
+        private Label lblStockMin;
+        private TextBox txtStockMin;
+        private Button btnGuardar;
+        private Button btnEliminar;
+        private Button btnLimpiar;
+        private GroupBox gbHerramientas;
+        private Button btnExportarExcel;
+        private Button btnImportarExcel;
     }
 }

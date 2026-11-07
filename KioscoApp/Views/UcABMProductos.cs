@@ -1,9 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Globalization;
-using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
@@ -18,6 +19,7 @@ namespace KioscoApp
         private readonly CategoriaService _categoriaService;
         private List<Producto>? _listaProductos;
         private List<Categoria>? _listaCategorias;
+        private bool _isCalculating = false;
 
         public UcABMProductos()
         {
@@ -35,30 +37,25 @@ namespace KioscoApp
             txtNombre.MaxLength = 100;
             txtDesc.MaxLength = 255;
 
-            // Restringir ingreso de caracteres no numéricos en costos/precios
-            txtCosto.KeyPress += (s, e) =>
+            var numericBoxes = new[] { txtCosto, txtVenta, txtMargenInput };
+            foreach (var tb in numericBoxes)
             {
-                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
-                    e.Handled = true;
-            };
+                tb.KeyPress += (s, e) =>
+                {
+                    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
+                        e.Handled = true;
+                };
+            }
 
-            txtVenta.KeyPress += (s, e) =>
+            var intBoxes = new[] { txtStock, txtStockMin };
+            foreach (var tb in intBoxes)
             {
-                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '.')
-                    e.Handled = true;
-            };
-
-            txtStock.KeyPress += (s, e) =>
-            {
-                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-                    e.Handled = true;
-            };
-
-            txtStockMin.KeyPress += (s, e) =>
-            {
-                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-                    e.Handled = true;
-            };
+                tb.KeyPress += (s, e) =>
+                {
+                    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                        e.Handled = true;
+                };
+            }
         }
 
         private void CargarCategorias()
@@ -66,11 +63,21 @@ namespace KioscoApp
             try
             {
                 _listaCategorias = _categoriaService.ObtenerTodas();
+
+                // Combo del Formulario
                 cmbCategoria.DataSource = null;
                 cmbCategoria.DisplayMember = "Nombre";
                 cmbCategoria.ValueMember = "Id";
-                cmbCategoria.DataSource = _listaCategorias;
+                cmbCategoria.DataSource = new List<Categoria>(_listaCategorias);
                 cmbCategoria.SelectedIndex = -1;
+
+                // Combo del Filtro
+                var listaFiltro = new List<Categoria>(_listaCategorias);
+                listaFiltro.Insert(0, new Categoria { Id = 0, Nombre = "[Todas las categorías]" });
+                cmbFiltroCat.DisplayMember = "Nombre";
+                cmbFiltroCat.ValueMember = "Id";
+                cmbFiltroCat.DataSource = listaFiltro;
+                cmbFiltroCat.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -83,17 +90,153 @@ namespace KioscoApp
             try
             {
                 _listaProductos = _productoService.ObtenerTodos();
-                dgvProductos.DataSource = null;
-                dgvProductos.DataSource = _listaProductos;
-
-                if (dgvProductos.Columns["IdCategoria"] != null)
-                    dgvProductos.Columns["IdCategoria"].Visible = false;
+                AplicarFiltroProductos();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cargar productos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void AplicarFiltroProductos()
+        {
+            if (_listaProductos == null) return;
+
+            string busqueda = txtBuscarRapido.Text.Trim();
+            int catId = cmbFiltroCat.SelectedValue is int cId ? cId : 0;
+
+            var filtrados = _listaProductos.Where(p =>
+            {
+                bool coincideCat = catId == 0 || p.IdCategoria == catId;
+                if (!coincideCat) return false;
+
+                if (string.IsNullOrEmpty(busqueda)) return true;
+
+                return p.SKU.Contains(busqueda, StringComparison.OrdinalIgnoreCase) ||
+                       p.Nombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase) ||
+                       (p.CategoriaNombre != null && p.CategoriaNombre.Contains(busqueda, StringComparison.OrdinalIgnoreCase));
+            }).ToList();
+
+            dgvProductos.DataSource = null;
+            dgvProductos.DataSource = filtrados;
+
+            if (dgvProductos.Columns["IdCategoria"] != null)
+                dgvProductos.Columns["IdCategoria"].Visible = false;
+        }
+
+        private void txtBuscarRapido_TextChanged(object? sender, EventArgs e)
+        {
+            AplicarFiltroProductos();
+        }
+
+        private void txtBuscarRapido_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+
+                string skuBuscado = txtBuscarRapido.Text.Trim();
+                if (!string.IsNullOrEmpty(skuBuscado) && _listaProductos != null)
+                {
+                    var match = _listaProductos.FirstOrDefault(p => string.Equals(p.SKU, skuBuscado, StringComparison.OrdinalIgnoreCase))
+                                ?? _listaProductos.FirstOrDefault(p => p.SKU.Contains(skuBuscado, StringComparison.OrdinalIgnoreCase));
+
+                    if (match != null)
+                    {
+                        CargarProductoEnFormulario(match);
+                    }
+                }
+            }
+        }
+
+        private void cmbFiltroCat_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            AplicarFiltroProductos();
+        }
+
+        private void btnLimpiarFiltro_Click(object? sender, EventArgs e)
+        {
+            txtBuscarRapido.Clear();
+            if (cmbFiltroCat.Items.Count > 0) cmbFiltroCat.SelectedIndex = 0;
+            AplicarFiltroProductos();
+        }
+
+        #region Cálculo de Precios y Margen de Ganancia
+
+        private void txtCosto_TextChanged(object? sender, EventArgs e)
+        {
+            if (_isCalculating) return;
+            RecalcularDesdeCostoYMargen();
+        }
+
+        private void txtMargenInput_TextChanged(object? sender, EventArgs e)
+        {
+            if (_isCalculating) return;
+            RecalcularDesdeCostoYMargen();
+        }
+
+        private void txtVenta_TextChanged(object? sender, EventArgs e)
+        {
+            if (_isCalculating) return;
+            RecalcularDesdeVenta();
+        }
+
+        private void RecalcularDesdeCostoYMargen()
+        {
+            _isCalculating = true;
+            try
+            {
+                decimal.TryParse(txtCosto.Text.Replace('.', ','), out decimal costo);
+                decimal.TryParse(txtMargenInput.Text.Replace('.', ','), out decimal margen);
+
+                if (costo > 0)
+                {
+                    decimal venta = costo * (1m + (margen / 100m));
+                    txtVenta.Text = venta.ToString("0.##");
+                    decimal ganancia = venta - costo;
+                    lblGananciaNeta.Text = $"+ $ {ganancia:N2}";
+                    lblGananciaNeta.ForeColor = ganancia >= 0 ? Color.FromArgb(46, 204, 113) : Color.FromArgb(231, 76, 60);
+                }
+                else
+                {
+                    lblGananciaNeta.Text = "+ $ 0.00";
+                }
+            }
+            finally
+            {
+                _isCalculating = false;
+            }
+        }
+
+        private void RecalcularDesdeVenta()
+        {
+            _isCalculating = true;
+            try
+            {
+                decimal.TryParse(txtCosto.Text.Replace('.', ','), out decimal costo);
+                decimal.TryParse(txtVenta.Text.Replace('.', ','), out decimal venta);
+
+                if (costo > 0 && venta >= 0)
+                {
+                    decimal margen = ((venta - costo) / costo) * 100m;
+                    txtMargenInput.Text = margen.ToString("0.#");
+                    decimal ganancia = venta - costo;
+                    lblGananciaNeta.Text = $"+ $ {ganancia:N2}";
+                    lblGananciaNeta.ForeColor = ganancia >= 0 ? Color.FromArgb(46, 204, 113) : Color.FromArgb(231, 76, 60);
+                }
+                else
+                {
+                    lblGananciaNeta.Text = "+ $ 0.00";
+                }
+            }
+            finally
+            {
+                _isCalculating = false;
+            }
+        }
+
+        #endregion
 
         private Producto ConstruirProductoDesdeForm()
         {
@@ -141,7 +284,7 @@ namespace KioscoApp
 
             foreach (var error in resultado.Errors)
             {
-                if (controlMap.TryGetValue(error.Key, out Control ctrl) && ctrl != this)
+                if (controlMap.TryGetValue(error.Key, out Control? ctrl) && ctrl != null && ctrl != this)
                 {
                     errorProvider.SetError(ctrl, error.Value);
                 }
@@ -152,7 +295,7 @@ namespace KioscoApp
             return false;
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
+        private void btnGuardar_Click(object? sender, EventArgs e)
         {
             var producto = ConstruirProductoDesdeForm();
             bool esEdicion = productoIdSeleccionado != 0;
@@ -178,12 +321,15 @@ namespace KioscoApp
             var resultado = _productoService.GuardarProducto(producto, esEdicion);
             if (!MostrarErroresDeValidacion(resultado)) return;
 
+            AuditoriaService.Registrar("Productos", esEdicion ? "Modificación de Producto" : "Alta de Producto",
+                $"SKU: {producto.SKU}, Nombre: '{producto.Nombre}', Costo: ${producto.PrecioCosto:N2}, Venta: ${producto.PrecioVenta:N2}, Stock: {producto.StockActual}");
+
             MessageBox.Show(esEdicion ? "Producto actualizado con éxito." : "Producto registrado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Limpiar();
             CargarProductos();
         }
 
-        private void btnEliminar_Click(object sender, EventArgs e)
+        private void btnEliminar_Click(object? sender, EventArgs e)
         {
             if (productoIdSeleccionado == 0)
             {
@@ -191,10 +337,15 @@ namespace KioscoApp
                 return;
             }
 
-            if (MessageBox.Show("¿Está seguro que desea eliminar este producto?", "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            string nombreProd = txtNombre.Text;
+            string skuProd = txtSKU.Text;
+
+            if (MessageBox.Show($"¿Está seguro que desea eliminar el producto '{nombreProd}' (SKU: {skuProd})?", "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 var resultado = _productoService.EliminarProducto(productoIdSeleccionado);
                 if (!MostrarErroresDeValidacion(resultado)) return;
+
+                AuditoriaService.Registrar("Productos", "Baja de Producto", $"SKU: {skuProd}, Nombre: '{nombreProd}'");
 
                 MessageBox.Show("Producto eliminado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Limpiar();
@@ -202,24 +353,44 @@ namespace KioscoApp
             }
         }
 
-        private void btnLimpiar_Click(object sender, EventArgs e)
+        private void btnLimpiar_Click(object? sender, EventArgs e)
         {
             Limpiar();
         }
 
-        private void dgvProductos_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvProductos_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && dgvProductos.Rows[e.RowIndex].DataBoundItem is Producto producto)
             {
-                productoIdSeleccionado = producto.Id;
-                txtSKU.Text = producto.SKU;
-                txtNombre.Text = producto.Nombre;
-                txtDesc.Text = producto.Descripcion ?? string.Empty;
-                cmbCategoria.SelectedValue = producto.IdCategoria;
-                txtCosto.Text = producto.PrecioCosto.ToString("0.##");
-                txtVenta.Text = producto.PrecioVenta.ToString("0.##");
-                txtStock.Text = producto.StockActual.ToString();
-                txtStockMin.Text = producto.StockMinimo.ToString();
+                CargarProductoEnFormulario(producto);
+            }
+        }
+
+        private void CargarProductoEnFormulario(Producto producto)
+        {
+            productoIdSeleccionado = producto.Id;
+            txtSKU.Text = producto.SKU;
+            txtNombre.Text = producto.Nombre;
+            txtDesc.Text = producto.Descripcion ?? string.Empty;
+            cmbCategoria.SelectedValue = producto.IdCategoria;
+            txtCosto.Text = producto.PrecioCosto.ToString("0.##");
+            txtVenta.Text = producto.PrecioVenta.ToString("0.##");
+            txtStock.Text = producto.StockActual.ToString();
+            txtStockMin.Text = producto.StockMinimo.ToString();
+
+            // Calcular ganancia neta
+            decimal ganancia = producto.PrecioVenta - producto.PrecioCosto;
+            lblGananciaNeta.Text = $"+ $ {ganancia:N2}";
+            lblGananciaNeta.ForeColor = ganancia >= 0 ? Color.FromArgb(46, 204, 113) : Color.FromArgb(231, 76, 60);
+
+            if (producto.PrecioCosto > 0)
+            {
+                decimal margen = (ganancia / producto.PrecioCosto) * 100m;
+                txtMargenInput.Text = margen.ToString("0.#");
+            }
+            else
+            {
+                txtMargenInput.Clear();
             }
         }
 
@@ -233,12 +404,14 @@ namespace KioscoApp
             cmbCategoria.SelectedIndex = -1;
             txtCosto.Clear();
             txtVenta.Clear();
+            txtMargenInput.Clear();
+            lblGananciaNeta.Text = "+ $ 0.00";
             txtStock.Clear();
             txtStockMin.Clear();
             txtSKU.Focus();
         }
 
-        private void btnExportarExcel_Click(object sender, EventArgs e)
+        private void btnExportarExcel_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -254,7 +427,6 @@ namespace KioscoApp
                 var productos = _productoService.ObtenerTodos();
                 var sb = new StringBuilder();
 
-                // Encabezados estándar con punto y coma para compatibilidad directa con Excel en español
                 sb.AppendLine("SKU;Nombre;Categoria;PrecioCosto;PrecioVenta;StockActual;StockMinimo;Descripcion");
 
                 foreach (var p in productos)
@@ -278,7 +450,7 @@ namespace KioscoApp
             }
         }
 
-        private void btnImportarExcel_Click(object sender, EventArgs e)
+        private void btnImportarExcel_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -304,7 +476,6 @@ namespace KioscoApp
                 var categorias = _categoriaService.ObtenerTodas();
                 int defaultCatId = categorias.FirstOrDefault()?.Id ?? 1;
 
-                // Detectar separador (; o ,)
                 char sep = lineas[0].Contains(';') ? ';' : ',';
 
                 for (int i = 1; i < lineas.Length; i++)
@@ -328,7 +499,6 @@ namespace KioscoApp
                         continue;
                     }
 
-                    // Parsear precios tolerando coma o punto
                     string costoStr = partes[3].Replace("$", "").Trim().Replace(',', '.');
                     decimal.TryParse(costoStr, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal precioCosto);
 
@@ -359,7 +529,6 @@ namespace KioscoApp
                     }
                     else
                     {
-                        // Nuevo producto si tiene nombre y precio de venta
                         if (!string.IsNullOrWhiteSpace(nombre) && precioVenta > 0)
                         {
                             var nuevo = new Producto
@@ -370,8 +539,8 @@ namespace KioscoApp
                                 PrecioCosto = precioCosto,
                                 PrecioVenta = precioVenta,
                                 StockActual = stock,
-                                StockMinimo = stockMin,
-                                                            };
+                                StockMinimo = stockMin
+                            };
                             _productoService.GuardarProducto(nuevo, false);
                             creados++;
                         }
@@ -383,6 +552,9 @@ namespace KioscoApp
                 }
 
                 CargarProductos();
+
+                AuditoriaService.Registrar("Productos", "Importación Masiva de Precios",
+                    $"Archivo: {Path.GetFileName(ofd.FileName)}, Actualizados: {actualizados}, Creados: {creados}");
 
                 MessageBox.Show(
                     $"Importación masiva completada con éxito:\n\n" +
