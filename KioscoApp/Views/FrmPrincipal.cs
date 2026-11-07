@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -34,13 +34,15 @@ namespace KioscoApp
 
             BVenta.Visible = false;
             BClientes.Visible = false;
-            BCierreCaja.Visible = false; BHistorialVentas.Visible = false;
+            BCierreCaja.Visible = false; 
+            BHistorialVentas.Visible = false;
 
-            // Mostramos según rol
+            // Mostramos según rol y cargamos la pantalla principal por defecto
             if (rolUsuario == "admin")
             {
                 BUsuarios.Visible = true;
                 BConfiguracion.Visible = true;
+                CargarUserControl(new UcABMUsuarios());
             }
             else if (rolUsuario == "supervisor")
             {
@@ -49,12 +51,15 @@ namespace KioscoApp
                 BStock.Visible = true;
                 BEstadisticas.Visible = true;
                 BAuditoriaCajas.Visible = true;
+                CargarUserControl(new UcABMProductos());
             }
             else // vendedor
             {
                 BVenta.Visible = true;
                 BClientes.Visible = true;
-                BCierreCaja.Visible = true; BHistorialVentas.Visible = true;
+                BCierreCaja.Visible = true; 
+                BHistorialVentas.Visible = true;
+                CargarUserControl(new UcVenta());
             }
         }
 
@@ -81,7 +86,6 @@ namespace KioscoApp
 
         // --- Eventos Click del Menú ---
 
-
         private void btnCerrarSesion_Click(object sender, EventArgs e)
         {
             UserSession.CerrarSesion();
@@ -107,7 +111,6 @@ namespace KioscoApp
 
         private void BCategorias_Click(object sender, EventArgs e) { CargarUserControl(new UcABMCategorias()); }
 
-
         private void BStock_Click(object sender, EventArgs e) { CargarUserControl(new UcMovimientosStock()); }
 
         private void BEstadisticas_Click(object sender, EventArgs e) { CargarUserControl(new UcEstadisticas()); }
@@ -119,10 +122,9 @@ namespace KioscoApp
         private void BClientes_Click(object sender, EventArgs e) { CargarUserControl(new UcABMClientes()); }
 
         private void BCierreCaja_Click(object sender, EventArgs e) { CargarUserControl(new UcCierreCaja()); }
+
         private void BHistorialVentas_Click(object sender, EventArgs e) { CargarUserControl(new UcHistorialVentas()); }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
-        
     }
 }
-

@@ -18,10 +18,10 @@ namespace KioscoApp.Data
             string sqlVentas = @"
                 SELECT 
                     ISNULL(SUM(CASE WHEN MetodoPago LIKE '%Efectivo%' THEN Total ELSE 0 END), 0) AS VentasEfectivo,
-                    ISNULL(SUM(CASE WHEN MetodoPago LIKE '%QR%' OR MetodoPago LIKE '%MercadoPago%' THEN Total ELSE 0 END), 0) AS VentasQR,
-                    ISNULL(SUM(CASE WHEN MetodoPago LIKE '%Tarjeta%' THEN Total ELSE 0 END), 0) AS VentasTarjeta,
-                    COUNT(*) AS CantidadVentas,
-                    MIN(Fecha) AS PrimerVenta
+                    ISNULL(SUM(CASE WHEN (MetodoPago LIKE '%QR%' OR MetodoPago LIKE '%MercadoPago%') AND Estado <> 'Anulada' THEN Total ELSE 0 END), 0) AS VentasQR,
+                    ISNULL(SUM(CASE WHEN MetodoPago LIKE '%Tarjeta%' AND Estado <> 'Anulada' THEN Total ELSE 0 END), 0) AS VentasTarjeta,
+                    COUNT(CASE WHEN Estado <> 'Anulada' THEN 1 END) AS CantidadVentas,
+                    MIN(CASE WHEN Estado <> 'Anulada' THEN Fecha END) AS PrimerVenta
                 FROM Ventas
                 WHERE IdCierreCaja IS NULL";
 
@@ -300,7 +300,7 @@ namespace KioscoApp.Data
                     p.PrecioVenta
                 FROM Productos p
                 LEFT JOIN Categorias c ON p.IdCategoria = c.Id
-                                ORDER BY (p.StockActual * p.PrecioVenta) DESC";
+                ORDER BY (p.StockActual * p.PrecioVenta) DESC";
 
             using var cmd = new SqlCommand(query, connection);
             using var reader = cmd.ExecuteReader();
