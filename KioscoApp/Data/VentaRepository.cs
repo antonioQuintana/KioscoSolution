@@ -43,8 +43,8 @@ namespace KioscoApp.Data
                     cmdDetalle.ExecuteNonQuery();
                 }
 
-                // 4. Si es venta a Cuenta Corriente y no es Consumidor Final, incrementar SaldoDeudor del cliente
-                if (venta.MetodoPago == "Cuenta Corriente" && venta.IdCliente > 1)
+                // 3. Si es venta a Cuenta Corriente y no es Consumidor Final, incrementar SaldoDeudor del cliente
+                if (string.Equals(venta.MetodoPago, "Cuenta Corriente", StringComparison.OrdinalIgnoreCase) && venta.IdCliente > 1)
                 {
                     string querySaldo = "UPDATE Clientes SET SaldoDeudor = SaldoDeudor + @Total WHERE Id = @IdCliente";
                     using var cmdSaldo = new SqlCommand(querySaldo, connection, transaction);
@@ -65,12 +65,23 @@ namespace KioscoApp.Data
 
         public List<Venta> ObtenerTodas()
         {
+            return FiltrarVentas(null, null, null, false);
+        }
+
+        public List<Venta> FiltrarVentas(DateTime? desde = null, DateTime? hasta = null, string? filtro = null, bool soloTurnoActual = false)
+        {
             var ventas = new List<Venta>();
             using var connection = DatabaseHelper.GetConnection();
             connection.Open();
 
-            using var cmd = new SqlCommand("sp_Ventas_ObtenerTodas", connection);
+            using var cmd = new SqlCommand("sp_Ventas_Filtrar", connection);
             cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@FechaDesde", (object?)desde ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@FechaHasta", (object?)hasta ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Filtro", (object?)filtro ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@SoloTurnoActual", soloTurnoActual);
+
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -81,12 +92,27 @@ namespace KioscoApp.Data
                     Fecha = Convert.ToDateTime(reader["Fecha"]),
                     Total = Convert.ToDecimal(reader["Total"]),
                     Descuento = Convert.ToDecimal(reader["Descuento"]),
-                    MetodoPago = reader["MetodoPago"].ToString(),
-                    Estado = reader["Estado"].ToString(),
+                    MetodoPago = reader["MetodoPago"].ToString() ?? "",
+                    Estado = reader["Estado"].ToString() ?? "",
                     NombreCliente = $"{reader["DniCliente"]} - {reader["NombreCliente"]} {reader["ApellidoCliente"]}"
                 });
             }
             return ventas;
+        }
+
+        public void AnularVenta(int idVenta, string motivo, int? idUsuario)
+        {
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            using var cmd = new SqlCommand("sp_Ventas_Anular", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@IdVenta", idVenta);
+            cmd.Parameters.AddWithValue("@Motivo", (object?)motivo ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@IdUsuario", (object?)idUsuario ?? DBNull.Value);
+
+            cmd.ExecuteNonQuery();
         }
 
         public List<DetalleVenta> ObtenerDetallesPorVenta(int idVenta)

@@ -80,6 +80,22 @@ namespace KioscoApp.Business
             return _repository.ObtenerTodas();
         }
 
+        public List<Venta> FiltrarVentas(DateTime? desde = null, DateTime? hasta = null, string? filtro = null, bool soloTurnoActual = false)
+        {
+            return _repository.FiltrarVentas(desde, hasta, filtro, soloTurnoActual);
+        }
+
+        public void AnularVenta(int idVenta, string motivo, int? idUsuario)
+        {
+            if (idVenta <= 0)
+                throw new ArgumentException("El ID de la venta a anular es inválido.", nameof(idVenta));
+
+            _repository.AnularVenta(idVenta, motivo, idUsuario);
+
+            AuditoriaService.Registrar("Ventas", "Anulación de Venta",
+                $"Ticket #{idVenta} anulado. Motivo: '{motivo ?? "Sin motivo especificado"}'");
+        }
+
         public List<DetalleVenta> ObtenerDetallesPorVenta(int idVenta)
         {
             if (idVenta <= 0)

@@ -785,3 +785,97 @@ BEGIN
     ORDER BY Fecha DESC;
 END
 GO
+
+CREATE OR ALTER PROCEDURE sp_Ventas_Filtrar
+    @FechaDesde DATETIME = NULL,
+    @FechaHasta DATETIME = NULL,
+    @Filtro VARCHAR(100) = NULL,
+    @SoloTurnoActual BIT = 0
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT v.*, c.Dni AS DniCliente, c.Nombre AS NombreCliente, c.Apellido AS ApellidoCliente
+    FROM Ventas v
+    INNER JOIN Clientes c ON v.IdCliente = c.Id
+    WHERE (@SoloTurnoActual = 0 OR v.IdCierreCaja IS NULL)
+      AND (@FechaDesde IS NULL OR v.Fecha >= @FechaDesde)
+      AND (@FechaHasta IS NULL OR v.Fecha <= @FechaHasta)
+      AND (@Filtro IS NULL OR @Filtro = '' OR 
+           c.Nombre LIKE '%' + @Filtro + '%' OR 
+           c.Apellido LIKE '%' + @Filtro + '%' OR 
+           c.Dni LIKE '%' + @Filtro + '%' OR 
+           v.MetodoPago LIKE '%' + @Filtro + '%' OR 
+           CAST(v.Id AS VARCHAR) LIKE '%' + @Filtro + '%')
+    ORDER BY v.Fecha DESC;
+END
+GO
+
+CREATE OR ALTER PROCEDURE sp_Ventas_Anular
+    @IdVenta INT,
+    @Motivo NVARCHAR(250) = NULL,
+    @IdUsuario INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+    BEGIN TRY
+        DECLARE @Estado VARCHAR(50), @Total DECIMAL(18,2), @MetodoPago VARCHAR(50), @IdCliente INT, @IdCierre INT;
+        SELECT 
+            @Estado = Estado, 
+            @Total = Total, 
+            @MetodoPago = MetodoPago, 
+            @IdCliente = IdCliente,
+            @IdCierre = IdCierreCaja
+        FROM Ventas 
+        WHERE Id = @IdVenta;
+
+        IF @Estado IS NULL
+        BEGIN
+            RAISERROR('La venta no existe.', 16, 1);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        IF @Estado = 'Anulada'
+        BEGIN
+            RAISERROR('La venta ya se encuentra anulada.', 16, 1);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        -- 2. Marcar venta como Anulada
+        UPDATE Ventas 
+        SET Estado = 'Anulada' 
+        WHERE Id = @IdVenta;
+
+        -- 3. Revertir el stock de cada producto vendido
+        UPDATE p
+        SET p.StockActual = p.StockActual + dv.Cantidad
+        FROM Productos p
+        INNER JOIN DetallesVenta dv ON p.Id = dv.IdProducto
+        WHERE dv.IdVenta = @IdVenta;
+
+        -- 4. Si fue en cuenta corriente, revertir el saldo deudor del cliente
+        IF @MetodoPago LIKE '%Cuenta Corriente%' OR @MetodoPago LIKE '%Cta Cte%'
+        BEGIN
+            UPDATE Clientes
+            SET SaldoDeudor = CASE WHEN SaldoDeudor >= @Total THEN SaldoDeudor - @Total ELSE 0 END
+            WHERE Id = @IdCliente;
+        END
+
+        -- 5. Si fue en efectivo y el turno de la venta aun esta abierto, registrar salida/reintegro en caja
+        IF @MetodoPago LIKE '%Efectivo%' AND @IdCierre IS NULL
+        BEGIN
+            INSERT INTO MovimientosCaja (IdUsuario, Fecha, Tipo, Monto, Motivo, IdCierreCaja)
+            VALUES (@IdUsuario, GETDATE(), 'Retiro', @Total, 'Reintegro por Anulacion de Venta #' + CAST(@IdVenta AS VARCHAR) + ISNULL(' - ' + @Motivo, ''), NULL);
+        END
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END
+GO
