@@ -289,13 +289,17 @@ namespace KioscoApp
 
                 int idCierre = _cajaService.ConfirmarCierre(nuevoCierre);
 
+                AuditoriaService.Registrar("Caja", "Cierre de Caja Z Confirmado",
+                    $"Cierre #{idCierre} - Ventas: ${_resumen.TotalVentas:N2}, Esperado: ${_resumen.EfectivoEsperado:N2}, Declarado: {_totalContado:N2}, Dif: ${diferencia:N2}");
+
                 MessageBox.Show($"¡Cierre de Caja N° {idCierre} guardado exitosamente!\n\nEl turno ha sido cerrado y archivado.", "Cierre Completado", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // Imprimir comprobante
                 BtnImprimirZ_Click(sender, e);
 
-                // Limpiar campos de conteo físico
+                // Limpiar campos de conteo físico y resetear fondo inicial del turno anterior
                 LimpiarConteo();
+                _fondoInicialConfigurado = 0m;
 
                 // Recargar resumen con la caja reiniciada
                 CargarResumenTurno();
