@@ -34,7 +34,7 @@ namespace KioscoApp.Views
         private void InitializeCustomComponents()
         {
             Text = "Configuración de Datos del Negocio e Información de Ticket";
-            Size = new Size(820, 620);
+            ClientSize = new Size(840, 640);
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
@@ -107,13 +107,13 @@ namespace KioscoApp.Views
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.White,
                 Location = new Point(455, 55),
-                Size = new Size(335, 480)
+                Size = new Size(365, 480)
             };
 
             txtPreviewTicket = new TextBox
             {
                 Location = new Point(15, 25),
-                Size = new Size(305, 440),
+                Size = new Size(335, 440),
                 Multiline = true,
                 ReadOnly = true,
                 ScrollBars = ScrollBars.Vertical,
@@ -123,12 +123,12 @@ namespace KioscoApp.Views
             };
             pnlPreview.Controls.Add(txtPreviewTicket);
 
-            // Botones inferiores
+            // Botones inferiores con amplio margen y separación
             btnGuardar = new Button
             {
                 Text = "Guardar Cambios",
-                Location = new Point(455, 545),
-                Size = new Size(180, 40),
+                Location = new Point(455, 555),
+                Size = new Size(185, 45),
                 BackColor = Color.FromArgb(46, 204, 113),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
@@ -141,8 +141,8 @@ namespace KioscoApp.Views
             btnCancelar = new Button
             {
                 Text = "Cerrar / Cancelar",
-                Location = new Point(650, 545),
-                Size = new Size(140, 40),
+                Location = new Point(660, 555),
+                Size = new Size(160, 45),
                 BackColor = Color.FromArgb(127, 140, 141),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),

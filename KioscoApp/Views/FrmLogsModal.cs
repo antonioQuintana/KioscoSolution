@@ -23,7 +23,7 @@ namespace KioscoApp.Views
         private void InitializeCustomComponents()
         {
             Text = "Visor de Registros de Seguridad y Diagnóstico del Sistema (Logs)";
-            Size = new Size(950, 650);
+            ClientSize = new Size(950, 650);
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
@@ -44,7 +44,7 @@ namespace KioscoApp.Views
             var pnlFiltros = new Panel
             {
                 Location = new Point(20, 50),
-                Size = new Size(895, 40),
+                Size = new Size(910, 40),
                 BackColor = Color.FromArgb(38, 38, 42)
             };
 
@@ -125,7 +125,7 @@ namespace KioscoApp.Views
             txtLogs = new TextBox
             {
                 Location = new Point(20, 100),
-                Size = new Size(895, 480),
+                Size = new Size(910, 455),
                 Multiline = true,
                 ReadOnly = true,
                 ScrollBars = ScrollBars.Both,
@@ -135,12 +135,12 @@ namespace KioscoApp.Views
                 Font = new Font("Consolas", 9.5F)
             };
 
-            // Botones inferiores
+            // Botones inferiores con amplio espacio inferior y superior
             var btnCopiar = new Button
             {
                 Text = "📋 Copiar Logs al Portapapeles",
-                Location = new Point(20, 595),
-                Size = new Size(230, 35),
+                Location = new Point(20, 575),
+                Size = new Size(240, 42),
                 BackColor = Color.FromArgb(52, 73, 94),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
@@ -160,8 +160,8 @@ namespace KioscoApp.Views
             var btnLimpiar = new Button
             {
                 Text = "🗑️ Limpiar Archivo de Logs",
-                Location = new Point(265, 595),
-                Size = new Size(200, 35),
+                Location = new Point(275, 575),
+                Size = new Size(210, 42),
                 BackColor = Color.FromArgb(192, 57, 43),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
@@ -174,8 +174,8 @@ namespace KioscoApp.Views
             var btnCerrar = new Button
             {
                 Text = "Cerrar [Esc]",
-                Location = new Point(785, 595),
-                Size = new Size(130, 35),
+                Location = new Point(780, 575),
+                Size = new Size(150, 42),
                 BackColor = Color.FromArgb(127, 140, 141),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
