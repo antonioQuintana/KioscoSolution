@@ -7,14 +7,16 @@ namespace KioscoApp
     public partial class FrmPrincipal : Form
     {
         private string rolUsuario;
+        private Button? _botonMenuActivo;
 
         public FrmPrincipal(string rol)
         {
             InitializeComponent();
 
             rolUsuario = rol.ToLower();
-            ConfigurarMenu();
             ThemeHelper.ApplyTheme(this);
+            btnCerrarSesion.BackColor = Color.IndianRed;
+            ConfigurarMenu();
         }
 
         private void ConfigurarMenu()
@@ -42,7 +44,7 @@ namespace KioscoApp
             {
                 BUsuarios.Visible = true;
                 BConfiguracion.Visible = true;
-                CargarUserControl(new UcABMUsuarios());
+                CargarUserControl(new UcABMUsuarios(), BUsuarios);
             }
             else if (rolUsuario == "supervisor")
             {
@@ -51,7 +53,7 @@ namespace KioscoApp
                 BStock.Visible = true;
                 BEstadisticas.Visible = true;
                 BAuditoriaCajas.Visible = true;
-                CargarUserControl(new UcABMProductos());
+                CargarUserControl(new UcABMProductos(), BProductos);
             }
             else // vendedor
             {
@@ -59,16 +61,28 @@ namespace KioscoApp
                 BClientes.Visible = true;
                 BCierreCaja.Visible = true; 
                 BHistorialVentas.Visible = true;
-                CargarUserControl(new UcVenta());
+                CargarUserControl(new UcVenta(), BVenta);
             }
         }
 
-        private void CargarUserControl(UserControl uc)
+        private void CargarUserControl(UserControl uc, Button? botonMenu = null)
         {
+            // Si la pantalla actual ya es del mismo tipo, no recargar para evitar parpadeos y pérdida de estado
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0].GetType() == uc.GetType())
+            {
+                if (botonMenu != null) ResaltarBotonActivo(botonMenu);
+                return;
+            }
+
             pnlContent.Controls.Clear();
             uc.Dock = DockStyle.Fill;
+            
+            // Aplicar el tema correspondiente al nuevo UserControl
+            ThemeHelper.ApplyTheme(uc);
+            
             pnlContent.Controls.Add(uc);
-            // Fix: WinForms hereda el color blanco del FrmPrincipal, y oculta el texto en las grillas de fondo blanco.
+
+            // Fix: Asegurar que los textos en las celdas de las grillas sean legibles
             foreach (Control c in uc.Controls)
             {
                 if (c is DataGridView dgv)
@@ -77,6 +91,32 @@ namespace KioscoApp
                     dgv.ForeColor = Color.Black;
                 }
             }
+
+            if (botonMenu != null) ResaltarBotonActivo(botonMenu);
+        }
+
+        private void ResaltarBotonActivo(Button? boton)
+        {
+            if (boton == null) return;
+
+            var botones = new[] 
+            { 
+                BUsuarios, BConfiguracion, BProductos, BCategorias, BStock, 
+                BEstadisticas, BAuditoriaCajas, BVenta, BClientes, BCierreCaja, BHistorialVentas 
+            };
+
+            foreach (var b in botones)
+            {
+                if (b != null && b.Visible)
+                {
+                    b.BackColor = ThemeHelper.ButtonColor;
+                    b.ForeColor = Color.White;
+                }
+            }
+
+            _botonMenuActivo = boton;
+            _botonMenuActivo.BackColor = Color.FromArgb(0, 122, 204); // Resaltado azul profesional de pestaña activa
+            _botonMenuActivo.ForeColor = Color.White;
         }
 
         private void FrmPrincipal_FormClosed(object sender, FormClosedEventArgs e)
@@ -103,27 +143,71 @@ namespace KioscoApp
 
         private void pnlContent_Paint(object sender, PaintEventArgs e) { }
 
-        private void BUsuarios_Click_1(object sender, EventArgs e) { CargarUserControl(new UcABMUsuarios()); }
+        private void BUsuarios_Click_1(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcABMUsuarios) return;
+            CargarUserControl(new UcABMUsuarios(), BUsuarios); 
+        }
 
-        private void BConfiguracion_Click(object sender, EventArgs e) { CargarUserControl(new UcConfiguracion()); }
+        private void BConfiguracion_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcConfiguracion) return;
+            CargarUserControl(new UcConfiguracion(), BConfiguracion); 
+        }
 
-        private void BProductos_Click(object sender, EventArgs e) { CargarUserControl(new UcABMProductos()); }
+        private void BProductos_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcABMProductos) return;
+            CargarUserControl(new UcABMProductos(), BProductos); 
+        }
 
-        private void BCategorias_Click(object sender, EventArgs e) { CargarUserControl(new UcABMCategorias()); }
+        private void BCategorias_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcABMCategorias) return;
+            CargarUserControl(new UcABMCategorias(), BCategorias); 
+        }
 
-        private void BStock_Click(object sender, EventArgs e) { CargarUserControl(new UcMovimientosStock()); }
+        private void BStock_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcMovimientosStock) return;
+            CargarUserControl(new UcMovimientosStock(), BStock); 
+        }
 
-        private void BEstadisticas_Click(object sender, EventArgs e) { CargarUserControl(new UcEstadisticas()); }
+        private void BEstadisticas_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcEstadisticas) return;
+            CargarUserControl(new UcEstadisticas(), BEstadisticas); 
+        }
 
-        private void BAuditoriaCajas_Click(object sender, EventArgs e) { CargarUserControl(new UcAuditoriaCajas()); }
+        private void BAuditoriaCajas_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcAuditoriaCajas) return;
+            CargarUserControl(new UcAuditoriaCajas(), BAuditoriaCajas); 
+        }
 
-        private void BVenta_Click(object sender, EventArgs e) { CargarUserControl(new UcVenta()); }
+        private void BVenta_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcVenta) return;
+            CargarUserControl(new UcVenta(), BVenta); 
+        }
 
-        private void BClientes_Click(object sender, EventArgs e) { CargarUserControl(new UcABMClientes()); }
+        private void BClientes_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcABMClientes) return;
+            CargarUserControl(new UcABMClientes(), BClientes); 
+        }
 
-        private void BCierreCaja_Click(object sender, EventArgs e) { CargarUserControl(new UcCierreCaja()); }
+        private void BCierreCaja_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcCierreCaja) return;
+            CargarUserControl(new UcCierreCaja(), BCierreCaja); 
+        }
 
-        private void BHistorialVentas_Click(object sender, EventArgs e) { CargarUserControl(new UcHistorialVentas()); }
+        private void BHistorialVentas_Click(object sender, EventArgs e) 
+        { 
+            if (pnlContent.Controls.Count > 0 && pnlContent.Controls[0] is UcHistorialVentas) return;
+            CargarUserControl(new UcHistorialVentas(), BHistorialVentas); 
+        }
 
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
     }
