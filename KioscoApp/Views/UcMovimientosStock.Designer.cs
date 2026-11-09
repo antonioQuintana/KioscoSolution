@@ -29,10 +29,14 @@ namespace KioscoApp
             lblStockActual = new Label();
             lblProductoSeleccionado = new Label();
             lblProductoLabel = new Label();
+            groupBoxHerramientasStock = new GroupBox();
+            btnInventarioValorizado = new Button();
+            btnAuditoriaStock = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvStock).BeginInit();
             groupBoxModificar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numStockMinimo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numStockActual).BeginInit();
+            groupBoxHerramientasStock.SuspendLayout();
             SuspendLayout();
             // 
             // lblTitulo
@@ -189,6 +193,51 @@ namespace KioscoApp
             lblProductoLabel.TabIndex = 0;
             lblProductoLabel.Text = "Producto seleccionado:";
             // 
+            // groupBoxHerramientasStock
+            // 
+            groupBoxHerramientasStock.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            groupBoxHerramientasStock.Controls.Add(btnAuditoriaStock);
+            groupBoxHerramientasStock.Controls.Add(btnInventarioValorizado);
+            groupBoxHerramientasStock.ForeColor = SystemColors.ControlLightLight;
+            groupBoxHerramientasStock.Location = new Point(690, 405);
+            groupBoxHerramientasStock.Name = "groupBoxHerramientasStock";
+            groupBoxHerramientasStock.Size = new Size(290, 190);
+            groupBoxHerramientasStock.TabIndex = 5;
+            groupBoxHerramientasStock.TabStop = false;
+            groupBoxHerramientasStock.Text = "Reportes y Auditoría de Stock";
+            // 
+            // btnInventarioValorizado
+            // 
+            btnInventarioValorizado.BackColor = Color.FromArgb(52, 73, 94);
+            btnInventarioValorizado.Cursor = Cursors.Hand;
+            btnInventarioValorizado.FlatAppearance.BorderSize = 0;
+            btnInventarioValorizado.FlatStyle = FlatStyle.Flat;
+            btnInventarioValorizado.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnInventarioValorizado.ForeColor = Color.White;
+            btnInventarioValorizado.Location = new Point(20, 35);
+            btnInventarioValorizado.Name = "btnInventarioValorizado";
+            btnInventarioValorizado.Size = new Size(250, 55);
+            btnInventarioValorizado.TabIndex = 0;
+            btnInventarioValorizado.Text = "💰 Inventario Valorizado";
+            btnInventarioValorizado.UseVisualStyleBackColor = false;
+            btnInventarioValorizado.Click += btnInventarioValorizado_Click;
+            // 
+            // btnAuditoriaStock
+            // 
+            btnAuditoriaStock.BackColor = Color.FromArgb(41, 128, 185);
+            btnAuditoriaStock.Cursor = Cursors.Hand;
+            btnAuditoriaStock.FlatAppearance.BorderSize = 0;
+            btnAuditoriaStock.FlatStyle = FlatStyle.Flat;
+            btnAuditoriaStock.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnAuditoriaStock.ForeColor = Color.White;
+            btnAuditoriaStock.Location = new Point(20, 105);
+            btnAuditoriaStock.Name = "btnAuditoriaStock";
+            btnAuditoriaStock.Size = new Size(250, 55);
+            btnAuditoriaStock.TabIndex = 1;
+            btnAuditoriaStock.Text = "📋 Auditoría de Ajustes";
+            btnAuditoriaStock.UseVisualStyleBackColor = false;
+            btnAuditoriaStock.Click += btnAuditoriaStock_Click;
+            // 
             // UcMovimientosStock
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -197,6 +246,7 @@ namespace KioscoApp
             AutoScrollMinSize = new Size(950, 580);
             Controls.Add(lblResumenStock);
             Controls.Add(chkSoloAlertas);
+            Controls.Add(groupBoxHerramientasStock);
             Controls.Add(groupBoxModificar);
             Controls.Add(dgvStock);
             Controls.Add(txtBuscar);
@@ -209,6 +259,7 @@ namespace KioscoApp
             groupBoxModificar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numStockMinimo).EndInit();
             ((System.ComponentModel.ISupportInitialize)numStockActual).EndInit();
+            groupBoxHerramientasStock.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -227,5 +278,8 @@ namespace KioscoApp
         private System.Windows.Forms.Label lblStockMinimo;
         private System.Windows.Forms.NumericUpDown numStockMinimo;
         private System.Windows.Forms.Button btnGuardar;
+        private System.Windows.Forms.GroupBox groupBoxHerramientasStock;
+        private System.Windows.Forms.Button btnInventarioValorizado;
+        private System.Windows.Forms.Button btnAuditoriaStock;
     }
 }

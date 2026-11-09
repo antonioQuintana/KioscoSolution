@@ -318,5 +318,51 @@ namespace KioscoApp.Data
             }
             return lista;
         }
+
+        public List<MovimientoCaja> ObtenerMovimientosCaja(DateTime? desde = null, DateTime? hasta = null, int? idUsuario = null)
+        {
+            var lista = new List<MovimientoCaja>();
+            using var connection = DatabaseHelper.GetConnection();
+            connection.Open();
+
+            string query = @"
+                SELECT 
+                    m.Id,
+                    m.Fecha,
+                    m.Tipo,
+                    m.Monto,
+                    m.Motivo,
+                    m.IdUsuario,
+                    ISNULL(u.Usuario, 'Sistema') AS NombreUsuario,
+                    m.IdCierreCaja
+                FROM MovimientosCaja m
+                LEFT JOIN Usuarios u ON m.IdUsuario = u.Id
+                WHERE (@Desde IS NULL OR m.Fecha >= @Desde)
+                  AND (@Hasta IS NULL OR m.Fecha < DATEADD(DAY, 1, @Hasta))
+                  AND (@IdUsuario IS NULL OR @IdUsuario = 0 OR m.IdUsuario = @IdUsuario)
+                ORDER BY m.Fecha DESC";
+
+            using var cmd = new SqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@Desde", (object?)desde?.Date ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Hasta", (object?)hasta?.Date ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@IdUsuario", (object?)idUsuario ?? DBNull.Value);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lista.Add(new MovimientoCaja
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    Fecha = Convert.ToDateTime(reader["Fecha"]),
+                    Tipo = reader["Tipo"]?.ToString() ?? "Ingreso",
+                    Monto = Convert.ToDecimal(reader["Monto"]),
+                    Motivo = reader["Motivo"]?.ToString() ?? "",
+                    IdUsuario = reader["IdUsuario"] != DBNull.Value ? Convert.ToInt32(reader["IdUsuario"]) : null,
+                    NombreUsuario = reader["NombreUsuario"]?.ToString() ?? "Sistema",
+                    IdCierreCaja = reader["IdCierreCaja"] != DBNull.Value ? Convert.ToInt32(reader["IdCierreCaja"]) : null
+                });
+            }
+            return lista;
+        }
     }
 }

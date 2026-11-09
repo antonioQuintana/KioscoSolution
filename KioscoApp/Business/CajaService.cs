@@ -89,5 +89,10 @@ namespace KioscoApp.Business
         {
             return _cajaRepository.ObtenerInventarioValorizado();
         }
+
+        public List<MovimientoCaja> ObtenerMovimientosCaja(DateTime? desde = null, DateTime? hasta = null, int? idUsuario = null)
+        {
+            return _cajaRepository.ObtenerMovimientosCaja(desde, hasta, idUsuario);
+        }
     }
 }
