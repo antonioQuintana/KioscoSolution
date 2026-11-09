@@ -1,4 +1,4 @@
-USE KioscoDB;
+﻿USE KioscoDB;
 GO
 
 -- =============================================================================
@@ -531,6 +531,8 @@ GO
 -- =============================================================================
 
 CREATE OR ALTER PROCEDURE sp_Estadisticas_ListarMasVendidos
+    @FechaDesde DATE = NULL,
+    @FechaHasta DATE = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -542,6 +544,11 @@ BEGIN
         categorias c
         INNER JOIN productos p ON c.id = p.idcategoria
         INNER JOIN detallesventa dv ON p.id = dv.idproducto
+        INNER JOIN Ventas v ON v.Id = dv.IdVenta
+    WHERE
+        v.Estado = 'Completada'
+        AND (@FechaDesde IS NULL OR CAST(v.Fecha AS DATE) >= @FechaDesde)
+        AND (@FechaHasta IS NULL OR CAST(v.Fecha AS DATE) <= @FechaHasta)
     GROUP BY 
         c.id,
         c.nombre,
@@ -552,7 +559,11 @@ BEGIN
             SELECT TOP 1 SUM(dv_sub.cantidad)
             FROM productos p_sub
             INNER JOIN detallesventa dv_sub ON p_sub.id = dv_sub.idproducto
+            INNER JOIN Ventas v_sub ON v_sub.Id = dv_sub.IdVenta
             WHERE p_sub.idcategoria = c.id
+              AND v_sub.Estado = 'Completada'
+              AND (@FechaDesde IS NULL OR CAST(v_sub.Fecha AS DATE) >= @FechaDesde)
+              AND (@FechaHasta IS NULL OR CAST(v_sub.Fecha AS DATE) <= @FechaHasta)
             GROUP BY p_sub.id
             ORDER BY SUM(dv_sub.cantidad) DESC
         );
@@ -560,6 +571,8 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE sp_Estadisticas_ListarVentasPorDias
+    @FechaDesde DATE = NULL,
+    @FechaHasta DATE = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -570,7 +583,8 @@ BEGIN
         SUM(Total) AS TotalIngresos
     FROM Ventas
     WHERE Estado = 'Completada'
-      AND Fecha >= DATEADD(DAY, -7, CAST(GETDATE() AS DATE))
+      AND (@FechaDesde IS NULL OR CAST(Fecha AS DATE) >= @FechaDesde)
+      AND (@FechaHasta IS NULL OR CAST(Fecha AS DATE) <= @FechaHasta)
     GROUP BY 
         CAST(Fecha AS DATE), 
         DATENAME(WEEKDAY, Fecha)
@@ -580,6 +594,8 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE sp_Estadisticas_ListarVentasPorHora
+    @FechaDesde DATE = NULL,
+    @FechaHasta DATE = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -600,6 +616,8 @@ BEGIN
     LEFT JOIN Ventas v 
         ON DATEPART(HOUR, v.Fecha) BETWEEN f.HoraInicio AND f.HoraFin
         AND v.Estado = 'Completada'
+        AND (@FechaDesde IS NULL OR CAST(v.Fecha AS DATE) >= @FechaDesde)
+        AND (@FechaHasta IS NULL OR CAST(v.Fecha AS DATE) <= @FechaHasta)
     GROUP BY 
         f.Orden, 
         f.FranjaHoraria
@@ -609,14 +627,16 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE sp_Estadisticas_ListarVentasPorCategoria
+    @FechaDesde DATE = NULL,
+    @FechaHasta DATE = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
     SELECT 
         c.Nombre AS Categoria,
         COUNT(DISTINCT v.Id) AS TotalVentas,
-        ISNULL(SUM(dv.Cantidad), 0) AS UnidadesVendidas,
-        ISNULL(SUM(dv.Subtotal), 0) AS TotalFacturado
+        ISNULL(SUM(CASE WHEN v.Id IS NOT NULL THEN dv.Cantidad ELSE 0 END), 0) AS UnidadesVendidas,
+        ISNULL(SUM(CASE WHEN v.Id IS NOT NULL THEN dv.Subtotal ELSE 0 END), 0) AS TotalFacturado
     FROM Categorias c
     LEFT JOIN Productos p 
         ON p.IdCategoria = c.Id
@@ -625,6 +645,8 @@ BEGIN
     LEFT JOIN Ventas v 
         ON v.Id = dv.IdVenta 
         AND v.Estado = 'Completada'
+        AND (@FechaDesde IS NULL OR CAST(v.Fecha AS DATE) >= @FechaDesde)
+        AND (@FechaHasta IS NULL OR CAST(v.Fecha AS DATE) <= @FechaHasta)
     GROUP BY 
         c.Id, 
         c.Nombre
@@ -634,6 +656,8 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE sp_Estadisticas_ListarMetodosMasUsados
+    @FechaDesde DATE = NULL,
+    @FechaHasta DATE = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -654,13 +678,14 @@ BEGIN
     LEFT JOIN ArticulosPorVenta apv 
         ON v.Id = apv.IdVenta
     WHERE v.Estado = 'Completada'
+      AND (@FechaDesde IS NULL OR CAST(v.Fecha AS DATE) >= @FechaDesde)
+      AND (@FechaHasta IS NULL OR CAST(v.Fecha AS DATE) <= @FechaHasta)
     GROUP BY 
         LTRIM(RTRIM(v.MetodoPago))
     ORDER BY 
         TotalFacturado DESC;
 END
 GO
-
 CREATE OR ALTER PROCEDURE sp_Ventas_ObtenerDetalles
     @IdVenta INT
 AS
