@@ -11,6 +11,17 @@ namespace KioscoApp.Data
 {
     public class EstadisticasRepository
     {
+        private static void ValidarYAgregarFechas(SqlCommand cmd, DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            if (fechaDesde.HasValue && fechaHasta.HasValue && fechaDesde.Value.Date > fechaHasta.Value.Date)
+            {
+                throw new ArgumentException("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'.");
+            }
+
+            cmd.Parameters.AddWithValue("@FechaDesde", fechaDesde.HasValue ? fechaDesde.Value.Date : DBNull.Value);
+            cmd.Parameters.AddWithValue("@FechaHasta", fechaHasta.HasValue ? fechaHasta.Value.Date : DBNull.Value);
+        }
+
         /// ///////////////////////////////////////////////////////////////////////
         /// Clases para graficar los productos más vendidos
         public class ProductoMasVendido
@@ -20,7 +31,7 @@ namespace KioscoApp.Data
             public int CantidadTotalVendida { get; set; }
         }
 
-        public static List<ProductoMasVendido> ListarMasVendidos()
+        public static List<ProductoMasVendido> ListarMasVendidos(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
             var productos = new List<ProductoMasVendido>();
             using var connection = DatabaseHelper.GetConnection();
@@ -28,6 +39,8 @@ namespace KioscoApp.Data
 
             using var cmd = new SqlCommand("sp_Estadisticas_ListarMasVendidos", connection);
             cmd.CommandType = CommandType.StoredProcedure;
+            ValidarYAgregarFechas(cmd, fechaDesde, fechaHasta);
+
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -56,7 +69,7 @@ namespace KioscoApp.Data
             public float TotalVendido { get; set; }
         }
 
-        public static List<DiaMasVendido> ListarVentasPorDias()
+        public static List<DiaMasVendido> ListarVentasPorDias(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
             var ventas_dias = new List<DiaMasVendido>();
             using var connection = DatabaseHelper.GetConnection();
@@ -64,6 +77,8 @@ namespace KioscoApp.Data
 
             using var cmd = new SqlCommand("sp_Estadisticas_ListarVentasPorDias", connection);
             cmd.CommandType = CommandType.StoredProcedure;
+            ValidarYAgregarFechas(cmd, fechaDesde, fechaHasta);
+
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -90,7 +105,7 @@ namespace KioscoApp.Data
             public float TotalVendido { get; set; }
         }
 
-        public static List<HorarioMasVendido> ListarVentasPorHora()
+        public static List<HorarioMasVendido> ListarVentasPorHora(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
             var horarios = new List<HorarioMasVendido>();
             using var connection = DatabaseHelper.GetConnection();
@@ -98,6 +113,8 @@ namespace KioscoApp.Data
 
             using var cmd = new SqlCommand("sp_Estadisticas_ListarVentasPorHora", connection);
             cmd.CommandType = CommandType.StoredProcedure;
+            ValidarYAgregarFechas(cmd, fechaDesde, fechaHasta);
+
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -125,7 +142,7 @@ namespace KioscoApp.Data
             public float TotalFacturado { get; set; }
         }
 
-        public static List<CategoriaMasVendida> ListarVentasPorCategoria()
+        public static List<CategoriaMasVendida> ListarVentasPorCategoria(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
             var horarios = new List<CategoriaMasVendida>();
             using var connection = DatabaseHelper.GetConnection();
@@ -133,6 +150,8 @@ namespace KioscoApp.Data
 
             using var cmd = new SqlCommand("sp_Estadisticas_ListarVentasPorCategoria", connection);
             cmd.CommandType = CommandType.StoredProcedure;
+            ValidarYAgregarFechas(cmd, fechaDesde, fechaHasta);
+
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -161,7 +180,7 @@ namespace KioscoApp.Data
             public float TicketPromedio { get; set; }
         }
 
-        public static List<MetodoPagoMasUsado> listarMetodosMasUsados()
+        public static List<MetodoPagoMasUsado> listarMetodosMasUsados(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
             var pagos = new List<MetodoPagoMasUsado>();
             using var connection = DatabaseHelper.GetConnection();
@@ -169,6 +188,8 @@ namespace KioscoApp.Data
 
             using var cmd = new SqlCommand("sp_Estadisticas_ListarMetodosMasUsados", connection);
             cmd.CommandType = CommandType.StoredProcedure;
+            ValidarYAgregarFechas(cmd, fechaDesde, fechaHasta);
+
             using var reader = cmd.ExecuteReader();
 
             while (reader.Read())
