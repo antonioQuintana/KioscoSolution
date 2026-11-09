@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Windows.Forms;
 using KioscoApp.Business;
@@ -171,11 +171,5 @@ namespace KioscoApp
             frm.ShowDialog();
         }
 
-        private void MostrarProximamente(object sender, EventArgs e)
-        {
-            Button? btn = sender as Button;
-            string modulo = btn != null ? btn.Text : "Esta función";
-            MessageBox.Show($"Módulo en desarrollo:\n\n[{modulo}]\n\nEstará disponible próximamente.", "Función No Disponible", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
     }
 }

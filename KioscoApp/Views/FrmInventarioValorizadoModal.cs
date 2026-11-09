@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -43,7 +43,7 @@ namespace KioscoApp.Views
 
             var lblTitulo = new Label
             {
-                Text = "💰 Inventario Valorizado y Ganancia Potencial en Mercadería",
+                Text = "Inventario Valorizado y Ganancia Potencial en Mercadería",
                 Font = new Font("Segoe UI", 12.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(46, 204, 113),
                 Location = new Point(20, 15),
@@ -114,7 +114,7 @@ namespace KioscoApp.Views
 
             var btnExportarCSV = new Button
             {
-                Text = "📥 Exportar CSV",
+                Text = "Exportar CSV",
                 Location = new Point(830, 10),
                 Size = new Size(135, 28),
                 BackColor = Color.FromArgb(39, 174, 96),
@@ -240,7 +240,7 @@ namespace KioscoApp.Views
             decimal proyeccionTotal = filtrados.Sum(i => i.ValorVentaTotal);
             decimal gananciaTotal = proyeccionTotal - inversionTotal;
 
-            lblMetricas.Text = $"Artículos: {articulos}  |  Stock Físico: {stockTotal:N0} u.  |  💵 Costo Invertido: $ {inversionTotal:N2}  |  🏷️ Proyección Venta: $ {proyeccionTotal:N2}  |  📈 Ganancia Estimada: $ {gananciaTotal:N2}";
+            lblMetricas.Text = $"Artículos: {articulos}  |  Ganancia Estimada: $ {gananciaTotal:N2}";
         }
 
         private void ExportarACSV()

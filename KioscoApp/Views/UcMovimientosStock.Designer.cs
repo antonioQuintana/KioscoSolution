@@ -1,4 +1,4 @@
-namespace KioscoApp
+﻿namespace KioscoApp
 {
     partial class UcMovimientosStock
     {
@@ -75,7 +75,7 @@ namespace KioscoApp
             chkSoloAlertas.Name = "chkSoloAlertas";
             chkSoloAlertas.Size = new Size(240, 21);
             chkSoloAlertas.TabIndex = 5;
-            chkSoloAlertas.Text = "⚠️ Solo Alertas (Bajo stock / Agotado)";
+            chkSoloAlertas.Text = "Solo Alertas (Bajo stock / Agotado)";
             chkSoloAlertas.UseVisualStyleBackColor = true;
             chkSoloAlertas.CheckedChanged += chkSoloAlertas_CheckedChanged;
             // 
@@ -218,7 +218,7 @@ namespace KioscoApp
             btnInventarioValorizado.Name = "btnInventarioValorizado";
             btnInventarioValorizado.Size = new Size(250, 55);
             btnInventarioValorizado.TabIndex = 0;
-            btnInventarioValorizado.Text = "💰 Inventario Valorizado";
+            btnInventarioValorizado.Text = "Inventario Valorizado";
             btnInventarioValorizado.UseVisualStyleBackColor = false;
             btnInventarioValorizado.Click += btnInventarioValorizado_Click;
             // 
@@ -234,7 +234,7 @@ namespace KioscoApp
             btnAuditoriaStock.Name = "btnAuditoriaStock";
             btnAuditoriaStock.Size = new Size(250, 55);
             btnAuditoriaStock.TabIndex = 1;
-            btnAuditoriaStock.Text = "📋 Auditoría de Ajustes";
+            btnAuditoriaStock.Text = "Auditoría de Ajustesía de Ajustes";
             btnAuditoriaStock.UseVisualStyleBackColor = false;
             btnAuditoriaStock.Click += btnAuditoriaStock_Click;
             // 

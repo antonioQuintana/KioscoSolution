@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -44,7 +44,7 @@ namespace KioscoApp.Views
 
             var lblTitulo = new Label
             {
-                Text = $"📄 Comprobante de Venta #{_venta.Id}",
+                Text = $"Comprobante de Venta #{_venta.Id}",
                 Font = new Font("Segoe UI", 13F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(0, 168, 255),
                 Location = new Point(20, 15),
@@ -131,7 +131,7 @@ namespace KioscoApp.Views
 
             btnCopiarTicket = new Button
             {
-                Text = "📋 Copiar / Imprimir Ticket",
+                Text = "Copiar / Imprimir Ticket",
                 Location = new Point(20, 455),
                 Size = new Size(330, 45),
                 BackColor = Color.FromArgb(41, 128, 185),

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using KioscoApp.Business;
@@ -45,7 +45,7 @@ namespace KioscoApp.Views
 
             var lblTitulo = new Label
             {
-                Text = "🏢 Datos de la Empresa (Encabezado y Pie de Ticket)",
+                Text = "Datos de la Empresa (Encabezado y Pie de Ticket) (Encabezado y Pie de Ticket)",
                 Font = new Font("Segoe UI", 13F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(0, 168, 255),
                 Location = new Point(20, 15),

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -44,7 +44,7 @@ namespace KioscoApp.Views
 
             var lblTitulo = new Label
             {
-                Text = "📋 Registro Histórico de Modificaciones Manuales de Stock",
+                Text = "Registro Histórico de Modificaciones Manuales de Stockórico de Modificaciones Manuales de Stock",
                 Font = new Font("Segoe UI", 12.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(0, 168, 255),
                 Location = new Point(20, 15),
@@ -147,7 +147,7 @@ namespace KioscoApp.Views
 
             var btnExportarCSV = new Button
             {
-                Text = "📥 Exportar CSV",
+                Text = "Exportar CSV",
                 Location = new Point(830, 10),
                 Size = new Size(135, 28),
                 BackColor = Color.FromArgb(39, 174, 96),

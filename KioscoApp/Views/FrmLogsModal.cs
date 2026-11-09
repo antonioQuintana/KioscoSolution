@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -153,7 +153,7 @@ namespace KioscoApp.Views
 
             var btnAbrirNotepad = new Button
             {
-                Text = "📂 Abrir en Bloc",
+                Text = "Abrir en Bloc",
                 Location = new Point(815, 5),
                 Size = new Size(130, 28),
                 BackColor = Color.FromArgb(108, 92, 231),
@@ -291,7 +291,7 @@ namespace KioscoApp.Views
             // Botones inferiores con amplio margen
             var btnCopiar = new Button
             {
-                Text = "📋 Copiar Logs al Portapapeles",
+                Text = "Copiar Logs al Portapapeles",
                 Location = new Point(20, 630),
                 Size = new Size(250, 42),
                 BackColor = Color.FromArgb(52, 73, 94),
@@ -312,7 +312,7 @@ namespace KioscoApp.Views
 
             var btnLimpiar = new Button
             {
-                Text = "🗑️ Limpiar Archivo de Logs",
+                Text = "Limpiar Archivo de Logs",
                 Location = new Point(285, 630),
                 Size = new Size(220, 42),
                 BackColor = Color.FromArgb(192, 57, 43),
