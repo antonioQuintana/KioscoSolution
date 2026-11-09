@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using KioscoApp.Models;
@@ -83,8 +83,20 @@ namespace KioscoApp.Business
                 result.AddError("General", "No puede eliminar su propio usuario mientras está en sesión.");
                 return result;
             }
-            
-            _repository.Eliminar(idToDelete);
+
+            try
+            {
+                _repository.Eliminar(idToDelete);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 547)
+            {
+                result.AddError("General", "No se puede eliminar este usuario porque tiene operaciones (ventas, cierres o movimientos de caja) registradas a su nombre.");
+            }
+            catch (Exception ex)
+            {
+                result.AddError("General", "Error al eliminar el usuario: " + ex.Message);
+            }
+
             return result;
         }
 

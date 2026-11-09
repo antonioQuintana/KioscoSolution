@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -222,6 +222,16 @@ namespace KioscoApp
         {
             if (dgvClientes.CurrentRow?.DataBoundItem is Cliente cliente)
             {
+                if (cliente.Id <= 1)
+                {
+                    MessageBox.Show(
+                        "No se puede eliminar al cliente 'Consumidor Final' ya que es el cliente predeterminado del sistema.",
+                        "Operación No Permitida",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
                 if (cliente.SaldoDeudor > 0)
                 {
                     MessageBox.Show(

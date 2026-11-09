@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using KioscoApp.Models;
 using KioscoApp.Data;
@@ -73,7 +73,19 @@ namespace KioscoApp.Business
                 return result;
             }
 
-            _repository.Eliminar(id);
+            try
+            {
+                _repository.Eliminar(id);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 547)
+            {
+                result.AddError("General", "No se puede eliminar el producto porque tiene ventas asociadas en el historial. Puede ajustar su stock a 0 si ya no se comercializa.");
+            }
+            catch (Exception ex)
+            {
+                result.AddError("General", "Error al eliminar el producto: " + ex.Message);
+            }
+
             return result;
         }
 
