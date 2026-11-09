@@ -1,66 +1,129 @@
-﻿# Sistema de Gestión para Kiosco (C# WinForms)
+# Sistema de Gestión para Kiosco (C# WinForms)
 
-Un sistema de Punto de Venta (POS) ligero y rápido, diseñado específicamente para kioscos y minimercados, desarrollado en **C# (.NET 8)** con **Windows Forms** y **SQL Server**.
-
-## Características Principales
-- **Arquitectura de 3 Capas (N-Tier)** aplicada al módulo de Usuarios (Views, Business, Data).
-- Estructura de carpetas limpia y profesional (Views, Models, Data, Business, Utils, Scripts).
-- Arquitectura basada en Roles (Administrador, Supervisor, Vendedor).
-- Autenticación segura usando cifrado **BCrypt**.
-- Interfaz de módulos por pestañas ("Single Page Application" usando UserControls).
-- Modo Oscuro nativo.
-
-## Requisitos del Sistema
-- **.NET 8.0 SDK** o superior.
-- **SQL Server** (Express Edition es suficiente) con autenticación de Windows habilitada (`localhost\SQLEXPRESS`).
-- Visual Studio 2022.
-
-## Instalación y Despliegue
-
-1. **Clonar el repositorio:**
-   ```bash
-   git clone <url-del-repo>
-   cd kiosco-csharp
-   ```
-
-2. **Configuración de la Base de Datos (Seeder):**
-   El archivo `KioscoApp/KioscoDB.sql` contiene tanto el esquema de las tablas (`CREATE TABLE`) como los datos iniciales de prueba (usuarios base, categorías, productos).
-   
-   Abrir **powershell** en la ubicacion del archivo *Kiosco.sql* que se encuentra dentro de la carpeta *scripts* y ejecutar el siguiente comando:
-   ```powershell
-   Invoke-Sqlcmd -ServerInstance ".\SQLEXPRESS" -InputFile "KioscoDB.sql"
-   ```
-
-3. **Compilar y Ejecutar:**
-   Abre la solución en Visual Studio y presiona `F5`, o ejecuta desde la línea de comandos:
-   ```bash
-   dotnet build
-   dotnet run --project KioscoApp
-   ```
+Un sistema de Punto de Venta (POS) y gestión integral para kioscos y minimercados, desarrollado en **C# (.NET 8)** con **Windows Forms** y **Microsoft SQL Server**.
 
 ---
 
-## ⚠️ Advertencia Técnica Crítica: BCrypt en PowerShell
+## 🚀 Arquitectura y Organización del Código
 
-Si necesitas insertar o actualizar contraseñas encriptadas con BCrypt directamente desde la línea de comandos (ej. `sqlcmd -Q "INSERT..."`), **JAMÁS utilices comillas dobles (`" "`) en PowerShell para envolver el hash.**
+El sistema implementa una **Arquitectura en Capas (N-Tier)** con separación estricta de responsabilidades:
 
-**❌ Incorrecto:**
-```powershell
-sqlcmd -Q "INSERT INTO Usuarios (Contrasena) VALUES ('`$2a`$11`$phr8...')"
+```text
+KioscoSolution/
+├── docs/                        # Documentación técnica, manual de usuario y modelo de datos
+│   ├── Guia_Stored_Procedures.md
+│   ├── Manual_Usuario.md
+│   └── Modelo_Datos.md
+├── scripts/                     # Scripts de base de datos y lotes de datos
+│   ├── seed_data.sql            # Lote de categorías, productos, usuarios y clientes
+│   └── seed_cierres_ventas.sql  # Lote de ventas, detalles, cierres Z y movimientos
+└── KioscoApp/
+    ├── Business/                # Capa de Lógica de Negocio y Validaciones
+    │   ├── AuditoriaService.cs
+    │   ├── CajaService.cs
+    │   ├── CategoriaService.cs
+    │   ├── ClienteService.cs
+    │   ├── ConfiguracionService.cs
+    │   ├── ProductoService.cs
+    │   ├── UbicacionService.cs
+    │   ├── UsuarioService.cs
+    │   └── VentaService.cs
+    ├── Data/                    # Capa de Acceso a Datos (ADO.NET / Stored Procedures)
+    │   ├── DatabaseHelper.cs
+    │   ├── AuditoriaRepository.cs
+    │   ├── CajaRepository.cs
+    │   ├── CategoriaRepository.cs
+    │   ├── ClienteRepository.cs
+    │   ├── ConfiguracionRepository.cs
+    │   ├── EstadisticasRepository.cs
+    │   ├── ProductoRepository.cs
+    │   ├── UbicacionRepository.cs
+    │   ├── UsuarioRepository.cs
+    │   └── VentaRepository.cs
+    ├── Models/                  # Entidades de Dominio y DTOs
+    ├── Views/                   # Formularios (Forms) y Controles de Usuario (UserControls)
+    ├── Utils/                   # Utilidades transversales (UserSession, Logger, EdgeCaseRunner)
+    ├── Scripts/                 # Esquema DDL inicial y Stored Procedures
+    └── Program.cs               # Punto de entrada de la aplicación
 ```
-**Por qué falla:** PowerShell interpola todas las variables que empiezan con `$`. Los fragmentos del hash como `$2a` o `$11` son interpretados como variables vacías y **eliminados** silenciosamente del texto, corrompiendo la contraseña insertada en la base de datos (luego el login te dirá que la contraseña es inválida aunque sea correcta).
 
-**✅ Correcto:**
-Usa SIEMPRE **comillas simples (`' '`)** externas en PowerShell para evitar cualquier evaluación de variables si estás manipulando hashes BCrypt crudos:
-```powershell
-sqlcmd -Q 'INSERT INTO Usuarios (Contrasena) VALUES (''$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii'')'
+---
+
+## 👥 Perfiles y Control de Acceso por Roles (RBAC)
+
+La aplicación cuenta con control de acceso estricto según el rol del usuario autenticado:
+
+### 1. 🛒 Rol Vendedor
+- **Punto de Venta (POS):** Escaneo de código de barras (SKU), multiplicador (`cant*código`), búsqueda predictiva de artículos, calculadora de vuelto en efectivo y cobro por QR, Tarjeta o Cuenta Corriente.
+- **Ventas Suspendidas (`F4`):** Permite pausar una venta en espera para atender a otro cliente y reanudarla sin perder ítems.
+- **Clientes y Cuenta Corriente:** Consulta y registro de clientes, límite de crédito y cobro de deuda pendiente (`FrmAbonoCuentaCorriente`).
+- **Cierre de Caja (Arqueo X/Z):** Declaración física de billetes y monedas con cálculo automático de diferencias (sobrante/faltante).
+- **Historial de Ventas:** Consulta y reimpresión de tickets del turno actual, con solicitud de anulación transaccional.
+
+### 2. 👔 Rol Supervisor
+- **Gestión de Catálogo:** Maestro de Productos (ABM) con control de costos, precios, margen y categorías.
+- **Importación / Exportación Masiva:** Carga y actualización de precios mediante planillas Excel / CSV.
+- **Control de Stock:** Alertas de stock crítico y agotado, ajuste manual con auditoría obligatoria.
+- **Reporte de Inventario Valorizado:** Valuación global de mercadería a precio de costo vs. venta y ganancia potencial.
+- **Auditoría de Cajas:** Consulta de Cierres Z históricos, reporte de descuadres por empleado, trazabilidad de egresos/retiros de caja y ventas anuladas.
+- **Estadísticas Gráficas:** Dashboards interactivos con filtros de fechas (Top productos, ventas por día, franja horaria, categorías y medios de pago).
+
+### 3. ⚙️ Rol Administrador
+- **Gestión de Personal:** ABM de Usuarios, asignación de roles, reinicio de credenciales y validación de unicidad de DNI/Email/Usuario.
+- **Datos de Empresa y Ticket:** Configuración de razón social, CUIT, mensaje de pie de comprobante y parámetros de impresión.
+- **Visor de Logs del Sistema:** Monitoreo en tiempo real de registros operativos con filtros por nivel (`INFO`, `WARN`, `ERROR`), módulo y rango de fechas.
+- **Trazabilidad y Auditoría:** Registro inmutable de eventos críticos (altas, modificaciones, eliminaciones y cierres de sesión).
+
+---
+
+## 🔐 Usuarios y Credenciales de Prueba
+
+Todos los usuarios del lote de datos representativo poseen la contraseña: **`1234`** *(cifrada con BCrypt)*.
+
+| Usuario | Nombre y Apellido | Rol Asignado |
+| :--- | :--- | :--- |
+| `admin` | Juan Pérez | **Administrador** |
+| `mgomez` | María Gómez | **Supervisor** |
+| `clopez` | Carlos López | **Supervisor** |
+| `aquintana` | Antonio Quintana | **Vendedor** |
+| `rnunez` | Ramiro Núñez | **Vendedor** |
+| `lsanchez` | Laura Sánchez | **Vendedor** |
+| `mfernandez` | Martín Fernández | **Vendedor** |
+| `vrojas` | Valentina Rojas | **Vendedor** |
+
+---
+
+## 🛠️ Requisitos e Instalación
+
+### Requisitos Previos
+- **.NET 8.0 SDK** (o superior).
+- **Microsoft SQL Server** (LocalDB o Express Edition) en `.\SQLEXPRESS`.
+- Windows 10/11 (arquitectura WinForms).
+
+### Configuración de la Base de Datos
+1. Ejecutar el script base de esquema `KioscoApp/Scripts/KioscoDB.sql` y `KioscoApp/Scripts/StoredProcedures.sql`.
+2. Para cargar el lote completo de datos de prueba (48 productos, 11 categorías, cierres de caja y ventas de los últimos 30 días), ejecutar:
+   ```powershell
+   sqlcmd -S ".\SQLEXPRESS" -d KioscoDB -E -i "scripts\seed_data.sql" -C
+   sqlcmd -S ".\SQLEXPRESS" -d KioscoDB -E -i "scripts\seed_cierres_ventas.sql" -C
+   ```
+
+### Compilación y Ejecución
+```bash
+dotnet build
+dotnet run --project KioscoApp
 ```
-*(Nota: Dentro de comillas simples en PS, para escapar una comilla simple en SQL, usas dos comillas simples `''`).*
 
-## Usuarios de Prueba (Por Defecto)
-Todos los usuarios creados por el seeder inicial tienen la contraseña: `admin`
-
-- **Admin IT:** `admin`
-- **Supervisor:** `super`
-- **Vendedores:** `antonio`, `ramiro`
-
+### Ejecución de Pruebas de Estrés y QA Automatizado
+El sistema incluye un arnés de pruebas integrado para validar reglas de negocio y restricciones de integridad:
+```powershell
+& ".\KioscoApp\bin\Debug\net8.0-windows\KioscoApp.exe" --test-qa
+```
+Valida de forma autónoma:
+1. Rechazo de venta con carrito vacío.
+2. Bloqueo de cuenta corriente para Consumidor Final.
+3. Rechazo de abonos superiores a la deuda del cliente.
+4. Rechazo de abonos con monto cero o negativo.
+5. Protección contra borrado del cliente base Consumidor Final.
+6. Protección contra borrado de productos con historial de ventas (control FK).
+7. Protección contra borrado de usuarios con operaciones registradas (control FK).

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows.Forms;
 using KioscoApp.Business;
 
@@ -60,32 +60,4 @@ namespace KioscoApp
         }
     }
 
-    public static class UserSession
-    {
-        public static int IdUsuario { get; private set; }
-        public static string Nombre { get; private set; }
-        public static string Usuario { get; private set; }
-        public static string Rol { get; private set; }
-
-        public static void IniciarSesion(int id, string nombre, string usuario, string rol)
-        {
-            IdUsuario = id;
-            Nombre = nombre;
-            Usuario = usuario;
-            Rol = rol;
-        }
-
-        public static void CerrarSesion()
-        {
-            if (IdUsuario > 0)
-            {
-                AuditoriaService.Registrar("Seguridad", "Cierre de Sesión", $"Usuario: {Usuario}");
-            }
-
-            IdUsuario = 0;
-            Nombre = string.Empty;
-            Usuario = string.Empty;
-            Rol = string.Empty;
-        }
-    }
 }
