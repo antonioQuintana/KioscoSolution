@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace KioscoApp
@@ -41,21 +41,46 @@ namespace KioscoApp
                     cmb.ForeColor = ForegroundColor;
                     cmb.FlatStyle = FlatStyle.Flat;
                 }
+                else if (control is NumericUpDown num)
+                {
+                    num.BackColor = TextBoxColor;
+                    num.ForeColor = ForegroundColor;
+                    num.BorderStyle = BorderStyle.FixedSingle;
+                }
+                else if (control is ListBox lb)
+                {
+                    lb.BackColor = TextBoxColor;
+                    lb.ForeColor = ForegroundColor;
+                    lb.BorderStyle = BorderStyle.FixedSingle;
+                }
+                else if (control is GroupBox gb)
+                {
+                    gb.ForeColor = ForegroundColor;
+                }
                 else if (control is Button btn)
                 {
-                    btn.BackColor = ButtonColor;
-                    btn.ForeColor = ForegroundColor;
                     btn.FlatStyle = FlatStyle.Flat;
                     btn.FlatAppearance.BorderSize = 0;
                     btn.Cursor = Cursors.Hand;
-                    
-                    if (btn.Text.ToLower().Contains("guardar") || btn.Text.ToLower().Contains("cobrar") || btn.Text.ToLower().Contains("agregar"))
+                    btn.ForeColor = ForegroundColor;
+
+                    string txtBoton = btn.Text.ToLower();
+                    if (txtBoton.Contains("guardar") || txtBoton.Contains("cobrar") || txtBoton.Contains("agregar"))
                     {
                         btn.BackColor = ButtonAccentColor;
                     }
-                    else if (btn.Text.ToLower().Contains("eliminar"))
+                    else if (txtBoton.Contains("eliminar") || txtBoton.Contains("anular") || txtBoton.Contains("cancelar ticket"))
                     {
                         btn.BackColor = Color.IndianRed;
+                    }
+                    else if (btn.BackColor == SystemColors.Control || btn.BackColor == SystemColors.ControlLight || btn.UseVisualStyleBackColor)
+                    {
+                        btn.BackColor = ButtonColor;
+                        btn.UseVisualStyleBackColor = false;
+                    }
+                    else
+                    {
+                        btn.UseVisualStyleBackColor = false;
                     }
                 }
                 else if (control is DataGridView dgv)
@@ -70,7 +95,10 @@ namespace KioscoApp
                 }
                 else if (control is Label lbl)
                 {
-                    lbl.ForeColor = ForegroundColor;
+                    if (lbl.ForeColor == SystemColors.ControlText || lbl.ForeColor == Color.Black)
+                    {
+                        lbl.ForeColor = ForegroundColor;
+                    }
                 }
 
                 if (control.HasChildren)

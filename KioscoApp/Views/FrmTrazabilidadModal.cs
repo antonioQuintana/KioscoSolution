@@ -31,7 +31,7 @@ namespace KioscoApp.Views
         private void InitializeCustomComponents()
         {
             Text = "Trazabilidad de Seguridad y Registro de Auditoría del Sistema";
-            Size = new Size(1050, 680);
+            ClientSize = new Size(1050, 680);
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
@@ -52,7 +52,7 @@ namespace KioscoApp.Views
             var pnlFiltros = new Panel
             {
                 Location = new Point(20, 50),
-                Size = new Size(995, 55),
+                Size = new Size(1010, 55),
                 BackColor = Color.FromArgb(38, 38, 42)
             };
 
@@ -135,7 +135,7 @@ namespace KioscoApp.Views
             {
                 Text = "📥 CSV",
                 Location = new Point(900, 12),
-                Size = new Size(85, 30),
+                Size = new Size(95, 30),
                 BackColor = Color.FromArgb(46, 204, 113),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
@@ -160,7 +160,7 @@ namespace KioscoApp.Views
             dgvAuditoria = new DataGridView
             {
                 Location = new Point(20, 115),
-                Size = new Size(995, 480),
+                Size = new Size(1010, 465),
                 ReadOnly = true,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
@@ -174,17 +174,18 @@ namespace KioscoApp.Views
             lblTotalRegistros = new Label
             {
                 Text = "Registros cargados: 0",
-                Location = new Point(20, 608),
+                Location = new Point(20, 610),
                 AutoSize = true,
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(200, 200, 200)
             };
 
+            // Botón cerrar con amplio espacio inferior y separación
             var btnCerrar = new Button
             {
                 Text = "Cerrar [Esc]",
-                Location = new Point(885, 605),
-                Size = new Size(130, 35),
+                Location = new Point(880, 600),
+                Size = new Size(150, 42),
                 BackColor = Color.FromArgb(127, 140, 141),
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),

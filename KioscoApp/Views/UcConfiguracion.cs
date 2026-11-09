@@ -135,48 +135,9 @@ namespace KioscoApp
             }
         }
 
-        private void btnLimpiar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var confirm = MessageBox.Show(
-                    "Mantenimiento y Compactación de Base de Datos:\n\n" +
-                    "Esta tarea realizará las siguientes acciones en el motor SQL Server:\n" +
-                    "• Reorganización y reconstrucción de índices (sp_updatestats).\n" +
-                    "• Liberación de espacio en disco no asignado (DBCC SHRINKDATABASE).\n" +
-                    "• Optimización de tiempos de respuesta del catálogo.\n\n" +
-                    "¿Desea iniciar la optimización ahora?",
-                    "Mantenimiento del Sistema",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (confirm == DialogResult.Yes)
-                {
-                    Cursor.Current = Cursors.WaitCursor;
-
-                    string resultado = _dbAdminService.OptimizarBaseDatos();
-
-                    Cursor.Current = Cursors.Default;
-
-                    MessageBox.Show(resultado, "Mantenimiento Exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                Cursor.Current = Cursors.Default;
-                MessageBox.Show($"Error durante el mantenimiento: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void btnDatosEmpresa_Click(object sender, EventArgs e)
         {
             using var frm = new FrmDatosEmpresaModal();
-            frm.ShowDialog();
-        }
-
-        private void btnImpresora_Click(object sender, EventArgs e)
-        {
-            using var frm = new FrmConfigurarImpresoraModal();
             frm.ShowDialog();
         }
 

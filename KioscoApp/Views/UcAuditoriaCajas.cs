@@ -17,9 +17,8 @@ namespace KioscoApp
         {
             HistorialCierres,
             DescuadresEmpleado,
-            VentasPorHora,
-            VentasAnuladas,
-            InventarioValorizado
+            MovimientosCaja,
+            VentasAnuladas
         }
 
         private readonly CajaService _cajaService;
@@ -29,9 +28,8 @@ namespace KioscoApp
         // Data caches
         private List<CierreCaja> _listaCierres = new List<CierreCaja>();
         private List<DescuadreEmpleadoItem> _listaDescuadres = new List<DescuadreEmpleadoItem>();
-        private List<VentaPorHoraItem> _listaVentasHora = new List<VentaPorHoraItem>();
+        private List<MovimientoCaja> _listaMovimientos = new List<MovimientoCaja>();
         private List<VentaAnuladaItem> _listaAnuladas = new List<VentaAnuladaItem>();
-        private List<InventarioValorizadoItem> _listaInventario = new List<InventarioValorizadoItem>();
 
         public UcAuditoriaCajas()
         {
@@ -164,34 +162,48 @@ namespace KioscoApp
             }
         }
 
-        private void CargarVentasPorHora()
+        private void CargarMovimientosCaja()
         {
-            _vistaActual = VistaAuditoria.VentasPorHora;
-            lblVistaActual.Text = "Vista: Ranking de Ventas por Franja Horaria";
+            _vistaActual = VistaAuditoria.MovimientosCaja;
+            lblVistaActual.Text = "Vista: Auditoría de Retiros y Gastos de Caja";
+            pnlFiltros.Visible = true;
 
             try
             {
-                _listaVentasHora = _cajaService.ObtenerVentasPorHora();
+                DateTime? desde = dtpDesde.Value.Date;
+                DateTime? hasta = dtpHasta.Value.Date;
+                int? idUsuario = null;
 
-                var displayList = _listaVentasHora.Select(v => new
+                if (cmbCajero.SelectedItem is ComboBoxItem item && item.Value > 0)
                 {
-                    v.FranjaHoraria,
-                    v.CantidadVentas,
-                    TotalRecaudado = $"$ {v.TotalRecaudado:N2}",
-                    TicketPromedio = $"$ {v.TicketPromedio:N2}"
+                    idUsuario = item.Value;
+                }
+
+                _listaMovimientos = _cajaService.ObtenerMovimientosCaja(desde, hasta, idUsuario);
+
+                var displayList = _listaMovimientos.Select(m => new
+                {
+                    m.Id,
+                    Fecha = m.Fecha.ToString("dd/MM/yyyy HH:mm"),
+                    m.Tipo,
+                    Monto = $"$ {m.Monto:N2}",
+                    Responsable = m.NombreUsuario,
+                    Concepto = m.Motivo,
+                    CierreZ = m.IdCierreCaja.HasValue ? $"Cierre #{m.IdCierreCaja.Value}" : "Turno Abierto (Pendiente)"
                 }).ToList();
 
                 dgvAuditoria.DataSource = displayList;
 
-                int totalVentas = _listaVentasHora.Sum(v => v.CantidadVentas);
-                decimal recaudado = _listaVentasHora.Sum(v => v.TotalRecaudado);
-                decimal promedio = totalVentas > 0 ? recaudado / totalVentas : 0;
+                decimal totalRetiros = _listaMovimientos.Where(m => m.Tipo.Equals("Retiro", StringComparison.OrdinalIgnoreCase)).Sum(m => m.Monto);
+                decimal totalIngresos = _listaMovimientos.Where(m => m.Tipo.Equals("Ingreso", StringComparison.OrdinalIgnoreCase)).Sum(m => m.Monto);
+                int cantRetiros = _listaMovimientos.Count(m => m.Tipo.Equals("Retiro", StringComparison.OrdinalIgnoreCase));
+                int cantIngresos = _listaMovimientos.Count(m => m.Tipo.Equals("Ingreso", StringComparison.OrdinalIgnoreCase));
 
-                lblResumenAuditoria.Text = $"Franjas con actividad: {_listaVentasHora.Count} | Total Transacciones: {totalVentas} | Total Facturado: $ {recaudado:N2} | Ticket Promedio General: $ {promedio:N2}";
+                lblResumenAuditoria.Text = $"Total Movimientos: {_listaMovimientos.Count}  |  🔴 Retiros ({cantRetiros}): $ {totalRetiros:N2}  |  🟢 Ingresos ({cantIngresos}): $ {totalIngresos:N2}  |  Salida Neta: $ {(totalRetiros - totalIngresos):N2}";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar ventas por horario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al cargar movimientos de caja: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -222,43 +234,6 @@ namespace KioscoApp
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar ventas anuladas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void CargarInventarioValorizado()
-        {
-            _vistaActual = VistaAuditoria.InventarioValorizado;
-            lblVistaActual.Text = "Vista: Reporte de Inventario Valorizado";
-
-            try
-            {
-                _listaInventario = _cajaService.ObtenerInventarioValorizado();
-
-                var displayList = _listaInventario.Select(i => new
-                {
-                    i.SKU,
-                    i.Nombre,
-                    i.Categoria,
-                    i.StockActual,
-                    CostoUnit = $"$ {i.PrecioCosto:N2}",
-                    VentaUnit = $"$ {i.PrecioVenta:N2}",
-                    ValorCostoTotal = $"$ {i.ValorCostoTotal:N2}",
-                    ValorVentaTotal = $"$ {i.ValorVentaTotal:N2}",
-                    GananciaPotencial = $"$ {i.GananciaPotencial:N2}"
-                }).ToList();
-
-                dgvAuditoria.DataSource = displayList;
-
-                int unidades = _listaInventario.Sum(i => i.StockActual);
-                decimal costoTotal = _listaInventario.Sum(i => i.ValorCostoTotal);
-                decimal ventaTotal = _listaInventario.Sum(i => i.ValorVentaTotal);
-                decimal ganancia = ventaTotal - costoTotal;
-
-                lblResumenAuditoria.Text = $"Productos: {_listaInventario.Count} | Stock Físico: {unidades} u. | Costo Invertido: $ {costoTotal:N2} | Venta Esperada: $ {ventaTotal:N2} | Ganancia Potencial: $ {ganancia:N2}";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al calcular inventario valorizado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -326,6 +301,10 @@ namespace KioscoApp
                     {
                         CargarCierres();
                     }
+                    else if (_vistaActual == VistaAuditoria.MovimientosCaja)
+                    {
+                        CargarMovimientosCaja();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -334,14 +313,14 @@ namespace KioscoApp
             }
         }
 
+        private void btnMovimientos_Click(object sender, EventArgs e)
+        {
+            CargarMovimientosCaja();
+        }
+
         private void btnFaltantes_Click(object sender, EventArgs e)
         {
             CargarDescuadresEmpleado();
-        }
-
-        private void btnHorarios_Click(object sender, EventArgs e)
-        {
-            CargarVentasPorHora();
         }
 
         private void btnAnular_Click(object sender, EventArgs e)
@@ -349,38 +328,14 @@ namespace KioscoApp
             CargarVentasAnuladas();
         }
 
-        private void btnInventario_Click(object sender, EventArgs e)
-        {
-            CargarInventarioValorizado();
-        }
-
         private void btnExportarCSV_Click(object sender, EventArgs e)
         {
             ExportarGridACSV();
         }
 
-        private void btnImportarExcel_Click(object sender, EventArgs e)
+        private void btnActualizarVista_Click(object sender, EventArgs e)
         {
-            var confirm = MessageBox.Show(
-                "La herramienta de 'Gestión Masiva de Precios con Excel' permite descargar y subir archivos CSV con el catálogo de productos y precios.\n\n¿Desea abrir el módulo de Catálogo de Productos ahora?",
-                "Gestión Masiva de Precios",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (confirm == DialogResult.Yes)
-            {
-                // Si el control padre tiene método o pestaña para cambiar a Productos
-                var parentForm = this.FindForm() as FrmPrincipal;
-                if (parentForm != null)
-                {
-                    // Buscar botón de Productos en el menú principal si existe
-                    MessageBox.Show("Diríjase al menú superior 'Productos' para utilizar los botones de Descargar y Subir Excel.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Utilice la pestaña 'Productos' en el menú principal para la importación y exportación masiva.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
+            btnFiltrar_Click(sender, e);
         }
 
         #endregion
@@ -397,14 +352,11 @@ namespace KioscoApp
                 case VistaAuditoria.DescuadresEmpleado:
                     CargarDescuadresEmpleado();
                     break;
-                case VistaAuditoria.VentasPorHora:
-                    CargarVentasPorHora();
+                case VistaAuditoria.MovimientosCaja:
+                    CargarMovimientosCaja();
                     break;
                 case VistaAuditoria.VentasAnuladas:
                     CargarVentasAnuladas();
-                    break;
-                case VistaAuditoria.InventarioValorizado:
-                    CargarInventarioValorizado();
                     break;
             }
         }
@@ -438,6 +390,21 @@ namespace KioscoApp
                 else if (valStr != "$ 0,00" && valStr != "$ 0.00" && !string.IsNullOrWhiteSpace(valStr))
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(46, 204, 113); // Verde esmeralda
+                    e.CellStyle.Font = new Font(dgvAuditoria.Font, FontStyle.Bold);
+                }
+            }
+            // Formatear Tipo en Movimientos de Caja
+            else if (colName.Equals("Tipo", StringComparison.OrdinalIgnoreCase))
+            {
+                string tipo = e.Value?.ToString() ?? "";
+                if (tipo.Equals("Retiro", StringComparison.OrdinalIgnoreCase))
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(231, 76, 60);
+                    e.CellStyle.Font = new Font(dgvAuditoria.Font, FontStyle.Bold);
+                }
+                else if (tipo.Equals("Ingreso", StringComparison.OrdinalIgnoreCase))
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(46, 204, 113);
                     e.CellStyle.Font = new Font(dgvAuditoria.Font, FontStyle.Bold);
                 }
             }
@@ -532,7 +499,7 @@ namespace KioscoApp
                 File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
 
                 MessageBox.Show(
-                    $"Reporte exportado exitosamente con {dgvAuditoria.Rows.Count} registros a:\\n\\n{sfd.FileName}\\n\\nPuede abrirlo directamente en Microsoft Excel.",
+                    $"Reporte exportado exitosamente con {dgvAuditoria.Rows.Count} registros a:\n\n{sfd.FileName}\n\nPuede abrirlo directamente en Microsoft Excel.",
                     "Exportación Exitosa",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);

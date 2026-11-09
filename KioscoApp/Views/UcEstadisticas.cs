@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using static KioscoApp.Data.EstadisticasRepository;
@@ -13,39 +15,88 @@ namespace KioscoApp
         private Chart chart4;
         private Chart chart5;
         private Chart chart6;
+
         public UcEstadisticas()
         {
             InitializeComponent();
+            EnlazarEventosBotones();
+        }
 
+        private void EnlazarEventosBotones()
+        {
+            btnFiltrar1.Click += BtnFiltrar1_Click;
+            btnFiltrar2.Click += BtnFiltrar2_Click;
+            btnFiltrar3.Click += BtnFiltrar3_Click;
+            btnFiltrar4.Click += BtnFiltrar4_Click;
+            btnFiltrar5.Click += BtnFiltrar5_Click;
+            btnFiltrar6.Click += BtnFiltrar6_Click;
         }
 
         private void UcEstadisticas_Load(object sender, EventArgs e)
         {
+            ConfigurarFiltrosDefault();
             InicializarGrafico();
+        }
+
+        private void ConfigurarFiltrosDefault()
+        {
+            DateTime desdeDefault = DateTime.Today.AddDays(-30);
+            DateTime hastaDefault = DateTime.Today;
+
+            ConfigurarParFechas(dtpDesdeProd1, dtpHastaProd1, desdeDefault, hastaDefault);
+            ConfigurarParFechas(dtpDesdeProd2, dtpHastaProd2, desdeDefault, hastaDefault);
+            ConfigurarParFechas(dtpDesdeProd3, dtpHastaProd3, desdeDefault, hastaDefault);
+            ConfigurarParFechas(dtpDesdeProd4, dtpHastaProd4, desdeDefault, hastaDefault);
+            ConfigurarParFechas(dtpDesdeProd5, dtpHastaProd5, desdeDefault, hastaDefault);
+            ConfigurarParFechas(dtpDesdeProd6, dtpHastaProd6, desdeDefault, hastaDefault);
+        }
+
+        private void ConfigurarParFechas(DateTimePicker dtpDesde, DateTimePicker dtpHasta, DateTime desde, DateTime hasta)
+        {
+            dtpDesde.MaxDate = DateTimePicker.MaximumDateTime;
+            dtpHasta.MaxDate = DateTimePicker.MaximumDateTime;
+
+            dtpDesde.Value = desde;
+            dtpHasta.Value = hasta;
+
+            dtpDesde.MaxDate = DateTime.Today;
+            dtpHasta.MaxDate = DateTime.Today;
+        }
+
+        private bool ValidarFechas(DateTimePicker dtpDesde, DateTimePicker dtpHasta)
+        {
+            if (dtpDesde.Value.Date > dtpHasta.Value.Date)
+            {
+                MessageBox.Show(
+                    "La fecha 'Desde' debe ser menor o igual a la fecha 'Hasta'.",
+                    "Rango de fechas inválido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return false;
+            }
+            return true;
         }
 
         private void InicializarGrafico()
         {
-            // Grafico de Producto más vendido por categoría
+            // Grafico 1: Producto más vendido por categoría
             chart1 = new Chart
             {
-
                 Dock = DockStyle.Fill,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(30, 30, 30),
                 ForeColor = Color.White,
             };
 
-            // definimos y le damos estilo al área
             ChartArea area1 = new ChartArea("AreaEstadisticas")
             {
                 BackColor = Color.FromArgb(30, 30, 30),
-                AxisX ={
+                AxisX = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
                 },
-                AxisY ={
+                AxisY = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
@@ -54,28 +105,20 @@ namespace KioscoApp
 
             chart1.ChartAreas.Add(area1);
 
-            // le damos estilo a las barras
             Series serie1 = new Series("Productos Más Vendidos Por Categoria")
             {
-                ChartType = SeriesChartType.Column, // barras verticales
+                ChartType = SeriesChartType.Column,
                 Color = Color.LightSkyBlue,
-                IsValueShownAsLabel = true, // muestra el número sobre la barra
+                IsValueShownAsLabel = true,
                 LabelForeColor = Color.White,
                 Font = new Font("Arial", 15, FontStyle.Bold),
             };
 
-            List<ProductoMasVendido> listaTopVentas = ListarMasVendidos();
-            foreach (var item in listaTopVentas)
-            {
-                serie1.Points.AddXY(item.NombreCategoria + " - " + item.NombreProducto, item.CantidadTotalVendida);
-            }
-
-            //agregamos la serie al chart y el chart al UserControl
             chart1.Series.Add(serie1);
-            this.Controls.Add(chart1);
+            CargarDatosGrafico1();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Grafico ventas de la última semana por día
+            // Grafico 2: Ventas por día
             chart2 = new Chart
             {
                 Dock = DockStyle.Fill,
@@ -87,14 +130,14 @@ namespace KioscoApp
             ChartArea area2 = new ChartArea("AreaEstadisticas")
             {
                 BackColor = Color.FromArgb(30, 30, 30),
-                AxisX ={
+                AxisX = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
                 },
-                AxisY ={
+                AxisY = {
                     LineColor = Color.White,
-                    LabelStyle = { ForeColor = Color.White,  Format = "$#,##0"},
+                    LabelStyle = { ForeColor = Color.White, Format = "$#,##0" },
                     MajorGrid = { LineColor = Color.Gray }
                 }
             };
@@ -111,38 +154,28 @@ namespace KioscoApp
                 Font = new Font("Arial", 15, FontStyle.Bold),
             };
 
-            List<DiaMasVendido> diasMasVentas = ListarVentasPorDias();
-            foreach (var item in diasMasVentas)
-            {
-                serie2.Points.AddXY(item.NombreDia, item.TotalVendido);
-            }
-
-            // agregamos la serie al chart y el chart al UserControl
             chart2.Series.Add(serie2);
-            this.Controls.Add(chart2);
-
+            CargarDatosGrafico2();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Gafico de horario con más ventas
+            // Grafico 3: Horario con más ventas
             chart3 = new Chart
             {
-
                 Dock = DockStyle.Fill,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(30, 30, 30),
                 ForeColor = Color.White,
             };
 
-            // definimos y le damos estilo al área
             ChartArea area3 = new ChartArea("AreaEstadisticas")
             {
                 BackColor = Color.FromArgb(30, 30, 30),
-                AxisX ={
+                AxisX = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
                 },
-                AxisY ={
+                AxisY = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
@@ -151,47 +184,37 @@ namespace KioscoApp
 
             chart3.ChartAreas.Add(area3);
 
-            // le damos estilo a las barras
             Series serie3 = new Series("Ventas por Intervalos de Horario")
             {
-                ChartType = SeriesChartType.Column, // barras verticales
+                ChartType = SeriesChartType.Column,
                 Color = Color.DarkSeaGreen,
-                IsValueShownAsLabel = true, // muestra el número sobre la barra
+                IsValueShownAsLabel = true,
                 LabelForeColor = Color.White,
                 Font = new Font("Arial", 15, FontStyle.Bold),
             };
 
-            List<HorarioMasVendido> listaHorariosMasVendidos = ListarVentasPorHora();
-            foreach (var item in listaHorariosMasVendidos)
-            {
-                serie3.Points.AddXY(item.Hora, item.CantidadVentas);
-            }
-
-            //agregamos la serie al chart y el chart al UserControl
             chart3.Series.Add(serie3);
-            this.Controls.Add(chart3);
+            CargarDatosGrafico3();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Gafico de ingreso por categoría
+            // Grafico 4: Ingreso por categoría
             chart4 = new Chart
             {
-
                 Dock = DockStyle.Fill,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(30, 30, 30),
                 ForeColor = Color.White,
             };
 
-            // definimos y le damos estilo al área
             ChartArea area4 = new ChartArea("AreaEstadisticas")
             {
                 BackColor = Color.FromArgb(30, 30, 30),
-                AxisX ={
+                AxisX = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
                 },
-                AxisY ={
+                AxisY = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White, Format = "$#,##0" },
                     MajorGrid = { LineColor = Color.Gray }
@@ -200,47 +223,37 @@ namespace KioscoApp
 
             chart4.ChartAreas.Add(area4);
 
-            // le damos estilo a las barras
             Series serie4 = new Series("Ingresos por Categoria")
             {
-                ChartType = SeriesChartType.Column, // barras verticales
+                ChartType = SeriesChartType.Column,
                 Color = Color.MediumPurple,
-                IsValueShownAsLabel = true, // muestra el número sobre la barra
+                IsValueShownAsLabel = true,
                 LabelForeColor = Color.White,
                 Font = new Font("Arial", 15, FontStyle.Bold),
             };
 
-            List<CategoriaMasVendida> listaCategorias = ListarVentasPorCategoria();
-            foreach (var item in listaCategorias)
-            {
-                serie4.Points.AddXY(item.Categoria, item.TotalFacturado);
-            }
-
-            //agregamos la serie al chart y el chart al UserControl
             chart4.Series.Add(serie4);
-            this.Controls.Add(chart4);
+            CargarDatosGrafico4();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Gafico de método de pago con mayor ingreso
+            // Grafico 5: Método de pago con mayor ingreso
             chart5 = new Chart
             {
-
                 Dock = DockStyle.Fill,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(30, 30, 30),
                 ForeColor = Color.White,
             };
 
-            // definimos y le damos estilo al área
             ChartArea area5 = new ChartArea("AreaEstadisticas")
             {
                 BackColor = Color.FromArgb(30, 30, 30),
-                AxisX ={
+                AxisX = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
                 },
-                AxisY ={
+                AxisY = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White, Format = "$#,##0" },
                     MajorGrid = { LineColor = Color.Gray }
@@ -249,47 +262,37 @@ namespace KioscoApp
 
             chart5.ChartAreas.Add(area5);
 
-            // le damos estilo a las barras
             Series serie5 = new Series("Método de Pago con Mayor Ingreso")
             {
-                ChartType = SeriesChartType.Column, // barras verticales
+                ChartType = SeriesChartType.Column,
                 Color = Color.Plum,
-                IsValueShownAsLabel = true, // muestra el número sobre la barra
+                IsValueShownAsLabel = true,
                 LabelForeColor = Color.White,
                 Font = new Font("Arial", 15, FontStyle.Bold),
             };
 
-            List<MetodoPagoMasUsado> listaMetodosDePago = listarMetodosMasUsados();
-            foreach (var item in listaMetodosDePago)
-            {
-                serie5.Points.AddXY(item.Nombre, item.TotalFacturado);
-            }
-
-            //agregamos la serie al chart y el chart al UserControl
             chart5.Series.Add(serie5);
-            this.Controls.Add(chart5);
+            CargarDatosGrafico5();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
-            // Gafico de método de pago más utilizado
+            // Grafico 6: Método de pago más utilizado
             chart6 = new Chart
             {
-
                 Dock = DockStyle.Fill,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 BackColor = Color.FromArgb(30, 30, 30),
                 ForeColor = Color.White,
             };
 
-            // definimos y le damos estilo al área
             ChartArea area6 = new ChartArea("AreaEstadisticas")
             {
                 BackColor = Color.FromArgb(30, 30, 30),
-                AxisX ={
+                AxisX = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
                 },
-                AxisY ={
+                AxisY = {
                     LineColor = Color.White,
                     LabelStyle = { ForeColor = Color.White },
                     MajorGrid = { LineColor = Color.Gray }
@@ -298,47 +301,132 @@ namespace KioscoApp
 
             chart6.ChartAreas.Add(area6);
 
-            // le damos estilo a las barras
             Series serie6 = new Series("Método de Pago con Mayor Ingreso")
             {
-                ChartType = SeriesChartType.Column, // barras verticales
+                ChartType = SeriesChartType.Column,
                 Color = Color.PaleVioletRed,
-                IsValueShownAsLabel = true, // muestra el número sobre la barra
+                IsValueShownAsLabel = true,
                 LabelForeColor = Color.White,
                 Font = new Font("Arial", 15, FontStyle.Bold),
             };
 
-            foreach (var item in listaMetodosDePago)
-            {
-                serie6.Points.AddXY(item.Nombre, item.CantidadVentas);
-            }
-
-            //agregamos la serie al chart y el chart al UserControl
             chart6.Series.Add(serie6);
-            this.Controls.Add(chart6);
+            CargarDatosGrafico6();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             // Organizamos los graficos en la tableLayoutPanel
-            tableLayoutPanel1.Controls.Add(lblProdMasVendido, 0, 0);
-            tableLayoutPanel1.Controls.Add(chart1, 0, 1); // agregamos los graficos y las labels a la tableLayout
-            tableLayoutPanel1.Controls.Add(lblDiaMasVentas, 0, 2);
+            tableLayoutPanel1.Controls.Add(flowLayoutPanel1, 0, 0);
+            tableLayoutPanel1.Controls.Add(chart1, 0, 1);
+            tableLayoutPanel1.Controls.Add(flowLayoutPanel2, 0, 2);
             tableLayoutPanel1.Controls.Add(chart2, 0, 3);
-            tableLayoutPanel1.Controls.Add(label1, 0, 4);
+            tableLayoutPanel1.Controls.Add(flowLayoutPanel3, 0, 4);
             tableLayoutPanel1.Controls.Add(chart3, 0, 5);
-            tableLayoutPanel1.Controls.Add(label2, 0, 6);
+            tableLayoutPanel1.Controls.Add(flowLayoutPanel4, 0, 6);
             tableLayoutPanel1.Controls.Add(chart4, 0, 7);
-            tableLayoutPanel1.Controls.Add(label3, 0, 8);
+            tableLayoutPanel1.Controls.Add(flowLayoutPanel5, 0, 8);
             tableLayoutPanel1.Controls.Add(chart5, 0, 9);
-            tableLayoutPanel1.Controls.Add(label4, 0, 10);
+            tableLayoutPanel1.Controls.Add(flowLayoutPanel6, 0, 10);
             tableLayoutPanel1.Controls.Add(chart6, 0, 11);
         }
 
-        
+        private void CargarDatosGrafico1()
+        {
+            if (!ValidarFechas(dtpDesdeProd1, dtpHastaProd1)) return;
+
+            var serie = chart1.Series["Productos Más Vendidos Por Categoria"];
+            serie.Points.Clear();
+
+            List<ProductoMasVendido> listaTopVentas = ListarMasVendidos(dtpDesdeProd1.Value, dtpHastaProd1.Value);
+            foreach (var item in listaTopVentas)
+            {
+                serie.Points.AddXY(item.NombreCategoria + " - " + item.NombreProducto, item.CantidadTotalVendida);
+            }
+        }
+
+        private void CargarDatosGrafico2()
+        {
+            if (!ValidarFechas(dtpDesdeProd2, dtpHastaProd2)) return;
+
+            var serie = chart2.Series["Productos Más Vendidos"];
+            serie.Points.Clear();
+
+            List<DiaMasVendido> diasMasVentas = ListarVentasPorDias(dtpDesdeProd2.Value, dtpHastaProd2.Value);
+            foreach (var item in diasMasVentas)
+            {
+                serie.Points.AddXY(item.NombreDia, item.TotalVendido);
+            }
+        }
+
+        private void CargarDatosGrafico3()
+        {
+            if (!ValidarFechas(dtpDesdeProd3, dtpHastaProd3)) return;
+
+            var serie = chart3.Series["Ventas por Intervalos de Horario"];
+            serie.Points.Clear();
+
+            List<HorarioMasVendido> listaHorariosMasVendidos = ListarVentasPorHora(dtpDesdeProd3.Value, dtpHastaProd3.Value);
+            foreach (var item in listaHorariosMasVendidos)
+            {
+                serie.Points.AddXY(item.Hora, item.CantidadVentas);
+            }
+        }
+
+        private void CargarDatosGrafico4()
+        {
+            if (!ValidarFechas(dtpDesdeProd4, dtpHastaProd4)) return;
+
+            var serie = chart4.Series["Ingresos por Categoria"];
+            serie.Points.Clear();
+
+            List<CategoriaMasVendida> listaCategorias = ListarVentasPorCategoria(dtpDesdeProd4.Value, dtpHastaProd4.Value);
+            foreach (var item in listaCategorias)
+            {
+                serie.Points.AddXY(item.Categoria, item.TotalFacturado);
+            }
+        }
+
+        private void CargarDatosGrafico5()
+        {
+            if (!ValidarFechas(dtpDesdeProd5, dtpHastaProd5)) return;
+
+            var serie = chart5.Series["Método de Pago con Mayor Ingreso"];
+            serie.Points.Clear();
+
+            List<MetodoPagoMasUsado> listaMetodosDePago = listarMetodosMasUsados(dtpDesdeProd5.Value, dtpHastaProd5.Value);
+            foreach (var item in listaMetodosDePago)
+            {
+                serie.Points.AddXY(item.Nombre, item.TotalFacturado);
+            }
+        }
+
+        private void CargarDatosGrafico6()
+        {
+            if (!ValidarFechas(dtpDesdeProd6, dtpHastaProd6)) return;
+
+            var serie = chart6.Series["Método de Pago con Mayor Ingreso"];
+            serie.Points.Clear();
+
+            List<MetodoPagoMasUsado> listaMetodosDePago = listarMetodosMasUsados(dtpDesdeProd6.Value, dtpHastaProd6.Value);
+            foreach (var item in listaMetodosDePago)
+            {
+                serie.Points.AddXY(item.Nombre, item.CantidadVentas);
+            }
+        }
+
+        private void BtnFiltrar1_Click(object sender, EventArgs e) => CargarDatosGrafico1();
+        private void BtnFiltrar2_Click(object sender, EventArgs e) => CargarDatosGrafico2();
+        private void BtnFiltrar3_Click(object sender, EventArgs e) => CargarDatosGrafico3();
+        private void BtnFiltrar4_Click(object sender, EventArgs e) => CargarDatosGrafico4();
+        private void BtnFiltrar5_Click(object sender, EventArgs e) => CargarDatosGrafico5();
+        private void BtnFiltrar6_Click(object sender, EventArgs e) => CargarDatosGrafico6();
+
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {}
+        { }
 
         private void lblDiaMasVentas_Click(object sender, EventArgs e)
-        {}
+        { }
+
+        private void label5_Click(object sender, EventArgs e)
+        { }
     }
 }
-

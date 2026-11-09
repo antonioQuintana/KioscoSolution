@@ -219,5 +219,17 @@ namespace KioscoApp
                 MessageBox.Show("Error al guardar el stock: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btnInventarioValorizado_Click(object? sender, EventArgs e)
+        {
+            using var modal = new Views.FrmInventarioValorizadoModal();
+            modal.ShowDialog(this);
+        }
+
+        private void btnAuditoriaStock_Click(object? sender, EventArgs e)
+        {
+            using var modal = new Views.FrmAuditoriaStockModal();
+            modal.ShowDialog(this);
+        }
     }
 }

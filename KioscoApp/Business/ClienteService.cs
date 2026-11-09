@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using KioscoApp.Models;
 using KioscoApp.Data;
 
@@ -50,6 +50,7 @@ namespace KioscoApp.Business
         public void Eliminar(int id)
         {
             if (id <= 0) throw new ArgumentException("ID no válido");
+            if (id <= 1) throw new InvalidOperationException("No se permite eliminar al cliente base 'Consumidor Final'.");
             _repository.EliminarLogico(id);
         }
 

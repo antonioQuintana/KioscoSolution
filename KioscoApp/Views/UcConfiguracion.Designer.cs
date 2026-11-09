@@ -17,12 +17,10 @@ namespace KioscoApp
         {
             lblTitulo = new Label();
             gbBaseDatos = new GroupBox();
-            btnLimpiar = new Button();
             btnRestore = new Button();
             btnBackup = new Button();
             gbEmpresa = new GroupBox();
             btnLicencia = new Button();
-            btnImpresora = new Button();
             btnDatosEmpresa = new Button();
             gbHerramientas = new GroupBox();
             btnLogs = new Button();
@@ -45,37 +43,23 @@ namespace KioscoApp
             // 
             // gbBaseDatos
             // 
-            gbBaseDatos.Controls.Add(btnLimpiar);
             gbBaseDatos.Controls.Add(btnRestore);
             gbBaseDatos.Controls.Add(btnBackup);
             gbBaseDatos.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             gbBaseDatos.ForeColor = SystemColors.ControlLightLight;
             gbBaseDatos.Location = new Point(30, 80);
             gbBaseDatos.Name = "gbBaseDatos";
-            gbBaseDatos.Size = new Size(280, 250);
+            gbBaseDatos.Size = new Size(280, 185);
             gbBaseDatos.TabIndex = 1;
             gbBaseDatos.TabStop = false;
             gbBaseDatos.Text = "Base de Datos y Seguridad";
-            // 
-            // btnLimpiar
-            // 
-            btnLimpiar.BackColor = SystemColors.AppWorkspace;
-            btnLimpiar.Font = new Font("Segoe UI", 10F);
-            btnLimpiar.ForeColor = SystemColors.ButtonHighlight;
-            btnLimpiar.Location = new Point(20, 180);
-            btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(240, 50);
-            btnLimpiar.TabIndex = 2;
-            btnLimpiar.Text = "Mantenimiento / Compactar BD";
-            btnLimpiar.UseVisualStyleBackColor = false;
-            btnLimpiar.Click += btnLimpiar_Click;
             // 
             // btnRestore
             // 
             btnRestore.BackColor = SystemColors.AppWorkspace;
             btnRestore.Font = new Font("Segoe UI", 10F);
             btnRestore.ForeColor = SystemColors.ButtonHighlight;
-            btnRestore.Location = new Point(20, 110);
+            btnRestore.Location = new Point(20, 105);
             btnRestore.Name = "btnRestore";
             btnRestore.Size = new Size(240, 50);
             btnRestore.TabIndex = 1;
@@ -99,13 +83,12 @@ namespace KioscoApp
             // gbEmpresa
             // 
             gbEmpresa.Controls.Add(btnLicencia);
-            gbEmpresa.Controls.Add(btnImpresora);
             gbEmpresa.Controls.Add(btnDatosEmpresa);
             gbEmpresa.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             gbEmpresa.ForeColor = SystemColors.ControlLightLight;
             gbEmpresa.Location = new Point(340, 80);
             gbEmpresa.Name = "gbEmpresa";
-            gbEmpresa.Size = new Size(280, 250);
+            gbEmpresa.Size = new Size(280, 185);
             gbEmpresa.TabIndex = 2;
             gbEmpresa.TabStop = false;
             gbEmpresa.Text = "Datos de Empresa";
@@ -115,26 +98,13 @@ namespace KioscoApp
             btnLicencia.BackColor = SystemColors.AppWorkspace;
             btnLicencia.Font = new Font("Segoe UI", 10F);
             btnLicencia.ForeColor = SystemColors.ButtonHighlight;
-            btnLicencia.Location = new Point(20, 180);
+            btnLicencia.Location = new Point(20, 105);
             btnLicencia.Name = "btnLicencia";
             btnLicencia.Size = new Size(240, 50);
-            btnLicencia.TabIndex = 2;
+            btnLicencia.TabIndex = 1;
             btnLicencia.Text = "Licencia y Acerca De...";
             btnLicencia.UseVisualStyleBackColor = false;
             btnLicencia.Click += btnLicencia_Click;
-            // 
-            // btnImpresora
-            // 
-            btnImpresora.BackColor = SystemColors.AppWorkspace;
-            btnImpresora.Font = new Font("Segoe UI", 10F);
-            btnImpresora.ForeColor = SystemColors.ButtonHighlight;
-            btnImpresora.Location = new Point(20, 110);
-            btnImpresora.Name = "btnImpresora";
-            btnImpresora.Size = new Size(240, 50);
-            btnImpresora.TabIndex = 1;
-            btnImpresora.Text = "Configurar Impresora";
-            btnImpresora.UseVisualStyleBackColor = false;
-            btnImpresora.Click += btnImpresora_Click;
             // 
             // btnDatosEmpresa
             // 
@@ -157,7 +127,7 @@ namespace KioscoApp
             gbHerramientas.ForeColor = SystemColors.ControlLightLight;
             gbHerramientas.Location = new Point(650, 80);
             gbHerramientas.Name = "gbHerramientas";
-            gbHerramientas.Size = new Size(280, 250);
+            gbHerramientas.Size = new Size(280, 185);
             gbHerramientas.TabIndex = 3;
             gbHerramientas.TabStop = false;
             gbHerramientas.Text = "Herramientas del Sistema";
@@ -167,10 +137,10 @@ namespace KioscoApp
             btnLogs.BackColor = SystemColors.AppWorkspace;
             btnLogs.Font = new Font("Segoe UI", 10F);
             btnLogs.ForeColor = SystemColors.ButtonHighlight;
-            btnLogs.Location = new Point(20, 110);
+            btnLogs.Location = new Point(20, 105);
             btnLogs.Name = "btnLogs";
             btnLogs.Size = new Size(240, 50);
-            btnLogs.TabIndex = 2;
+            btnLogs.TabIndex = 1;
             btnLogs.Text = "Ver Registro de Errores (Logs)";
             btnLogs.UseVisualStyleBackColor = false;
             btnLogs.Click += btnLogs_Click;
@@ -209,12 +179,10 @@ namespace KioscoApp
 
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.GroupBox gbBaseDatos;
-        private System.Windows.Forms.Button btnLimpiar;
         private System.Windows.Forms.Button btnRestore;
         private System.Windows.Forms.Button btnBackup;
         private System.Windows.Forms.GroupBox gbEmpresa;
         private System.Windows.Forms.Button btnLicencia;
-        private System.Windows.Forms.Button btnImpresora;
         private System.Windows.Forms.Button btnDatosEmpresa;
         private System.Windows.Forms.GroupBox gbHerramientas;
         private System.Windows.Forms.Button btnLogs;
