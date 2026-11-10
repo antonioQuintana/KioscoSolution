@@ -576,20 +576,31 @@ CREATE OR ALTER PROCEDURE sp_Estadisticas_ListarVentasPorDias
 AS
 BEGIN
     SET NOCOUNT ON;
+    WITH DiasSemana AS (
+        SELECT 1 AS Dia, 0 AS RestoBase, N'Lunes' AS NombreDia
+        UNION ALL SELECT 2, 1, N'Martes'
+        UNION ALL SELECT 3, 2, N'Mi' + NCHAR(233) + N'rcoles'
+        UNION ALL SELECT 4, 3, N'Jueves'
+        UNION ALL SELECT 5, 4, N'Viernes'
+        UNION ALL SELECT 6, 5, N'S' + NCHAR(225) + N'bado'
+        UNION ALL SELECT 7, 6, N'Domingo'
+    )
     SELECT 
-        CAST(Fecha AS DATE) AS Dia,
-        DATENAME(WEEKDAY, Fecha) AS NombreDia,
-        COUNT(Id) AS CantidadVentas,
-        SUM(Total) AS TotalIngresos
-    FROM Ventas
-    WHERE Estado = 'Completada'
-      AND (@FechaDesde IS NULL OR CAST(Fecha AS DATE) >= @FechaDesde)
-      AND (@FechaHasta IS NULL OR CAST(Fecha AS DATE) <= @FechaHasta)
+        d.Dia,
+        d.NombreDia,
+        COUNT(v.Id) AS CantidadVentas,
+        ISNULL(SUM(v.Total), 0) AS TotalIngresos
+    FROM DiasSemana d
+    LEFT JOIN Ventas v
+        ON (DATEDIFF(DAY, '19000101', v.Fecha) % 7) = d.RestoBase
+        AND v.Estado = 'Completada'
+        AND (@FechaDesde IS NULL OR CAST(v.Fecha AS DATE) >= @FechaDesde)
+        AND (@FechaHasta IS NULL OR CAST(v.Fecha AS DATE) <= @FechaHasta)
     GROUP BY 
-        CAST(Fecha AS DATE), 
-        DATENAME(WEEKDAY, Fecha)
+        d.Dia, 
+        d.NombreDia
     ORDER BY 
-        Dia ASC;
+        d.Dia ASC;
 END
 GO
 
