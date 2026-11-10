@@ -45,21 +45,31 @@ namespace KioscoApp.Data
             return new Cliente
             {
                 Id = Convert.ToInt32(reader["Id"]),
-                Dni = reader["Dni"].ToString(),
-                Nombre = reader["Nombre"].ToString(),
-                Apellido = reader["Apellido"].ToString(),
-                Telefono = reader["Telefono"] != DBNull.Value ? reader["Telefono"].ToString() : null,
-                Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
-                Calle = reader["Calle"] != DBNull.Value ? reader["Calle"].ToString() : null,
-                Numero = reader["Numero"] != DBNull.Value ? reader["Numero"].ToString() : null,
-                Ciudad = reader["Ciudad"] != DBNull.Value ? reader["Ciudad"].ToString() : null,
-                Provincia = reader["Provincia"] != DBNull.Value ? reader["Provincia"].ToString() : null,
-                Nacimiento = reader["Nacimiento"] != DBNull.Value ? Convert.ToDateTime(reader["Nacimiento"]) : (DateTime?)null,
-                FechaRegistro = Convert.ToDateTime(reader["FechaRegistro"]),
-                SaldoDeudor = reader["SaldoDeudor"] != DBNull.Value ? Convert.ToDecimal(reader["SaldoDeudor"]) : 0m,
-                LimiteCredito = reader["LimiteCredito"] != DBNull.Value ? Convert.ToDecimal(reader["LimiteCredito"]) : 15000m,
-                Activo = Convert.ToBoolean(reader["Activo"])
+                Dni = reader["Dni"]?.ToString() ?? string.Empty,
+                Nombre = reader["Nombre"]?.ToString() ?? string.Empty,
+                Apellido = reader["Apellido"]?.ToString() ?? string.Empty,
+                Telefono = HasColumn(reader, "Telefono") && reader["Telefono"] != DBNull.Value ? reader["Telefono"].ToString() : null,
+                Email = HasColumn(reader, "Email") && reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
+                Calle = HasColumn(reader, "Calle") && reader["Calle"] != DBNull.Value ? reader["Calle"].ToString() : null,
+                Numero = HasColumn(reader, "Numero") && reader["Numero"] != DBNull.Value ? reader["Numero"].ToString() : null,
+                Ciudad = HasColumn(reader, "Ciudad") && reader["Ciudad"] != DBNull.Value ? reader["Ciudad"].ToString() : null,
+                Provincia = HasColumn(reader, "Provincia") && reader["Provincia"] != DBNull.Value ? reader["Provincia"].ToString() : null,
+                Nacimiento = HasColumn(reader, "Nacimiento") && reader["Nacimiento"] != DBNull.Value ? Convert.ToDateTime(reader["Nacimiento"]) : (DateTime?)null,
+                FechaRegistro = HasColumn(reader, "FechaRegistro") && reader["FechaRegistro"] != DBNull.Value ? Convert.ToDateTime(reader["FechaRegistro"]) : DateTime.Now,
+                SaldoDeudor = HasColumn(reader, "SaldoDeudor") && reader["SaldoDeudor"] != DBNull.Value ? Convert.ToDecimal(reader["SaldoDeudor"]) : 0m,
+                LimiteCredito = HasColumn(reader, "LimiteCredito") && reader["LimiteCredito"] != DBNull.Value ? Convert.ToDecimal(reader["LimiteCredito"]) : 15000m,
+                Activo = HasColumn(reader, "Activo") && reader["Activo"] != DBNull.Value ? Convert.ToBoolean(reader["Activo"]) : true
             };
+        }
+
+        private static bool HasColumn(SqlDataReader reader, string columnName)
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
         }
 
         public List<Cliente> ObtenerTodos()

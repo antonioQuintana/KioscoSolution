@@ -55,36 +55,36 @@ GO
 
 -- Insertar Provincias
 INSERT INTO Provincias (Nombre) VALUES 
-('Buenos Aires'), ('CÃ³rdoba'), ('Santa Fe'), ('Mendoza'), ('TucumÃ¡n'), ('Corrientes'), ('Chaco');
+('Buenos Aires'), ('Córdoba'), ('Santa Fe'), ('Mendoza'), ('Tucumán'), ('Corrientes'), ('Chaco');
 GO
 
 -- Insertar Ciudades
 DECLARE @IdBA INT = (SELECT Id FROM Provincias WHERE Nombre = 'Buenos Aires');
-DECLARE @IdCBA INT = (SELECT Id FROM Provincias WHERE Nombre = 'CÃ³rdoba');
+DECLARE @IdCBA INT = (SELECT Id FROM Provincias WHERE Nombre = 'Córdoba');
 DECLARE @IdCorrientes INT = (SELECT Id FROM Provincias WHERE Nombre = 'Corrientes');
 DECLARE @IdChaco INT = (SELECT Id FROM Provincias WHERE Nombre = 'Chaco');
 DECLARE @IdSantaFe INT = (SELECT Id FROM Provincias WHERE Nombre = 'Santa Fe');
 DECLARE @IdMendoza INT = (SELECT Id FROM Provincias WHERE Nombre = 'Mendoza');
-DECLARE @IdTucuman INT = (SELECT Id FROM Provincias WHERE Nombre = 'TucumÃ¡n');
+DECLARE @IdTucuman INT = (SELECT Id FROM Provincias WHERE Nombre = 'Tucumán');
 
 INSERT INTO Ciudades (ProvinciaId, Nombre) VALUES 
-(@IdBA, 'La Plata'), (@IdBA, 'Mar del Plata'), (@IdBA, 'BahÃ­a Blanca'), (@IdBA, 'Quilmes'),
-(@IdCBA, 'CÃ³rdoba Capital'), (@IdCBA, 'Villa Carlos Paz'), (@IdCBA, 'RÃ­o Cuarto'),
-(@IdCorrientes, 'Corrientes Capital'), (@IdCorrientes, 'Goya'), (@IdCorrientes, 'Paso de los Libres'), (@IdCorrientes, 'CuruzÃº CuatiÃ¡'), (@IdCorrientes, 'Mercedes'), (@IdCorrientes, 'Bella Vista'), (@IdCorrientes, 'ItuzaingÃ³'),
-(@IdChaco, 'Resistencia'), (@IdChaco, 'Presidencia Roque SÃ¡enz PeÃ±a'), (@IdChaco, 'Villa Ãngela'), (@IdChaco, 'Barranqueras'), (@IdChaco, 'Fontana'), (@IdChaco, 'General JosÃ© de San MartÃ­n'), (@IdChaco, 'Juan JosÃ© Castelli'),
+(@IdBA, 'La Plata'), (@IdBA, 'Mar del Plata'), (@IdBA, 'Bahía Blanca'), (@IdBA, 'Quilmes'),
+(@IdCBA, 'Córdoba Capital'), (@IdCBA, 'Villa Carlos Paz'), (@IdCBA, 'Río Cuarto'),
+(@IdCorrientes, 'Corrientes Capital'), (@IdCorrientes, 'Goya'), (@IdCorrientes, 'Paso de los Libres'), (@IdCorrientes, 'Curuzú Cuatiá'), (@IdCorrientes, 'Mercedes'), (@IdCorrientes, 'Bella Vista'), (@IdCorrientes, 'Ituzaingó'),
+(@IdChaco, 'Resistencia'), (@IdChaco, 'Presidencia Roque Sáenz Peña'), (@IdChaco, 'Villa Ángela'), (@IdChaco, 'Barranqueras'), (@IdChaco, 'Fontana'), (@IdChaco, 'General José de San Martín'), (@IdChaco, 'Juan José Castelli'),
 (@IdSantaFe, 'Rosario'), (@IdSantaFe, 'Santa Fe Capital'), (@IdSantaFe, 'Rafaela'), (@IdSantaFe, 'Venado Tuerto'),
-(@IdMendoza, 'Mendoza Capital'), (@IdMendoza, 'San Rafael'), (@IdMendoza, 'Godoy Cruz'), (@IdMendoza, 'LujÃ¡n de Cuyo'),
-(@IdTucuman, 'San Miguel de TucumÃ¡n'), (@IdTucuman, 'TafÃ­ Viejo'), (@IdTucuman, 'ConcepciÃ³n'), (@IdTucuman, 'Yerba Buena');
+(@IdMendoza, 'Mendoza Capital'), (@IdMendoza, 'San Rafael'), (@IdMendoza, 'Godoy Cruz'), (@IdMendoza, 'Luján de Cuyo'),
+(@IdTucuman, 'San Miguel de Tucumán'), (@IdTucuman, 'Tafí Viejo'), (@IdTucuman, 'Concepción'), (@IdTucuman, 'Yerba Buena');
 GO
 
 -- Insertar Usuarios
 INSERT INTO Usuarios 
 (Nombre, Apellido, Dni, Usuario, Contrasena, Rol, Email, Telefono, Calle, Numero, Ciudad, Provincia, Sexo, Nacimiento) 
 VALUES 
-('Juan', 'PÃ©rez', '11111111', 'admin', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'admin', 'admin@kiosco.com', '+54 9 11 1234 5678', 'Av. Corrientes', '1234', 'La Plata', 'Buenos Aires', 'Masculino', '1985-05-15'),
-('MarÃ­a', 'GÃ³mez', '22222222', 'super', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'supervisor', 'super@kiosco.com', '+54 9 351 987 6543', 'Av. ColÃ³n', '456', 'CÃ³rdoba Capital', 'CÃ³rdoba', 'Femenino', '1990-10-20'),
+('Juan', 'Pérez', '11111111', 'admin', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'admin', 'admin@kiosco.com', '+54 9 11 1234 5678', 'Av. Corrientes', '1234', 'La Plata', 'Buenos Aires', 'Masculino', '1985-05-15'),
+('María', 'Gómez', '22222222', 'super', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'supervisor', 'super@kiosco.com', '+54 9 351 987 6543', 'Av. Colón', '456', 'Córdoba Capital', 'Córdoba', 'Femenino', '1990-10-20'),
 ('Antonio', 'Quintana', '33333333', 'antonio', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'vendedor', 'antonio.quintana@kiosco.com', '+54 9 11 2233 4455', 'Florida', '999', 'Mar del Plata', 'Buenos Aires', 'Masculino', '1995-02-28'),
-('Ramiro', 'NuÃ±ez', '44444444', 'ramiro', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'Vendedor', 'ramiro.nunez@gmail.com', '+54 9 379 456 7890', 'San Juan', '890', 'Corrientes Capital', 'Corrientes', 'Masculino', '1998-03-08');
+('Ramiro', 'Nuñez', '44444444', 'ramiro', '$2a$11$phr8.2Iyh4hDs6YiluSs7OmMTzIcLd5qLzCc0jPlxYFbaphoWYKii', 'Vendedor', 'ramiro.nunez@gmail.com', '+54 9 379 456 7890', 'San Juan', '890', 'Corrientes Capital', 'Corrientes', 'Masculino', '1998-03-08');
 GO
 
 -- =============================================
@@ -151,6 +151,8 @@ CREATE TABLE Clientes (
     Provincia VARCHAR(100) NULL,
     Nacimiento DATE NULL,
     FechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    SaldoDeudor DECIMAL(18,2) NOT NULL DEFAULT 0,
+    LimiteCredito DECIMAL(18,2) NOT NULL DEFAULT 15000,
     Activo BIT NOT NULL DEFAULT 1
 );
 GO
