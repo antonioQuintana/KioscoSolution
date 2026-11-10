@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -104,6 +105,20 @@ namespace KioscoApp.Views
             this.Controls.Add(btnCerrar);
 
             this.CancelButton = btnCerrar;
+
+            HelpTooltipHelper.AttachHelp(
+                txtBuscar,
+                "Buscador Rápido de Catálogo [F1]",
+                "Escriba cualquier parte del nombre del producto, su código SKU o su categoría para filtrar la tabla en vivo.\n" +
+                "Haga doble clic sobre la fila deseada o presione 'Agregar al Carrito'.",
+                shrinkControl: false,
+                offsetX: 8);
+
+            HelpTooltipHelper.AttachHelp(
+                btnAgregar,
+                "Agregar Producto Seleccionado",
+                "Envía el artículo resaltado en la grilla directamente al carrito de compras.",
+                shrinkControl: true);
         }
 
         private void CargarProductos()

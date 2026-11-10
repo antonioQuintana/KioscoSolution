@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using System.Drawing;
 using System.Windows.Forms;
 using KioscoApp.Business;
+using KioscoApp.Utils;
 
 namespace KioscoApp
 {
@@ -13,6 +15,40 @@ namespace KioscoApp
             InitializeComponent();
             ThemeHelper.ApplyTheme(this);
             _usuarioService = new UsuarioService();
+            ConfigurarAyuda();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachFormHelp(
+                this,
+                "Pantalla de Inicio de Sesión",
+                "Bienvenido a KioscoApp. En este formulario debe autenticarse con sus credenciales asignadas.\n\n" +
+                "• El sistema aplica el principio de Mínimo Privilegio: según su rol (Vendedor, Supervisor o Administrador) se habilitarán únicamente las pantallas correspondientes a su puesto.\n" +
+                "• Todos los accesos e intentos fallidos quedan registrados en la auditoría de seguridad.",
+                new Point(344, 12));
+
+            HelpTooltipHelper.AttachHelp(
+                txtUsuario,
+                "Campo Usuario",
+                "Ingrese aquí su nombre de usuario asignado por el Administrador (por ejemplo: admin, supervisor o vendedor).",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                BMostrar,
+                "Contraseña y Visor de Caracteres",
+                "Ingrese su clave secreta en el campo de contraseña.\n" +
+                "Haga clic en el botón del ojo para mostrar u ocultar los caracteres escritos y verificar que no haya errores de tipeo.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                btnIngresar,
+                "Botón Ingresar",
+                "Haga clic aquí o presione la tecla [Enter] para validar sus credenciales e ingresar al menú principal del sistema.",
+                shrinkControl: false,
+                offsetX: 8);
         }
 
         private void BtnIngresar_Click(object sender, EventArgs e)

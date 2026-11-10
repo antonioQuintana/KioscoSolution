@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp
 {
@@ -27,8 +28,92 @@ namespace KioscoApp
             _productoService = new ProductoService();
             _categoriaService = new CategoriaService();
             ConfigurarValidacionesEntrada();
+            ConfigurarAyuda();
             CargarCategorias();
             CargarProductos();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachHelp(
+                lblTitulo,
+                "Catálogo y ABM de Productos",
+                "En esta pantalla el Supervisor administra todos los artículos del kiosco:\n" +
+                "• Haga clic sobre cualquier producto de la grilla para cargar sus datos a la derecha y modificarlo.\n" +
+                "• Para crear un producto nuevo, presione 'Limpiar Formulario', complete los campos y pulse 'Guardar Producto'.",
+                shrinkControl: false,
+                offsetX: 10);
+
+            cmbFiltroCat.Width -= 22;
+            btnLimpiarFiltro.Left -= 22;
+            HelpTooltipHelper.AttachHelp(
+                btnLimpiarFiltro,
+                "Búsqueda Rápida y Filtro por Categoría",
+                "• Escriba parte del nombre o escanee el código SKU en 'Buscar / Escanear' para filtrar la tabla en vivo (si presiona Enter con un SKU exacto, se cargará automáticamente en el formulario de edición).\n" +
+                "• Seleccione un rubro en el desplegable para ver solo esa familia de artículos.\n" +
+                "• Presione 'Ver Todo' para quitar los filtros.",
+                shrinkControl: false,
+                offsetX: 4);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbFormulario,
+                "Formulario de Detalles del Producto",
+                "Complete los datos del artículo:\n" +
+                "• SKU: Código de barras único del producto.\n" +
+                "• Nombre, Descripción y Categoría.\n" +
+                "• P. Costo, % Gan y P. Venta: Cálculo bidireccional automático (al escribir el Costo y el % de Ganancia se calcula el Precio de Venta; o al escribir el Precio de Venta se calcula el % de margen y la ganancia neta en verde).\n" +
+                "• Stock Actual y Stock Mínimo (umbral para alertas de reposición).");
+
+            HelpTooltipHelper.AttachHelp(
+                lblGananciaNeta,
+                "Calculadora Automática de Margen y Ganancia",
+                "Muestra la ganancia neta en pesos por cada unidad vendida (Precio de Venta menos Precio de Costo).\n" +
+                "Puede modificar el '% Gan' o el 'P. Venta' y el sistema recalculará el otro valor automáticamente.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                txtStockMin,
+                "Stock Actual y Stock Mínimo de Seguridad",
+                "• Stock Actual: Cantidad física disponible en el local.\n" +
+                "• Stock Mínimo: Cantidad límite a partir de la cual el sistema marcará el producto en alerta amarilla en el módulo de Stock.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                btnGuardar,
+                "Guardar Producto (Alta / Modificación)",
+                "Valida que todos los campos obligatorios sean correctos y guarda el producto en la base de datos, dejando constancia en la auditoría del sistema.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnEliminar,
+                "Eliminar Producto",
+                "Da de baja el producto seleccionado actualmente del catálogo activo (previa confirmación de seguridad).",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnLimpiar,
+                "Limpiar Formulario",
+                "Limpia todos los casilleros y deselecciona el artículo actual para poder ingresar un producto nuevo desde cero.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbHerramientas,
+                "Herramientas Masivas (Excel / CSV)",
+                "Permite actualizar cientos de precios y stocks en pocos segundos utilizando planillas de cálculo compatibles con Microsoft Excel.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnExportarExcel,
+                "Descargar Plantilla Excel (CSV)",
+                "Exporta todo el catálogo actual de productos a un archivo .CSV separado por punto y coma que puede abrir y editar directamente en Microsoft Excel.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnImportarExcel,
+                "Subir y Actualizar Precios Masivamente",
+                "Seleccione un archivo .CSV modificado en Excel para actualizar de forma masiva los precios de costo, precios de venta y stock de los productos existentes (o dar de alta nuevos SKU).",
+                shrinkControl: true);
         }
 
         private void ConfigurarValidacionesEntrada()

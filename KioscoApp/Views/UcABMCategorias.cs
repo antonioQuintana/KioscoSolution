@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp
 {
@@ -17,7 +18,58 @@ namespace KioscoApp
         {
             InitializeComponent();
             _categoriaService = new CategoriaService();
+            ConfigurarAyuda();
             CargarCategorias();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachHelp(
+                lblTitulo,
+                "Gestión de Categorías de Productos",
+                "Permite administrar los rubros o familias de artículos del comercio (ej. Bebidas, Golosinas, Cigarrillos, Almacén).\n\n" +
+                "• Seleccione cualquier fila en la tabla izquierda para editar su nombre o descripción.\n" +
+                "• Use el formulario derecho para crear nuevas categorías o eliminar rubros en desuso.",
+                shrinkControl: false,
+                offsetX: 10);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbFormulario,
+                "Formulario de Datos de la Categoría",
+                "Ingrese el Nombre único de la categoría (obligatorio) y opcionalmente una breve Descripción sobre el tipo de mercadería que agrupa.");
+
+            HelpTooltipHelper.AttachHelp(
+                lblNombre,
+                "Nombre del Rubro / Categoría",
+                "Escriba un nombre claro y representativo (por ejemplo: 'Bebidas sin Alcohol' o 'Snacks Salados'). No se permiten nombres duplicados.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblDesc,
+                "Descripción de la Categoría",
+                "Campo opcional para detallar qué productos integran esta familia comercial.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                btnGuardar,
+                "Guardar Categoría",
+                "Registra una nueva categoría si el formulario estaba limpio, o guarda los cambios realizados sobre la categoría seleccionada.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnEliminar,
+                "Eliminar Categoría",
+                "Elimina la categoría seleccionada en la grilla.\n" +
+                "Nota: Por integridad de datos, el sistema impide borrar categorías que tengan productos asociados actualmente.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnLimpiar,
+                "Limpiar Formulario",
+                "Blanquea los campos de texto y deselecciona la fila actual para permitir el alta de una nueva categoría.",
+                shrinkControl: true);
         }
 
         private void CargarCategorias()

@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -27,7 +28,32 @@ namespace KioscoApp.Views
         {
             _totalAPagar = totalAPagar;
             InitializeComponent();
+            ConfigurarAyuda();
             CalcularVuelto();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachFormHelp(
+                this,
+                "Calculadora de Cobro en Efectivo",
+                "En este formulario se calcula automáticamente el vuelto a entregar al cliente:\n" +
+                "1. Escriba con cuánto dinero abona el cliente o pulse uno de los botones rápidos de billetes ($1.000 a $20.000 o Exacto).\n" +
+                "2. Verifique el 'VUELTO A ENTREGAR' en verde.\n" +
+                "3. Presione [Enter] o 'CONFIRMAR COBRO' para registrar la venta.",
+                new Point(438, 18));
+
+            HelpTooltipHelper.AttachHelp(
+                txtAbonado,
+                "Importe con el que Abona el Cliente",
+                "Ingrese aquí el monto de dinero en efectivo entregado por el cliente (debe ser igual o mayor al total a cobrar). También puede usar los botones de billetes rápidos debajo.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnConfirmar,
+                "Confirmar Cobro y Registrar Venta [Enter]",
+                "Asienta la venta en efectivo en la caja del turno actual y cierra esta ventana informando el vuelto a entregar.",
+                shrinkControl: true);
         }
 
         private void InitializeComponent()

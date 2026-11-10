@@ -4,6 +4,7 @@ using System.Drawing.Printing;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -186,6 +187,17 @@ namespace KioscoApp.Views
             Controls.Add(btnTestPrint);
             Controls.Add(btnGuardar);
             Controls.Add(btnCancelar);
+
+            HelpTooltipHelper.AttachHelp(lblTitulo, "Configuración de Impresora Térmica",
+                "Seleccione la impresora de tickets instalada en Windows y defina el ancho del rollo de papel y el comportamiento de impresión.");
+            HelpTooltipHelper.AttachGroupBoxHelp(gbDispositivo, "Selección de Dispositivo",
+                "Elija de la lista desplegable la impresora térmica conectada por USB o Red que utilizará el Punto de Venta.");
+            HelpTooltipHelper.AttachGroupBoxHelp(gbOpciones, "Formato y Automatización",
+                "Seleccione el ancho del papel (80mm estándar o 58mm compacto), active la impresión automática al cobrar con [F5] y el corte automático de papel.");
+            HelpTooltipHelper.AttachHelp(btnTestPrint, "Ticket de Prueba",
+                "Envía una página de prueba a la impresora seleccionada para verificar que esté encendida, con papel y correctamente conectada.", shrinkControl: true);
+            HelpTooltipHelper.AttachHelp(btnGuardar, "Guardar Impresora",
+                "Guarda las preferencias de impresión para todas las ventas del sistema.", shrinkControl: true);
         }
 
         private void CargarImpresoras()

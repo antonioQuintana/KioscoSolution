@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using KioscoApp.Business;
+using KioscoApp.Utils;
 using KioscoApp.Views;
 
 namespace KioscoApp
@@ -14,6 +15,69 @@ namespace KioscoApp
         {
             InitializeComponent();
             _dbAdminService = new BaseDatosAdminService();
+            ConfigurarAyuda();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachHelp(
+                lblTitulo,
+                "Centro de Configuración y Seguridad del Sistema",
+                "Panel exclusivo para el Administrador (IT / Dueño). Reúne el resguardo de base de datos, la personalización de comprobantes y las herramientas de auditoría forense y diagnóstico.",
+                shrinkControl: false,
+                offsetX: 10);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbBaseDatos,
+                "Base de Datos y Seguridad (SQL Server)",
+                "Herramientas para resguardar toda la información comercial (ventas, productos, clientes, usuarios y cierres) ante fallas de hardware o contingencias.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnBackup,
+                "Crear Copia de Seguridad (.bak)",
+                "Genera un archivo de respaldo completo (.bak) de la base de datos SQL Server en la carpeta elegida (por defecto C:\\KioscoBackups) verificando su integridad.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnRestore,
+                "Restaurar Base de Datos",
+                "Permite seleccionar un archivo de respaldo (.bak) previo para restaurar por completo la base de datos.\n" +
+                "⚠️ Atención: Esta acción reemplaza los datos actuales por los de la copia seleccionada.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbEmpresa,
+                "Datos Comerciales de la Empresa",
+                "Configuración de la identidad fiscal del comercio y datos de licenciamiento del software.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnDatosEmpresa,
+                "Información del Negocio y Plantilla de Ticket",
+                "Abre el editor con vista previa en vivo para configurar Nombre de Fantasía, Razón Social, CUIT, Dirección, Teléfono y el mensaje de agradecimiento al pie de los tickets.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnLicencia,
+                "Licencia y Acerca de KioscoApp",
+                "Muestra la información técnica de la versión instalada, plataforma .NET, motor SQL Server y estado de la licencia comercial.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbHerramientas,
+                "Herramientas de Auditoría y Diagnóstico",
+                "Monitoreo de seguridad informática, trazabilidad de acciones críticas y registro técnico de errores.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnTrazabilidad,
+                "Trazabilidad de Seguridad (Auditoría Global)",
+                "Abre el registro cronológico inalterable de todas las acciones sensibles ejecutadas en la base de datos (logins, altas/bajas, cierres Z, ajustes de stock, anulaciones), con filtros y exportación a CSV.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnLogs,
+                "Visor de Registro de Errores y Diagnóstico (Logs)",
+                "Abre la consola de diagnóstico técnico con filtros por fecha, nivel de severidad (INFO, WARN, ERROR), módulo del sistema y búsqueda de texto.",
+                shrinkControl: true);
         }
 
         private void btnBackup_Click(object sender, EventArgs e)

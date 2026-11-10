@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -202,6 +203,26 @@ namespace KioscoApp.Views
 
             this.AcceptButton = btnConfirmar;
             this.CancelButton = btnCancelar;
+
+            HelpTooltipHelper.AttachHelp(
+                lblTitulo,
+                "Registro de Movimiento de Caja",
+                "Complete el monto en pesos ($) y una breve descripción del motivo (ej. 'Pago proveedor panadería', 'Cambio inicial', 'Retiro parcial') y presione Confirmar.\n" +
+                "Todo movimiento queda registrado con usuario y hora para el arqueo de caja.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                txtMonto,
+                "Importe del Movimiento ($)",
+                "Ingrese el monto numérico del dinero que entra o sale del cajón físico.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                txtMotivo,
+                "Motivo / Concepto Obligatorio",
+                "Especifique el concepto del movimiento para que el Supervisor pueda identificarlo en la Auditoría de Cajas.",
+                shrinkControl: true);
         }
 
         private void BtnConfirmar_Click(object? sender, EventArgs e)

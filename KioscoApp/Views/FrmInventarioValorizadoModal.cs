@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -175,6 +176,13 @@ namespace KioscoApp.Views
             btnCerrar.Click += (s, e) => Close();
 
             Controls.AddRange(new Control[] { lblTitulo, pnlFiltros, dgvInventario, lblMetricas, btnCerrar });
+
+            HelpTooltipHelper.AttachHelp(lblTitulo, "Inventario Valorizado",
+                "Calcula en tiempo real el capital invertido en mercadería (Stock × Precio Costo), el ingreso proyectado (Stock × Precio Venta) y la ganancia potencial estimada.");
+            HelpTooltipHelper.AttachHelp(btnLimpiar, "Filtros de Inventario",
+                "Escriba parte del nombre o código SKU y filtre por categoría para recalcular instantáneamente las métricas financieras del subconjunto seleccionado.");
+            HelpTooltipHelper.AttachHelp(btnExportarCSV, "Exportar a Excel (CSV)",
+                "Descarga el listado valorizado actual en un archivo CSV compatible con Microsoft Excel para análisis contable.", shrinkControl: true);
         }
 
         private void CargarDatos()

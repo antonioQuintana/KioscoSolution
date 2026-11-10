@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -77,6 +78,13 @@ namespace KioscoApp.Views
 
             this.Controls.Add(lblTitulo);
             this.Controls.Add(flowPanel);
+
+            HelpTooltipHelper.AttachHelp(
+                lblTitulo,
+                "Botonera de Artículos Frecuentes [F2]",
+                "Haga un solo clic sobre cualquiera de los botones de productos para agregar 1 unidad directamente al carrito de venta y regresar al Punto de Venta.",
+                shrinkControl: false,
+                offsetX: 10);
         }
     }
 }

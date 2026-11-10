@@ -29,6 +29,11 @@ namespace KioscoApp
         {
             foreach (Control control in controls)
             {
+                if (Equals(control.Tag, "HelpBadge"))
+                {
+                    continue;
+                }
+
                 if (control is TextBox txt)
                 {
                     txt.BackColor = TextBoxColor;

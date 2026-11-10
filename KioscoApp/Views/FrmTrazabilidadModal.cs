@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -200,6 +201,13 @@ namespace KioscoApp.Views
             Controls.Add(dgvAuditoria);
             Controls.Add(lblTotalRegistros);
             Controls.Add(btnCerrar);
+
+            HelpTooltipHelper.AttachHelp(lblTitulo, "Trazabilidad y Auditoría de Seguridad",
+                "Registro forense de todas las acciones sensibles ejecutadas en el sistema (inicios de sesión, cambios de usuarios, backups, anulaciones, cierres y ajustes).");
+            HelpTooltipHelper.AttachHelp(btnFiltrar, "Filtrar Eventos",
+                "Filtra la bitácora de auditoría combinando rango de fechas, módulo del sistema y palabra clave (usuario, rol o acción).", shrinkControl: true);
+            HelpTooltipHelper.AttachHelp(btnExportar, "Exportar Bitácora CSV",
+                "Descarga los eventos de seguridad filtrados en un archivo CSV compatible con Excel para auditorías externas.", shrinkControl: true);
         }
 
         private void ConfigurarGrilla()

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 using KioscoApp.Views;
 
 namespace KioscoApp
@@ -18,6 +19,55 @@ namespace KioscoApp
             InitializeComponent();
             _ventaService = new VentaService();
             ConfigurarUI();
+            ConfigurarAyuda();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachHelp(
+                lblTitulo,
+                "Pantalla de Historial de Ventas",
+                "Permite consultar todas las ventas emitidas, verificar totales facturados, reimprimir comprobantes y anular tickets erróneos.\n\n" +
+                "• Las ventas anuladas se muestran tachadas en color rojo oscuro.\n" +
+                "• En la barra inferior se calcula el total facturado neto excluyendo anulaciones.",
+                shrinkControl: false,
+                offsetX: 10);
+
+            HelpTooltipHelper.AttachHelp(
+                lblInfo,
+                "Ver Detalle y Reimprimir Ticket",
+                "Haga doble clic (o presione Enter) sobre cualquier fila de la tabla para abrir el comprobante detallado con cada producto vendido y copiar/imprimir el ticket.",
+                shrinkControl: false,
+                offsetX: 8);
+
+            var tipTurno = HelpTooltipHelper.CreateToolTip("Filtro Turno Actual vs Fechas");
+            tipTurno.SetToolTip(
+                chkSoloTurnoActual,
+                "• Marcado (por defecto): muestra únicamente los tickets emitidos en el turno de caja abierto actualmente.\n" +
+                "• Desmarcado: habilita los selectores de fecha 'Desde' y 'Hasta' para buscar ventas de días anteriores.");
+
+            var tipBuscar = HelpTooltipHelper.CreateToolTip("Búsqueda Rápida de Tickets");
+            tipBuscar.SetToolTip(
+                txtBuscar,
+                "Escriba el número de ticket, nombre del cliente o método de pago (Efectivo, QR, Tarjeta, Cuenta Corriente) para filtrar el listado instantáneamente.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnReset,
+                "Filtros de Búsqueda y Limpieza",
+                "• Use 'Turno Actual' o el rango de fechas 'Desde / Hasta' junto con el cuadro 'Buscar' para localizar un ticket.\n" +
+                "• Presione 'Limpiar' para restablecer los filtros y volver a ver todas las ventas del turno activo.",
+                shrinkControl: false,
+                offsetX: 3);
+
+            HelpTooltipHelper.AttachHelp(
+                btnAnular,
+                "Anular Venta Seleccionada",
+                "Seleccione un ticket con estado 'Completada' en la grilla y presione este botón para anular la operación.\n\n" +
+                "Efectos automáticos de la anulación:\n" +
+                "1. Devuelve al stock todas las unidades de los productos incluidos en el ticket.\n" +
+                "2. Si fue cobrada en Efectivo, descuenta el importe de la caja actual.\n" +
+                "3. Si fue cargada a Cuenta Corriente, resta el monto de la deuda del cliente.",
+                shrinkControl: true);
         }
 
         private void ConfigurarUI()

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 using KioscoApp.Views;
 
 namespace KioscoApp
@@ -39,6 +40,7 @@ namespace KioscoApp
             _carrito = new BindingList<DetalleVenta>();
 
             ConfigurarUI();
+            ConfigurarAyuda();
 
             _clienteActual = _clienteService.ObtenerConsumidorFinal() ?? new Cliente { Id = 1, Nombre = "Consumidor", Apellido = "Final", Dni = "00000000" };
             ActualizarUICliente();
@@ -46,6 +48,134 @@ namespace KioscoApp
 
             // Asegurar foco inicial al mostrar el control
             this.Load += (s, e) => EnfocarEscaner();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            // Ajustar fuentes de botones de media columna para que luzcan prolijos junto a su ícono (?)
+            var botonesMedios = new[] { btnConsultarPrecio, btnRetiroCaja, btnAplicarDescuento, btnSuspenderVenta, btnCobroQR, btnCobroTarjeta, btnCuentaCorriente, btnCancelarVenta };
+            foreach (var b in botonesMedios)
+            {
+                if (b != null) b.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            }
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                groupBoxCliente,
+                "Formulario de Datos del Cliente",
+                "En esta sección se identifica al comprador:\n" +
+                "• Por defecto toda venta se emite a 'CONSUMIDOR FINAL'.\n" +
+                "• Si desea vender fiado (Cuenta Corriente) o consultar la deuda de un cliente habitual, escriba su DNI y presione [Enter] o el botón 'Buscar [F10]'.\n" +
+                "• Si el cliente seleccionado tiene deuda pendiente (texto naranja), puede hacer clic sobre su saldo para cobrarle un abono en el acto.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnBuscarCliente,
+                "Buscar Cliente por DNI [F10]",
+                "Escriba el número de documento (DNI) en la caja de texto izquierda y presione este botón (o la tecla F10 / Enter) para asignar el cliente a la venta actual.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnNuevoCliente,
+                "Registrar Nuevo Cliente",
+                "Indica cómo dar de alta un nuevo cliente en el padrón (dirigiéndose a la pestaña 'Clientes' del menú principal) para habilitarle Cuenta Corriente.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                lblScanner,
+                "Uso del Carrito de Compras",
+                "La grilla inferior muestra todos los productos cargados en el ticket actual:\n" +
+                "• Puede modificar manualmente la columna 'Cant.' haciendo clic en la celda.\n" +
+                "• Seleccione una fila y presione [+] o [-] en el teclado para sumar o restar unidades.\n" +
+                "• Presione la tecla [Supr / Delete] para quitar el artículo seleccionado del carrito.",
+                shrinkControl: false,
+                offsetX: 4);
+
+            HelpTooltipHelper.AttachHelp(
+                txtScanner,
+                "Escáner, Búsqueda Predictiva y Multiplicador",
+                "En este cuadro puede agregar productos de 3 formas:\n" +
+                "1. ESCÁNER LÁSER: Escanee el código de barras o escriba el SKU exacto y presione [Enter].\n" +
+                "2. BÚSQUEDA PREDICTIVA: Escriba al menos 2 letras del nombre del artículo, baje con la flecha [↓] y presione [Enter].\n" +
+                "3. MULTIPLICADOR RÁPIDO: Escriba [Cantidad]*[Código] (ejemplo: 3*77912345) y presione [Enter] para cargar varias unidades de una sola vez.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnAutorizacion,
+                "Autorización de Supervisor",
+                "Permite solicitar la intervención o validación de un usuario con rol Supervisor para operaciones especiales en mostrador.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnConsultarPrecio,
+                "Consultar Precio y Stock [F3]",
+                "Escriba o escanee un código en la barra del escáner y presione este botón (o F3) para ver en pantalla su precio de venta y stock disponible sin agregarlo al carrito.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnRetiroCaja,
+                "Retiro de Caja / Gasto [F9]",
+                "Abre una ventana para asentar una salida de dinero en efectivo del cajón (por ejemplo, pago a un proveedor en mostrador o gastos menores). Se descontará automáticamente del efectivo esperado en el cierre.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnBuscarProducto,
+                "Buscador del Catálogo [F1]",
+                "Abre una ventana emergente con el catálogo completo de productos donde puede filtrar por nombre, SKU o categoría y agregar el artículo con doble clic.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnArticulosFrecuentes,
+                "Artículos Frecuentes / Rápidos [F2]",
+                "Muestra una botonera táctil/rápida con los artículos de mayor rotación para agregarlos al carrito con un solo clic sin necesidad de código de barras.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnAplicarDescuento,
+                "Aplicar o Quitar Descuento (%)",
+                "Aplica una bonificación del 10% sobre el subtotal del carrito actual. Si ya hay un descuento activo, vuelva a presionarlo para quitarlo.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnSuspenderVenta,
+                "Suspender / Reanudar Venta [F4]",
+                "• Si el carrito tiene productos: pone la compra actual 'en espera' y libera la pantalla de inmediato para atender a otro cliente urgente.\n" +
+                "• Si el carrito está vacío y hay ventas en espera: recupera la última compra pausada con todos sus artículos para finalizar su cobro.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachFormHelp(
+                this,
+                "Totales a Pagar",
+                "Muestra en tiempo real el Subtotal acumulado de los productos, el monto descontado por bonificaciones y el TOTAL neto a cobrar al cliente.",
+                new Point(1018, 385));
+
+            HelpTooltipHelper.AttachHelp(
+                btnCobrar,
+                "Cobrar en Efectivo [F5]",
+                "Abre la Calculadora de Vuelto para cobros en dinero físico. Permite elegir billetes rápidos ($1.000, $2.000, $5.000, $10.000, $20.000 o Exacto), calcula el vuelto exacto y registra la venta.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnCobroQR,
+                "Cobrar con MercadoPago / QR [F6]",
+                "Registra la venta como cobrada mediante código QR o billetera virtual tras verificar que el pago del cliente haya sido acreditado.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnCobroTarjeta,
+                "Cobrar con Tarjeta [F7]",
+                "Registra la venta como abonada mediante Tarjeta de Débito o Crédito una vez aprobada la operación en la terminal Posnet.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnCuentaCorriente,
+                "Cargar a Cuenta Corriente / Fiado [F8]",
+                "Suma el total del ticket al saldo deudor del cliente registrado seleccionado arriba. Requiere haber buscado previamente un cliente por DNI (no disponible para Consumidor Final) y valida su límite de crédito.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnCancelarVenta,
+                "Cancelar Ticket Actual [Esc]",
+                "Vacía por completo el carrito de compras, restablece el cliente a Consumidor Final y deja el Punto de Venta limpio para una nueva operación.",
+                shrinkControl: true);
         }
 
         private void ActualizarUICliente()

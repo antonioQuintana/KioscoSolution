@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 using KioscoApp.Views;
 
 namespace KioscoApp
@@ -22,7 +23,79 @@ namespace KioscoApp
             _listaClientes = new BindingList<Cliente>();
 
             ConfigurarUI();
+            ConfigurarAyuda();
             CargarClientes();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachFormHelp(
+                this,
+                "Gestión de Clientes y Cuentas Corrientes",
+                "En esta pantalla puede administrar el padrón de clientes habituales y gestionar sus cuentas corrientes (fiados):\n" +
+                "• A la izquierda se lista el padrón con el Saldo Deudor (resaltado en rojo cuando deben dinero) y su Límite de Crédito.\n" +
+                "• A la derecha se encuentra el formulario para dar de alta nuevos clientes o modificar existentes.",
+                new Point(495, 448));
+
+            HelpTooltipHelper.AttachHelp(
+                btnAbonarCuenta,
+                "Cobrar / Abonar Deuda de Cuenta Corriente",
+                "Seleccione un cliente con deuda pendiente en la grilla superior y presione este botón (o haga doble clic sobre la fila del cliente) para registrar un pago parcial o total de su saldo deudor.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblDNI,
+                "DNI / Documento del Cliente",
+                "Ingrese el número de DNI sin puntos ni espacios. Se utiliza para buscar rápidamente al cliente en el Punto de Venta [F10].",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblNombre,
+                "Nombre y Apellido",
+                "Complete el nombre y apellido del cliente para identificar su cuenta corriente y comprobantes de pago.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblTelefono,
+                "Teléfono y Correo Electrónico",
+                "Datos de contacto del cliente para avisos comerciales o gestión de cobranzas.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblCalle,
+                "Domicilio del Cliente",
+                "Complete calle, altura, provincia, ciudad y fecha de nacimiento para mantener actualizada la ficha del cliente.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                btnGuardar,
+                "Guardar Cliente",
+                "Guarda un nuevo cliente en la base de datos (asignándole un límite de crédito inicial de $15.000) o actualiza los cambios si estaba editando un cliente existente.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnEditar,
+                "Editar Cliente Seleccionado",
+                "Seleccione un cliente en la tabla izquierda y presione 'Editar' para volcar sus datos en los casilleros de la derecha y modificarlos.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnEliminar,
+                "Eliminar Cliente",
+                "Da de baja al cliente seleccionado en la grilla.\n" +
+                "Nota: No se permite eliminar al cliente 'Consumidor Final' ni a clientes que mantengan deuda pendiente sin saldar.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnLimpiar,
+                "Limpiar Formulario",
+                "Vacía todos los casilleros del formulario y cancela el modo edición para poder cargar un cliente nuevo desde cero.",
+                shrinkControl: true);
         }
 
         private void ConfigurarUI()

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp
 {
@@ -20,6 +22,105 @@ namespace KioscoApp
             _usuarioService = new UsuarioService();
             _ubicacionService = new UbicacionService();
             ConfigurarValidacionesEnTiempoReal();
+            ConfigurarAyuda();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachFormHelp(
+                this,
+                "Gestión de Usuarios y Permisos (Administrador)",
+                "En este formulario el Administrador gestiona las cuentas de acceso del personal:\n" +
+                "• Para crear un nuevo usuario: complete todos los campos y presione 'Agregar'.\n" +
+                "• Para modificar un usuario existente: haga clic en su fila en la tabla inferior, modifique los datos deseados arriba y presione 'Editar'.\n" +
+                "• Las contraseñas se almacenan cifradas con algoritmo BCrypt.",
+                new Point(615, 232));
+
+            HelpTooltipHelper.AttachHelp(
+                lblNombre,
+                "Nombre y Apellido del Operador",
+                "Ingrese el nombre y apellido reales del empleado (solo letras y espacios).",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblUsuario,
+                "Nombre de Usuario (Login)",
+                "Identificador único con el que el empleado iniciará sesión en el sistema (ej. vendedor1, encargado). No puede repetirse.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblDni,
+                "DNI del Usuario",
+                "Número de Documento Nacional de Identidad (solo números, único por empleado).",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblContrasena,
+                "Contraseña de Acceso",
+                "• Al crear un usuario nuevo: es obligatoria.\n" +
+                "• Al editar un usuario existente: déjela en blanco si desea conservar su contraseña actual, o escriba una nueva clave para restablecerla.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblRol,
+                "Rol y Nivel de Acceso",
+                "Define qué pantallas verá el usuario al iniciar sesión:\n" +
+                "• admin: Gestión de Usuarios, Backups, Datos de Empresa, Logs y Trazabilidad.\n" +
+                "• supervisor: Productos, Categorías, Stock, Estadísticas y Auditoría de Cajas.\n" +
+                "• vendedor: Punto de Venta (POS), Clientes, Cierre de Caja e Historial de Ventas.\n" +
+                "(Nota: Un administrador no puede cambiar su propio rol activo por seguridad).",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblEmail,
+                "Correo Electrónico",
+                "Dirección de email válida y única del operador (formato usuario@dominio.com).",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblTelefono,
+                "Teléfono y Domicilio",
+                "Complete el teléfono de contacto, calle y número de domicilio del empleado.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                lblProvincia,
+                "Provincia, Ciudad y Datos Demográficos",
+                "Seleccione primero la Provincia para cargar automáticamente sus localidades en el desplegable 'Ciudad', e indique Sexo y Fecha de Nacimiento.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachHelp(
+                btnAgregar,
+                "Agregar Nuevo Usuario",
+                "Valida todos los campos del formulario (unicidad de DNI, Usuario y Email) y registra el nuevo operador en el sistema.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnEditar,
+                "Guardar Cambios del Usuario Seleccionado",
+                "Actualiza la ficha del usuario que fue seleccionado previamente en la tabla inferior.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnEliminar,
+                "Eliminar Usuario",
+                "Da de baja al usuario seleccionado en la tabla.\n" +
+                "Nota: Por seguridad, el sistema impide que el usuario conectado elimine su propia cuenta activa.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnLimpiar,
+                "Limpiar Formulario",
+                "Vacía todos los campos y deselecciona el usuario actual para preparar una nueva carga.",
+                shrinkControl: true);
         }
 
         private void ConfigurarValidacionesEnTiempoReal()
