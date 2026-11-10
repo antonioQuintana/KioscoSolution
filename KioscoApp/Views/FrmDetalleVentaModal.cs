@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -163,6 +164,11 @@ namespace KioscoApp.Views
             Controls.Add(lblTotales);
             Controls.Add(btnCopiarTicket);
             Controls.Add(btnCerrar);
+
+            HelpTooltipHelper.AttachHelp(lblTitulo, "Detalle del Comprobante",
+                "Muestra el desglose completo de la venta seleccionada: fecha, cliente, método de pago, estado, artículos vendidos, precios unitarios y subtotales.");
+            HelpTooltipHelper.AttachHelp(btnCopiarTicket, "Reimprimir / Copiar Ticket",
+                "Genera el comprobante no fiscal con el encabezado y pie configurados para el negocio y lo copia al portapapeles para pegarlo o enviarlo a la impresora térmica.", shrinkControl: true);
         }
 
         private void CargarDetalles()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using KioscoApp.Utils;
 using static KioscoApp.Data.EstadisticasRepository;
 
 namespace KioscoApp
@@ -20,6 +21,49 @@ namespace KioscoApp
         {
             InitializeComponent();
             EnlazarEventosBotones();
+            ConfigurarAyuda();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            AgregarAyudaFlujo(
+                flowLayoutPanel1,
+                "Gráfico 1: Productos Más Vendidos por Categoría",
+                "Muestra el artículo líder en unidades vendidas dentro de cada categoría comercial.\n" +
+                "Seleccione el rango de fechas 'Desde' y 'Hasta' y pulse 'Filtrar' para recalcular el ranking.");
+
+            AgregarAyudaFlujo(
+                flowLayoutPanel2,
+                "Gráfico 2: Ingresos por Día de la Semana",
+                "Compara el monto total facturado ($) según el día de la semana (Lunes a Domingo) en el período seleccionado, ideal para identificar los días de mayor movimiento comercial.");
+
+            AgregarAyudaFlujo(
+                flowLayoutPanel3,
+                "Gráfico 3: Cantidad de Ventas por Intervalo de Horarios",
+                "Analiza la cantidad de tickets emitidos en cada franja horaria del día para detectar horas pico y optimizar la asignación de turnos de cajeros.");
+
+            AgregarAyudaFlujo(
+                flowLayoutPanel4,
+                "Gráfico 4: Ingresos por Categoría",
+                "Muestra la facturación acumulada en pesos ($) aportada por cada familia o rubro de productos en el rango de fechas indicado.");
+
+            AgregarAyudaFlujo(
+                flowLayoutPanel5,
+                "Gráfico 5: Ingresos por Método de Pago",
+                "Compara el volumen monetario total ($) recaudado a través de cada medio de cobro (Efectivo, MercadoPago/QR, Tarjeta, Cuenta Corriente).");
+
+            AgregarAyudaFlujo(
+                flowLayoutPanel6,
+                "Gráfico 6: Cantidad de Ventas por Método de Pago",
+                "Muestra el número total de transacciones (cantidad de tickets) cobradas con cada medio de pago para conocer las preferencias de los clientes.");
+        }
+
+        private void AgregarAyudaFlujo(FlowLayoutPanel panel, string titulo, string descripcion)
+        {
+            if (panel == null) return;
+            var badge = HelpTooltipHelper.CreateHelpBadge(titulo, descripcion, 20);
+            badge.Margin = new Padding(6, 3, 3, 0);
+            panel.Controls.Add(badge);
         }
 
         private void EnlazarEventosBotones()

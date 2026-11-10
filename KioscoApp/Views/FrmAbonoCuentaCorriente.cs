@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -32,7 +33,37 @@ namespace KioscoApp.Views
             _clienteService = new ClienteService();
 
             InitializeComponent();
+            ConfigurarAyuda();
             CalcularNuevoSaldo();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachFormHelp(
+                this,
+                "Cobro de Deuda en Cuenta Corriente",
+                "Permite registrar pagos parciales (entregas a cuenta) o la cancelación total de la deuda de un cliente:\n" +
+                "• Si el pago se realiza en Efectivo, el importe se sumará automáticamente a la caja del turno actual.\n" +
+                "• Al confirmar, el recibo de pago queda copiado en el portapapeles listo para imprimir.",
+                new Point(438, 18));
+
+            HelpTooltipHelper.AttachHelp(
+                btnPagarTotal,
+                "Importe a Abonar / Botón Totalidad",
+                "Escriba el monto que entrega el cliente o presione 'Totalidad' para completar automáticamente el 100% de la deuda pendiente.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                cmbMetodo,
+                "Medio de Pago del Abono",
+                "Seleccione cómo abona el cliente su deuda: Efectivo (ingresa al cajón físico del turno), Mercado Pago / Transferencia o Tarjeta de Débito.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnConfirmar,
+                "Confirmar Cobranza [Enter]",
+                "Descuenta el importe abonado del saldo deudor del cliente, registra el ingreso de caja correspondiente y genera el recibo de pago.",
+                shrinkControl: true);
         }
 
         private void InitializeComponent()

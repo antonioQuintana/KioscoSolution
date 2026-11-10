@@ -345,6 +345,19 @@ namespace KioscoApp.Views
             Controls.Add(btnCopiar);
             Controls.Add(btnLimpiar);
             Controls.Add(btnCerrar);
+
+            HelpTooltipHelper.AttachHelp(lblTitulo, "Visor de Logs y Diagnóstico",
+                "Permite inspeccionar el registro técnico de eventos, advertencias (WARN) y errores críticos (ERROR) del sistema para soporte y diagnóstico.");
+            HelpTooltipHelper.AttachHelp(btnActualizar, "Recargar Archivo de Logs",
+                "Vuelve a leer el archivo de registro desde el disco para mostrar los eventos más recientes.", shrinkControl: true);
+            HelpTooltipHelper.AttachHelp(btnAbrirNotepad, "Abrir en Bloc de Notas",
+                "Abre el archivo físico de logs directamente en el Bloc de Notas de Windows.", shrinkControl: true);
+            HelpTooltipHelper.AttachHelp(btnLimpiarFiltro, "Restablecer Filtros",
+                "Limpia los filtros de nivel, módulo y búsqueda de texto para volver a ver todos los registros.", shrinkControl: true);
+            HelpTooltipHelper.AttachHelp(btnCopiar, "Copiar al Portapapeles",
+                "Copia los registros actualmente filtrados en pantalla para enviarlos fácilmente al soporte técnico.", shrinkControl: true);
+            HelpTooltipHelper.AttachHelp(btnLimpiar, "Vaciar Archivo de Logs",
+                "Reinicia y borra el contenido histórico del archivo de logs en disco (requiere confirmación).", shrinkControl: true);
         }
 
         private Button CrearBotonRapido(string texto, int x, int y, int width, Action onClick)

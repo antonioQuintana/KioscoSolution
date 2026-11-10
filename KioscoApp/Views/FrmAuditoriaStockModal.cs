@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -207,6 +208,13 @@ namespace KioscoApp.Views
             btnCerrar.Click += (s, e) => Close();
 
             Controls.AddRange(new Control[] { lblTitulo, pnlFiltros, dgvAuditoria, lblTotal, btnCerrar });
+
+            HelpTooltipHelper.AttachHelp(lblTitulo, "Auditoría de Ajustes de Stock",
+                "Historial inmutable de todas las entradas, salidas y mermas de inventario registradas manualmente, detallando fecha, usuario responsable, motivo y terminal.");
+            HelpTooltipHelper.AttachHelp(btnTodo, "Filtros de Auditoría",
+                "Seleccione un rango de fechas ('Desde' / 'Hasta') o escriba el nombre del producto, motivo o usuario para auditar movimientos específicos.");
+            HelpTooltipHelper.AttachHelp(btnExportarCSV, "Exportar Auditoría (CSV)",
+                "Exporta los registros de auditoría de stock visibles en la tabla a una planilla CSV compatible con Excel.", shrinkControl: true);
         }
 
         private void CargarAuditoria()

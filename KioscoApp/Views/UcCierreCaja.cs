@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp
 {
@@ -20,7 +21,63 @@ namespace KioscoApp
             _resumen = new ResumenCajaActual();
             
             ConfigurarEventos();
+            ConfigurarAyuda();
             CargarResumenTurno();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbSistema,
+                "Registros del Sistema (Turno Actual)",
+                "Muestra el resumen contable automático registrado por el sistema desde el último cierre:\n" +
+                "• Fondo de Caja (Inicio): cambio inicial con el que arrancó el turno.\n" +
+                "• (+) Ventas en Efectivo, QR y Tarjeta.\n" +
+                "• (-) Gastos y Retiros de efectivo asentados en el turno.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnDeclararFondo,
+                "Declarar Fondo Inicial (Cambio)",
+                "Al comenzar su turno, haga clic aquí para declarar cuánto dinero en efectivo dejó el turno anterior como cambio inicial en el cajón.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnIngresoCaja,
+                "Ingresar Efectivo a Caja",
+                "Permite registrar una entrada manual de billetes al cajón (por ejemplo, reposición de cambio chico) detallando monto y motivo.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnRegistrarGasto,
+                "Retirar Efectivo / Registrar Gasto",
+                "Permite registrar una salida de efectivo del cajón (pago a proveedores, retiro parcial de seguridad o gastos del local) para que se descuente del efectivo esperado.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbBilletes,
+                "Formulario de Conteo Físico (Arqueo)",
+                "Cuente los billetes y monedas reales que hay dentro del cajón físico e ingrese la CANTIDAD de billetes de cada denominación ($10.000, $2.000, $1.000, $500, $200, $100) y el importe total en monedas.\n\n" +
+                "El sistema multiplicará y sumará todo automáticamente en tiempo real.");
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                gbResultados,
+                "Balance y Diferencia de Caja",
+                "Compara instantáneamente el 'Efectivo Esperado' (según las ventas y movimientos del sistema) contra el 'Efectivo Contado' (declarado en el conteo físico):\n" +
+                "• CAJA EXACTA ($0.00): el arqueo coincide perfectamente.\n" +
+                "• SOBRANTE (Verde): hay más efectivo físico del esperado.\n" +
+                "• FALTANTE (Rojo): falta efectivo respecto a lo registrado.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnImprimirZ,
+                "Imprimir / Previsualizar Ticket Z",
+                "Muestra en pantalla el comprobante completo del Cierre de Caja (Ticket Z) con el desglose de ventas por medio de pago, movimientos y resultado del arqueo.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnCerrar,
+                "Confirmar Cierre de Caja (Z)",
+                "Cierra formalmente el turno actual, guarda el acta de Cierre Z para auditoría del Supervisor y reinicia en cero los contadores para el próximo turno.",
+                shrinkControl: true);
         }
 
         private void ConfigurarEventos()

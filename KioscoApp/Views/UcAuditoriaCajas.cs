@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp
 {
@@ -38,7 +39,78 @@ namespace KioscoApp
             _usuarioService = new UsuarioService();
 
             InicializarFiltros();
+            ConfigurarAyuda();
             CargarCierres();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachHelp(
+                lblTitulo,
+                "Centro de Auditoría y Control de Cajas (Supervisor)",
+                "Permite auditar todos los movimientos monetarios del negocio:\n" +
+                "• Inspecciones en vivo sin cerrar turno (Corte X).\n" +
+                "• Historial de Cierres Z con doble clic para ver el acta completa.\n" +
+                "• Balance de sobrantes y faltantes acumulados por empleado.\n" +
+                "• Supervisión de retiros/gastos y ventas anuladas.",
+                shrinkControl: false,
+                offsetX: 10);
+
+            HelpTooltipHelper.AttachHelp(
+                btnArqueo,
+                "Arqueo Sorpresa en Vivo (Corte X)",
+                "Muestra en una ventana el estado exacto del turno abierto actualmente (ventas en efectivo, QR, tarjeta, ingresos, retiros y efectivo esperado en cajón) SIN cerrar ni interrumpir el turno del cajero.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnRetiro,
+                "Registrar Gasto o Retiro de Supervisor",
+                "Abre el formulario para asentar una salida de efectivo realizada por el Supervisor (ej. retiro de recaudación a caja fuerte o pago a proveedores).",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnMovimientos,
+                "Vista: Auditoría de Retiros y Gastos",
+                "Cambia la tabla inferior para mostrar todos los ingresos y retiros manuales de efectivo registrados en caja, indicando fecha, monto, responsable y motivo.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnHistorial,
+                "Vista: Historial de Cierres de Caja (Z)",
+                "Muestra todos los turnos cerrados con su recaudación por medio de pago, efectivo esperado, efectivo declarado y diferencia.\n" +
+                "Tip: Haga doble clic sobre cualquier fila para abrir el detalle completo del Cierre Z.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnFaltantes,
+                "Vista: Descuadres Acumulados por Empleado",
+                "Agrupa todos los cierres por cajero y calcula cuántos cierres realizó, el total de faltantes, el total de sobrantes y su diferencia neta histórica.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnAnular,
+                "Vista: Auditoría de Ventas Anuladas",
+                "Lista todos los tickets que fueron anulados o cancelados, detallando fecha, hora, cajero interviniente, importe y medio de pago.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnExportarCSV,
+                "Exportar Vista Actual a CSV / Excel",
+                "Guarda los datos que se están visualizando actualmente en la grilla en un archivo .CSV compatible con Microsoft Excel para análisis o archivo contable.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnActualizarVista,
+                "Actualizar Datos en Pantalla",
+                "Vuelve a consultar la base de datos aplicando los filtros vigentes para reflejar los últimos movimientos registrados.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                lblVistaActual,
+                "Barra de Filtros por Fecha y Cajero",
+                "Utilice los selectores 'Desde', 'Hasta' y el desplegable 'Usuario' junto con el botón 'Filtrar' para acotar los registros mostrados en la grilla inferior.",
+                shrinkControl: false,
+                offsetX: 6);
         }
 
         private void InicializarFiltros()

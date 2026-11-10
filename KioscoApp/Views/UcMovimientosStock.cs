@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
 using KioscoApp.Business;
+using KioscoApp.Utils;
 
 namespace KioscoApp
 {
@@ -16,7 +17,59 @@ namespace KioscoApp
         {
             InitializeComponent();
             ConfigurarGrilla();
+            ConfigurarAyuda();
             CargarStock();
+        }
+
+        private void ConfigurarAyuda()
+        {
+            HelpTooltipHelper.AttachHelp(
+                lblTitulo,
+                "Control de Inventario y Alertas de Stock",
+                "Supervisa en tiempo real las existencias físicas de todos los productos con semáforo visual:\n" +
+                "• 🔴 Rojo oscuro: Producto AGOTADO (Stock <= 0).\n" +
+                "• 🟡 Amarillo/Dorado: Stock CRÍTICO (Stock Actual menor o igual al Stock Mínimo).\n" +
+                "• Gris/Normal: Stock saludable.",
+                shrinkControl: false,
+                offsetX: 10);
+
+            var tipBuscar = HelpTooltipHelper.CreateToolTip("Búsqueda de Artículos en Stock");
+            tipBuscar.SetToolTip(txtBuscar, "Escriba el código SKU o parte del nombre del producto para filtrar el inventario inmediatamente.");
+
+            HelpTooltipHelper.AttachHelp(
+                chkSoloAlertas,
+                "Filtro Rápido de Alertas de Reposición",
+                "Marque esta casilla para ocultar los productos con stock suficiente y listar únicamente aquellos que están agotados o en nivel crítico para armar el pedido a proveedores.",
+                shrinkControl: false,
+                offsetX: 6);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                groupBoxModificar,
+                "Formulario de Ajuste Manual de Stock",
+                "Seleccione un producto en la tabla izquierda, ingrese el nuevo 'Stock Actual' (conteo de mercadería recibida o inventario físico) y el 'Stock Mínimo' de seguridad, y presione 'Guardar Cambios'.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnGuardar,
+                "Guardar Cambios de Stock",
+                "Actualiza inmediatamente las existencias del producto seleccionado en la base de datos y deja asentado el movimiento en el historial de Auditoría de Stock.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachGroupBoxHelp(
+                groupBoxHerramientasStock,
+                "Reportes Financieros y Auditoría de Stock",
+                "Acceda al cálculo de capital invertido en mercadería o consulte la trazabilidad completa de quién modificó el stock y cuándo.");
+
+            HelpTooltipHelper.AttachHelp(
+                btnInventarioValorizado,
+                "Reporte de Inventario Valorizado",
+                "Abre un informe financiero que calcula el valor total de la mercadería a Precio de Costo, la Proyección de Venta y la Ganancia Estimada por artículo y categoría, exportable a Excel.",
+                shrinkControl: true);
+
+            HelpTooltipHelper.AttachHelp(
+                btnAuditoriaStock,
+                "Historial y Auditoría de Ajustes",
+                "Abre el registro cronológico de todos los ajustes manuales de stock realizados, indicando fecha, hora, usuario responsable, producto y valores asignados.",
+                shrinkControl: true);
         }
 
         private void ConfigurarGrilla()

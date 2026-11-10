@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using KioscoApp.Business;
 using KioscoApp.Models;
+using KioscoApp.Utils;
 
 namespace KioscoApp.Views
 {
@@ -157,6 +158,15 @@ namespace KioscoApp.Views
             Controls.Add(pnlPreview);
             Controls.Add(btnGuardar);
             Controls.Add(btnCancelar);
+
+            HelpTooltipHelper.AttachHelp(lblTitulo, "Datos del Negocio y Ticket",
+                "Configure los datos comerciales y fiscales que se imprimirán en el encabezado y pie de todos los comprobantes de venta.");
+            HelpTooltipHelper.AttachGroupBoxHelp(pnlForm, "Información Fiscal y Comercial",
+                "Complete el Nombre de Fantasía (obligatorio), Razón Social, CUIT, Dirección, Teléfono y el mensaje de agradecimiento al pie.");
+            HelpTooltipHelper.AttachGroupBoxHelp(pnlPreview, "Vista Previa en Tiempo Real",
+                "Muestra instantáneamente cómo se verá impreso el ticket térmico de 40 columnas a medida que edita los campos.");
+            HelpTooltipHelper.AttachHelp(btnGuardar, "Guardar Plantilla",
+                "Almacena los datos del negocio en la base de datos para aplicarlos inmediatamente en las próximas impresiones de tickets.", shrinkControl: true);
         }
 
         private Label CrearLabel(string texto, int x, int y)
