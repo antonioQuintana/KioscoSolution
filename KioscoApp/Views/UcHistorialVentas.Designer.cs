@@ -40,7 +40,7 @@ namespace KioscoApp
             lblTitulo.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblTitulo.Location = new Point(25, 15);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(207, 30);
+            lblTitulo.Size = new Size(209, 30);
             lblTitulo.TabIndex = 0;
             lblTitulo.Text = "Historial de Ventas";
             // 
@@ -51,7 +51,7 @@ namespace KioscoApp
             lblInfo.ForeColor = Color.DarkGray;
             lblInfo.Location = new Point(26, 47);
             lblInfo.Name = "lblInfo";
-            lblInfo.Size = new Size(580, 17);
+            lblInfo.Size = new Size(593, 17);
             lblInfo.TabIndex = 1;
             lblInfo.Text = "Haga doble clic sobre cualquier ticket para ver su detalle itemizado y copiar/imprimir comprobante.";
             // 
@@ -77,13 +77,13 @@ namespace KioscoApp
             // chkSoloTurnoActual
             // 
             chkSoloTurnoActual.AutoSize = true;
-            chkSoloTurnoActual.Checked = true;
-            chkSoloTurnoActual.CheckState = CheckState.Checked;
+            chkSoloTurnoActual.Checked = false;
+            chkSoloTurnoActual.CheckState = CheckState.Unchecked;
             chkSoloTurnoActual.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             chkSoloTurnoActual.ForeColor = Color.FromArgb(46, 204, 113);
             chkSoloTurnoActual.Location = new Point(10, 15);
             chkSoloTurnoActual.Name = "chkSoloTurnoActual";
-            chkSoloTurnoActual.Size = new Size(97, 19);
+            chkSoloTurnoActual.Size = new Size(96, 19);
             chkSoloTurnoActual.TabIndex = 0;
             chkSoloTurnoActual.Text = "Turno Actual";
             chkSoloTurnoActual.UseVisualStyleBackColor = true;
@@ -101,12 +101,12 @@ namespace KioscoApp
             // 
             // dtpDesde
             // 
-            dtpDesde.Enabled = false;
             dtpDesde.Format = DateTimePickerFormat.Short;
             dtpDesde.Location = new Point(160, 13);
             dtpDesde.Name = "dtpDesde";
             dtpDesde.Size = new Size(95, 23);
             dtpDesde.TabIndex = 2;
+            dtpDesde.ValueChanged += dtpDesde_ValueChanged;
             // 
             // lblHasta
             // 
@@ -120,12 +120,12 @@ namespace KioscoApp
             // 
             // dtpHasta
             // 
-            dtpHasta.Enabled = false;
             dtpHasta.Format = DateTimePickerFormat.Short;
             dtpHasta.Location = new Point(310, 13);
             dtpHasta.Name = "dtpHasta";
             dtpHasta.Size = new Size(95, 23);
             dtpHasta.TabIndex = 4;
+            dtpHasta.ValueChanged += dtpHasta_ValueChanged;
             // 
             // lblBuscar
             // 
@@ -212,7 +212,7 @@ namespace KioscoApp
             lblResumenTotales.ForeColor = Color.FromArgb(220, 220, 220);
             lblResumenTotales.Location = new Point(25, 608);
             lblResumenTotales.Name = "lblResumenTotales";
-            lblResumenTotales.Size = new Size(175, 19);
+            lblResumenTotales.Size = new Size(212, 19);
             lblResumenTotales.TabIndex = 4;
             lblResumenTotales.Text = "Calculando totales de ventas...";
             // 

@@ -13,6 +13,7 @@ namespace KioscoApp
     {
         private readonly VentaService _ventaService;
         private List<Venta> _ventasActuales = new List<Venta>();
+        private bool _actualizandoFiltros = false;
 
         public UcHistorialVentas()
         {
@@ -89,8 +90,11 @@ namespace KioscoApp
             dgvHistorial.DoubleClick += DgvHistorial_DoubleClick;
             dgvHistorial.KeyDown += DgvHistorial_KeyDown;
 
+            _actualizandoFiltros = true;
+            chkSoloTurnoActual.Checked = false;
             dtpDesde.Value = DateTime.Today.AddDays(-7);
-            dtpHasta.Value = DateTime.Today.AddDays(1).AddSeconds(-1);
+            dtpHasta.Value = DateTime.Today;
+            _actualizandoFiltros = false;
 
             CargarVentas();
         }
@@ -119,11 +123,13 @@ namespace KioscoApp
 
         public void CargarVentas()
         {
+            if (_actualizandoFiltros) return;
+
             try
             {
                 bool soloTurno = chkSoloTurnoActual.Checked;
-                DateTime? desde = soloTurno ? null : dtpDesde.Value.Date;
-                DateTime? hasta = soloTurno ? null : dtpHasta.Value.Date.AddDays(1).AddSeconds(-1);
+                DateTime? desde = dtpDesde.Value.Date;
+                DateTime? hasta = dtpHasta.Value.Date.AddDays(1).AddSeconds(-1);
                 string filtro = txtBuscar.Text.Trim();
 
                 _ventasActuales = _ventaService.FiltrarVentas(desde, hasta, string.IsNullOrEmpty(filtro) ? null : filtro, soloTurno);
@@ -156,7 +162,9 @@ namespace KioscoApp
 
                 dgvHistorial.DataSource = displayList;
 
-                string turnoTexto = soloTurno ? "Turno Actual" : $"Período {dtpDesde.Value:dd/MM/yy} al {dtpHasta.Value:dd/MM/yy}";
+                string turnoTexto = soloTurno
+                    ? $"Turno Actual ({dtpDesde.Value:dd/MM/yy} al {dtpHasta.Value:dd/MM/yy})"
+                    : $"Período {dtpDesde.Value:dd/MM/yy} al {dtpHasta.Value:dd/MM/yy}";
                 lblResumenTotales.Text = $"[{turnoTexto}]  Ventas Totales: {_ventasActuales.Count} | Total Facturado: $ {sumaCompletadas:N2} | Anuladas: {anuladas}";
             }
             catch (Exception ex)
@@ -165,11 +173,54 @@ namespace KioscoApp
             }
         }
 
+        private void dtpDesde_ValueChanged(object? sender, EventArgs e)
+        {
+            if (_actualizandoFiltros) return;
+
+            _actualizandoFiltros = true;
+            if (dtpDesde.Value.Date > dtpHasta.Value.Date)
+            {
+                dtpHasta.Value = dtpDesde.Value.Date;
+            }
+            if (chkSoloTurnoActual.Checked)
+            {
+                chkSoloTurnoActual.Checked = false;
+            }
+            _actualizandoFiltros = false;
+
+            CargarVentas();
+        }
+
+        private void dtpHasta_ValueChanged(object? sender, EventArgs e)
+        {
+            if (_actualizandoFiltros) return;
+
+            _actualizandoFiltros = true;
+            if (dtpHasta.Value.Date < dtpDesde.Value.Date)
+            {
+                dtpDesde.Value = dtpHasta.Value.Date;
+            }
+            if (chkSoloTurnoActual.Checked)
+            {
+                chkSoloTurnoActual.Checked = false;
+            }
+            _actualizandoFiltros = false;
+
+            CargarVentas();
+        }
+
         private void chkSoloTurnoActual_CheckedChanged(object? sender, EventArgs e)
         {
-            bool habilitarFechas = !chkSoloTurnoActual.Checked;
-            dtpDesde.Enabled = habilitarFechas;
-            dtpHasta.Enabled = habilitarFechas;
+            if (_actualizandoFiltros) return;
+
+            if (chkSoloTurnoActual.Checked)
+            {
+                _actualizandoFiltros = true;
+                dtpDesde.Value = DateTime.Today;
+                dtpHasta.Value = DateTime.Today;
+                _actualizandoFiltros = false;
+            }
+
             CargarVentas();
         }
 
@@ -185,10 +236,13 @@ namespace KioscoApp
 
         private void btnReset_Click(object? sender, EventArgs e)
         {
-            chkSoloTurnoActual.Checked = true;
+            _actualizandoFiltros = true;
+            chkSoloTurnoActual.Checked = false;
             dtpDesde.Value = DateTime.Today.AddDays(-7);
-            dtpHasta.Value = DateTime.Today.AddDays(1).AddSeconds(-1);
+            dtpHasta.Value = DateTime.Today;
             txtBuscar.Clear();
+            _actualizandoFiltros = false;
+
             CargarVentas();
         }
 
