@@ -52,13 +52,6 @@ namespace KioscoApp
 
         private void ConfigurarAyuda()
         {
-            // Ajustar fuentes de botones de media columna para que luzcan prolijos junto a su ícono (?)
-            var botonesMedios = new[] { btnConsultarPrecio, btnRetiroCaja, btnAplicarDescuento, btnSuspenderVenta, btnCobroQR, btnCobroTarjeta, btnCuentaCorriente, btnCancelarVenta };
-            foreach (var b in botonesMedios)
-            {
-                if (b != null) b.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            }
-
             HelpTooltipHelper.AttachGroupBoxHelp(
                 groupBoxCliente,
                 "Formulario de Datos del Cliente",

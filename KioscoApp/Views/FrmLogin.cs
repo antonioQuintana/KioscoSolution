@@ -36,6 +36,12 @@ namespace KioscoApp
                 offsetX: 6);
 
             HelpTooltipHelper.AttachHelp(
+                txtContrasena,
+                "Contraseña y Visor de Caracteres",
+                "Ingrese su clave secreta en el campo de contraseña.\n" +
+                "Haga clic en el botón del ojo para mostrar u ocultar los caracteres escritos y verificar que no haya errores de tipeo.");
+
+            HelpTooltipHelper.AttachHelp(
                 BMostrar,
                 "Contraseña y Visor de Caracteres",
                 "Ingrese su clave secreta en el campo de contraseña.\n" +

@@ -89,16 +89,10 @@ namespace KioscoApp
                 "Permite consultar los tickets emitidos en el turno actual o en fechas anteriores, ver el detalle de artículos, reimprimir comprobantes o anular ventas con reversión de stock.",
                 shrinkControl: true);
 
-            var tipCerrar = HelpTooltipHelper.CreateToolTip("Cerrar Sesión");
-            tipCerrar.SetToolTip(btnCerrarSesion, "Cierra la sesión del usuario activo de forma segura y regresa a la pantalla de Inicio de Sesión para cambio de turno o cajero.");
-            var badgeCerrar = HelpTooltipHelper.CreateHelpBadge(
+            HelpTooltipHelper.AttachHelp(
+                btnCerrarSesion,
                 "Cerrar Sesión",
-                "Haga clic en 'Cerrar Sesión' al finalizar su turno o ausentarse del mostrador para proteger su cuenta y permitir el ingreso de otro operador.",
-                20);
-            badgeCerrar.Location = new Point(220, pnlMenu.ClientSize.Height - 38);
-            badgeCerrar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            pnlMenu.Controls.Add(badgeCerrar);
-            badgeCerrar.BringToFront();
+                "Cierra la sesión del usuario activo de forma segura y regresa a la pantalla de Inicio de Sesión para cambio de turno o cajero.");
         }
 
         private void ConfigurarMenu()

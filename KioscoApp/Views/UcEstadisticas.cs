@@ -61,9 +61,7 @@ namespace KioscoApp
         private void AgregarAyudaFlujo(FlowLayoutPanel panel, string titulo, string descripcion)
         {
             if (panel == null) return;
-            var badge = HelpTooltipHelper.CreateHelpBadge(titulo, descripcion, 20);
-            badge.Margin = new Padding(6, 3, 3, 0);
-            panel.Controls.Add(badge);
+            HelpTooltipHelper.AttachHelp(panel, titulo, descripcion);
         }
 
         private void EnlazarEventosBotones()

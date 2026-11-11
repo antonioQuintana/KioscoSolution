@@ -1,20 +1,23 @@
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace KioscoApp.Utils
 {
     /// <summary>
-    /// Provee íconos interactivos de ayuda (?) y carteles emergentes (ToolTips)
-    /// para guiar al usuario en cada formulario, sección y funcionalidad del sistema.
+    /// Provee carteles emergentes (ToolTips) al pasar el ratón sobre etiquetas (Labels),
+    /// botones y controles para guiar al usuario en cada formulario y sección del sistema.
     /// </summary>
     public static class HelpTooltipHelper
     {
-        private static readonly Color BadgeNormalBack = Color.FromArgb(0, 122, 204);
-        private static readonly Color BadgeHoverBack = Color.FromArgb(241, 196, 15);
-        private static readonly Color BadgeNormalFore = Color.White;
-        private static readonly Color BadgeHoverFore = Color.FromArgb(30, 30, 30);
+        private sealed class TooltipEntry
+        {
+            public required ToolTip Tip { get; init; }
+            public required bool IsSpecific { get; init; }
+        }
+
+        private static readonly ConditionalWeakTable<Control, TooltipEntry> AssignedToolTips = new();
 
         /// <summary>
         /// Crea una instancia de ToolTip configurada para respuesta rápida y lectura cómoda.
@@ -33,83 +36,40 @@ namespace KioscoApp.Utils
             };
         }
 
-        /// <summary>
-        /// Crea el control visual con el signo de pregunta (?) circular interactivo.
-        /// </summary>
-        public static Label CreateHelpBadge(string titulo, string descripcion, int size = 20)
+        private static void SetControlToolTip(Control ctrl, ToolTip tip, string formattedText, bool isSpecific, bool overwriteSpecific = true)
         {
-            string formattedText = FormatTooltipText(descripcion, 68);
-            var tip = CreateToolTip(titulo);
+            if (ctrl == null) return;
 
-            var badge = new Label
+            if (AssignedToolTips.TryGetValue(ctrl, out var existing))
             {
-                Text = "?",
-                Tag = "HelpBadge",
-                AutoSize = false,
-                Size = new Size(size, size),
-                Font = new Font("Segoe UI", size >= 22 ? 10.5F : 9F, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
-                BackColor = Color.Transparent,
-                ForeColor = BadgeNormalFore,
-                Cursor = Cursors.Help
-            };
+                // Un tooltip general de contenedor nunca pisa uno específico de control/etiqueta
+                if (existing.IsSpecific && (!isSpecific || !overwriteSpecific))
+                    return;
 
-            bool isHovered = false;
+                existing.Tip.SetToolTip(ctrl, null);
+                AssignedToolTips.Remove(ctrl);
+            }
 
-            badge.Paint += (s, e) =>
-            {
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-                var rect = new Rectangle(1, 1, badge.Width - 3, badge.Height - 3);
-                using (var brush = new SolidBrush(isHovered ? BadgeHoverBack : BadgeNormalBack))
-                {
-                    e.Graphics.FillEllipse(brush, rect);
-                }
-
-                using (var pen = new Pen(isHovered ? Color.White : Color.FromArgb(120, 200, 255), 1.5f))
-                {
-                    e.Graphics.DrawEllipse(pen, rect);
-                }
-
-                TextRenderer.DrawText(
-                    e.Graphics,
-                    "?",
-                    badge.Font,
-                    new Rectangle(0, 0, badge.Width, badge.Height),
-                    isHovered ? BadgeHoverFore : BadgeNormalFore,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-            };
-
-            badge.MouseEnter += (s, e) =>
-            {
-                isHovered = true;
-                badge.Invalidate();
-            };
-
-            badge.MouseLeave += (s, e) =>
-            {
-                isHovered = false;
-                badge.Invalidate();
-            };
-
-            badge.Click += (s, e) =>
-            {
-                MessageBox.Show(
-                    descripcion,
-                    $"ℹ️ Ayuda: {titulo}",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-            };
-
-            tip.SetToolTip(badge, formattedText);
-            return badge;
+            tip.SetToolTip(ctrl, formattedText);
+            AssignedToolTips.Add(ctrl, new TooltipEntry { Tip = tip, IsSpecific = isSpecific });
         }
 
         /// <summary>
-        /// Asocia un cartel emergente a un control existente y coloca el signo de pregunta (?) a su derecha.
-        /// Si shrinkControl es true, reduce ligeramente el ancho del control para que el signo (?) ocupe
-        /// exactamente el mismo espacio original sin superponerse con controles vecinos.
+        /// Mantiene compatibilidad de firma sin mostrar el ícono (?) circular.
+        /// </summary>
+        public static Label CreateHelpBadge(string titulo, string descripcion, int size = 20)
+        {
+            return new Label
+            {
+                Visible = false,
+                Size = Size.Empty,
+                Tag = "HelpBadge"
+            };
+        }
+
+        /// <summary>
+        /// Asocia un cartel emergente al pasar el ratón sobre el control indicado (botón, etiqueta o campo)
+        /// y sobre las etiquetas (Labels) descriptivas asociadas, sin mostrar el botón (?) ni achicar el control.
         /// </summary>
         public static Label AttachHelp(
             Control target,
@@ -120,40 +80,56 @@ namespace KioscoApp.Utils
             int offsetY = 0,
             int badgeSize = 20)
         {
-            if (target == null || target.Parent == null)
+            if (target == null)
                 return CreateHelpBadge(titulo, descripcion, badgeSize);
 
             string formattedText = FormatTooltipText(descripcion, 68);
             var tip = CreateToolTip(titulo);
-            tip.SetToolTip(target, formattedText);
 
-            if (shrinkControl && target.Width > badgeSize + offsetX + 40)
+            SetControlToolTip(target, tip, formattedText, isSpecific: true, overwriteSpecific: true);
+
+            // Si el target es un contenedor (ej. FlowLayoutPanel o Panel), asociar a sus Labels y Buttons hijos
+            foreach (Control child in target.Controls)
             {
-                target.Width -= (badgeSize + offsetX);
+                if (child is Label or Button)
+                {
+                    SetControlToolTip(child, tip, formattedText, isSpecific: true, overwriteSpecific: false);
+                }
             }
 
-            var badge = CreateHelpBadge(titulo, descripcion, badgeSize);
-            int x = target.Right + offsetX;
-            int y = target.Top + (target.Height - badgeSize) / 2 + offsetY;
-
-            badge.Location = new Point(x, y);
-            badge.Anchor = target.Anchor;
-
-            target.Parent.Controls.Add(badge);
-            badge.BringToFront();
-
-            // Sincronizar visibilidad si el control cambia su estado Visible
-            badge.Visible = target.Visible;
-            target.VisibleChanged += (s, e) =>
+            // Asociar automáticamente a etiquetas (Labels) o controles compañeros en el mismo contenedor
+            if (target.Parent != null)
             {
-                badge.Visible = target.Visible;
-            };
+                foreach (Control sibling in target.Parent.Controls)
+                {
+                    if (sibling == target) continue;
 
-            return badge;
+                    if (target is not Label && target is not Button && sibling is Label lbl)
+                    {
+                        // Etiqueta ubicada inmediatamente arriba o a la izquierda del campo
+                        bool isAbove = lbl.Bottom <= target.Top + 8 && lbl.Top >= target.Top - 36 && Math.Abs(lbl.Left - target.Left) <= 45;
+                        bool isLeft = Math.Abs(lbl.Top - target.Top) <= 14 && lbl.Right <= target.Left + 20 && target.Left - lbl.Left <= 220;
+                        if (isAbove || isLeft)
+                        {
+                            SetControlToolTip(lbl, tip, formattedText, isSpecific: true, overwriteSpecific: false);
+                        }
+                    }
+                    else if (target is Label targetLbl && sibling is Label otherLbl)
+                    {
+                        // Etiquetas en la misma fila horizontal (ej. formularios de 2 columnas como Nombre y Apellido)
+                        if (Math.Abs(otherLbl.Top - targetLbl.Top) <= 8)
+                        {
+                            SetControlToolTip(otherLbl, tip, formattedText, isSpecific: true, overwriteSpecific: false);
+                        }
+                    }
+                }
+            }
+
+            return CreateHelpBadge(titulo, descripcion, badgeSize);
         }
 
         /// <summary>
-        /// Coloca un ícono (?) en la esquina superior derecha de un GroupBox y asocia el cartel emergente.
+        /// Asocia el cartel emergente al GroupBox y a sus etiquetas (Labels) internas sin agregar el ícono (?).
         /// </summary>
         public static Label AttachGroupBoxHelp(
             GroupBox groupBox,
@@ -167,19 +143,22 @@ namespace KioscoApp.Utils
 
             string formattedText = FormatTooltipText(descripcion, 68);
             var tip = CreateToolTip(titulo);
-            tip.SetToolTip(groupBox, formattedText);
 
-            var badge = CreateHelpBadge(titulo, descripcion, 20);
-            badge.Location = new Point(groupBox.Width - 20 - rightMargin, topOffset);
-            badge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            SetControlToolTip(groupBox, tip, formattedText, isSpecific: false);
 
-            groupBox.Controls.Add(badge);
-            badge.BringToFront();
-            return badge;
+            foreach (Control child in groupBox.Controls)
+            {
+                if (child is Label)
+                {
+                    SetControlToolTip(child, tip, formattedText, isSpecific: false);
+                }
+            }
+
+            return CreateHelpBadge(titulo, descripcion, 20);
         }
 
         /// <summary>
-        /// Coloca un ícono (?) general de formulario en una posición específica del contenedor.
+        /// Asocia el cartel emergente general al contenedor y a sus etiquetas (Labels) de encabezado/totales sin mostrar el ícono (?).
         /// </summary>
         public static Label AttachFormHelp(
             Control container,
@@ -188,12 +167,33 @@ namespace KioscoApp.Utils
             Point location,
             AnchorStyles anchor = AnchorStyles.Top | AnchorStyles.Left)
         {
-            var badge = CreateHelpBadge(tituloFormulario, descripcionGeneral, 24);
-            badge.Location = location;
-            badge.Anchor = anchor;
-            container.Controls.Add(badge);
-            badge.BringToFront();
-            return badge;
+            if (container == null)
+                return CreateHelpBadge(tituloFormulario, descripcionGeneral, 24);
+
+            string formattedText = FormatTooltipText(descripcionGeneral, 68);
+            var tip = CreateToolTip(tituloFormulario);
+
+            SetControlToolTip(container, tip, formattedText, isSpecific: false);
+
+            foreach (Control child in container.Controls)
+            {
+                if (child is Label)
+                {
+                    SetControlToolTip(child, tip, formattedText, isSpecific: false);
+                }
+                else if (child is Panel pnl)
+                {
+                    foreach (Control pnlChild in pnl.Controls)
+                    {
+                        if (pnlChild is Label)
+                        {
+                            SetControlToolTip(pnlChild, tip, formattedText, isSpecific: false);
+                        }
+                    }
+                }
+            }
+
+            return CreateHelpBadge(tituloFormulario, descripcionGeneral, 24);
         }
 
         /// <summary>

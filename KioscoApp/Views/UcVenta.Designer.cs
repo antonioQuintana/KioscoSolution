@@ -27,7 +27,6 @@ namespace KioscoApp
             btnConsultarPrecio = new Button();
             btnRetiroCaja = new Button();
             btnAutorizacion = new Button();
-            
             groupBoxCliente = new GroupBox();
             lblDniBusqueda = new Label();
             txtBusquedaCliente = new TextBox();
@@ -54,11 +53,18 @@ namespace KioscoApp
             lblScanner.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblScanner.Location = new Point(20, 100);
             lblScanner.Name = "lblScanner";
-            lblScanner.Size = new Size(214, 21);
+            lblScanner.Size = new Size(204, 21);
             lblScanner.TabIndex = 14;
             lblScanner.Text = "Escanear Cdigo de Barras:";
             // 
-                        // 
+            // txtScanner
+            // 
+            txtScanner.Font = new Font("Segoe UI", 16F);
+            txtScanner.Location = new Point(260, 95);
+            txtScanner.Name = "txtScanner";
+            txtScanner.Size = new Size(460, 36);
+            txtScanner.TabIndex = 13;
+            // 
             // lstSugerencias
             // 
             lstSugerencias.Font = new Font("Segoe UI", 12F);
@@ -69,14 +75,6 @@ namespace KioscoApp
             lstSugerencias.Size = new Size(460, 130);
             lstSugerencias.TabIndex = 20;
             lstSugerencias.Visible = false;
-            // 
-            // txtScanner
-            // 
-            txtScanner.Font = new Font("Segoe UI", 16F);
-            txtScanner.Location = new Point(260, 95);
-            txtScanner.Name = "txtScanner";
-            txtScanner.Size = new Size(460, 36);
-            txtScanner.TabIndex = 13;
             // 
             // lblTotal
             // 
@@ -196,7 +194,7 @@ namespace KioscoApp
             // 
             // btnConsultarPrecio
             // 
-            btnConsultarPrecio.BackColor = Color.LightYellow;
+            btnConsultarPrecio.BackColor = Color.DarkGoldenrod;
             btnConsultarPrecio.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnConsultarPrecio.ForeColor = SystemColors.ActiveCaptionText;
             btnConsultarPrecio.Location = new Point(740, 85);
@@ -229,7 +227,7 @@ namespace KioscoApp
             btnAutorizacion.TabIndex = 11;
             btnAutorizacion.Text = "Autorizacion Supervisor";
             btnAutorizacion.UseVisualStyleBackColor = false;
-            //
+            // 
             // groupBoxCliente
             // 
             groupBoxCliente.Controls.Add(lblDniBusqueda);
@@ -250,7 +248,7 @@ namespace KioscoApp
             lblDniBusqueda.AutoSize = true;
             lblDniBusqueda.Location = new Point(20, 30);
             lblDniBusqueda.Name = "lblDniBusqueda";
-            lblDniBusqueda.Size = new Size(86, 15);
+            lblDniBusqueda.Size = new Size(80, 15);
             lblDniBusqueda.TabIndex = 0;
             lblDniBusqueda.Text = "DNI / Telfono:";
             // 
@@ -264,7 +262,8 @@ namespace KioscoApp
             // 
             // btnBuscarCliente
             // 
-            btnBuscarCliente.BackColor = Color.LightGray;
+            btnBuscarCliente.BackColor = Color.SteelBlue;
+            btnBuscarCliente.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnBuscarCliente.ForeColor = SystemColors.ActiveCaptionText;
             btnBuscarCliente.Location = new Point(280, 25);
             btnBuscarCliente.Name = "btnBuscarCliente";
@@ -320,7 +319,6 @@ namespace KioscoApp
             Controls.Add(btnConsultarPrecio);
             Controls.Add(btnRetiroCaja);
             Controls.Add(btnAutorizacion);
-            
             Controls.Add(btnAplicarDescuento);
             Controls.Add(btnArticulosFrecuentes);
             Controls.Add(btnBuscarProducto);

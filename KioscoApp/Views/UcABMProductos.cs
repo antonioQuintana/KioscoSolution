@@ -44,8 +44,6 @@ namespace KioscoApp
                 shrinkControl: false,
                 offsetX: 10);
 
-            cmbFiltroCat.Width -= 22;
-            btnLimpiarFiltro.Left -= 22;
             HelpTooltipHelper.AttachHelp(
                 btnLimpiarFiltro,
                 "Búsqueda Rápida y Filtro por Categoría",
