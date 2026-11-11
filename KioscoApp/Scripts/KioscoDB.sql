@@ -108,8 +108,8 @@ CREATE TABLE Productos (
     IdCategoria INT NOT NULL FOREIGN KEY REFERENCES Categorias(Id),
     PrecioCosto DECIMAL(18,2) NOT NULL DEFAULT 0,
     PrecioVenta DECIMAL(18,2) NOT NULL DEFAULT 0,
-    StockActual INT NOT NULL DEFAULT 0,
-    StockMinimo INT NOT NULL DEFAULT 0
+    StockActual INT NOT NULL DEFAULT 0 CONSTRAINT CK_Productos_StockNoNegativo CHECK (StockActual >= 0),
+    StockMinimo INT NOT NULL DEFAULT 0 CONSTRAINT CK_Productos_StockMinimoNoNegativo CHECK (StockMinimo >= 0)
 );
 GO
 

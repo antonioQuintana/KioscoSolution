@@ -1,4 +1,4 @@
-﻿USE KioscoDB;
+USE KioscoDB;
 GO
 
 -- =============================================================================
@@ -505,6 +505,15 @@ CREATE OR ALTER PROCEDURE sp_Ventas_InsertarDetalleYDescontarStock
 AS
 BEGIN
     SET NOCOUNT ON;
+
+    DECLARE @StockDisponible INT;
+    SELECT @StockDisponible = StockActual FROM Productos WHERE Id = @IdProducto;
+
+    IF @StockDisponible IS NULL OR @StockDisponible < @Cantidad
+    BEGIN
+        RAISERROR('Stock insuficiente para completar la venta del producto seleccionado.', 16, 1);
+        RETURN;
+    END
 
     INSERT INTO DetallesVenta (IdVenta, IdProducto, Cantidad, PrecioUnitario, Subtotal)
     VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioUnitario, @Subtotal);

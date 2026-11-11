@@ -524,25 +524,38 @@ namespace KioscoApp
                 }
             }
 
-            // Validación rigurosa de Stock en tiempo real
+            // Validación rigurosa de Stock en tiempo real (no se permite vender sin stock ni dejar stock negativo)
+            if (producto.StockActual <= 0)
+            {
+                MessageBox.Show(
+                    $"STOCK AGOTADO:\n\n" +
+                    $"• Producto: {producto.Nombre}\n" +
+                    $"• Stock disponible: 0 unidades\n\n" +
+                    $"No se puede agregar este producto al carrito porque no posee stock disponible.",
+                    "Producto Sin Stock",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                EnfocarEscaner();
+                return;
+            }
+
             var itemExistente = _carrito.FirstOrDefault(d => d.IdProducto == producto.Id);
             int enCarritoActual = itemExistente?.Cantidad ?? 0;
             int totalRequerido = enCarritoActual + cantidad;
 
             if (totalRequerido > producto.StockActual)
             {
-                string advertencia =
-                    $"ALERTA DE STOCK INSUFICIENTE:\n\n" +
+                MessageBox.Show(
+                    $"STOCK INSUFICIENTE:\n\n" +
                     $"• Producto: {producto.Nombre}\n" +
-                    $"• Stock en Sistema: {producto.StockActual} unidades\n" +
-                    $"• Total Solicitado: {totalRequerido} unidades ({enCarritoActual} en carrito + {cantidad} nuevos)\n\n" +
-                    $"¿Desea agregarlo de todas formas y registrar la venta con stock deficitario para regularizar luego?";
-
-                var respuesta = MessageBox.Show(advertencia, "Alerta de Stock Físico", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (respuesta != DialogResult.Yes)
-                {
-                    return;
-                }
+                    $"• Stock disponible en sistema: {producto.StockActual} unidades\n" +
+                    $"• Total solicitado: {totalRequerido} unidades ({enCarritoActual} en carrito + {cantidad} a agregar)\n\n" +
+                    $"No se puede superar el stock disponible.",
+                    "Stock Insuficiente",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                EnfocarEscaner();
+                return;
             }
 
             if (itemExistente != null)
@@ -584,17 +597,14 @@ namespace KioscoApp
                     var producto = _productoService.ObtenerPorId(item.IdProducto);
                     if (producto != null && item.Cantidad > producto.StockActual)
                     {
-                        var confirm = MessageBox.Show(
-                            $"La cantidad ingresada ({item.Cantidad}) supera el stock disponible ({producto.StockActual}) de '{item.Descripcion}'.\n\n¿Desea mantenerla de todas formas?",
-                            "Alerta de Stock",
-                            MessageBoxButtons.YesNo,
+                        MessageBox.Show(
+                            $"La cantidad ingresada ({item.Cantidad}) supera el stock disponible ({producto.StockActual}) de '{item.Descripcion}'.\n\nSe ajustará al máximo disponible.",
+                            "Stock Insuficiente",
+                            MessageBoxButtons.OK,
                             MessageBoxIcon.Warning);
 
-                        if (confirm != DialogResult.Yes)
-                        {
-                            item.Cantidad = Math.Max(1, producto.StockActual);
-                            dgvCarrito.Refresh();
-                        }
+                        item.Cantidad = Math.Max(1, producto.StockActual);
+                        dgvCarrito.Refresh();
                     }
                 }
 
@@ -652,13 +662,12 @@ namespace KioscoApp
                         var producto = _productoService.ObtenerPorId(item.IdProducto);
                         if (producto != null && nuevaCant > producto.StockActual)
                         {
-                            var confirm = MessageBox.Show(
-                                $"Stock superado: solo quedan {producto.StockActual} unidades en sistema.\n\n¿Continuar sumando?",
+                            MessageBox.Show(
+                                $"Stock insuficiente: solo quedan {producto.StockActual} unidades disponibles de '{item.Descripcion}'.",
                                 "Stock Insuficiente",
-                                MessageBoxButtons.YesNo,
+                                MessageBoxButtons.OK,
                                 MessageBoxIcon.Warning);
-
-                            if (confirm != DialogResult.Yes) return;
+                            return;
                         }
                     }
 
