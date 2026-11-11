@@ -20,7 +20,7 @@ namespace KioscoApp.Utils
         private static readonly ConditionalWeakTable<Control, TooltipEntry> AssignedToolTips = new();
 
         /// <summary>
-        /// Crea una instancia de ToolTip configurada para respuesta rápida y lectura cómoda.
+        /// Crea una instancia de ToolTip configurada para respuesta deliberada (2 seg de reposo) y lectura cómoda.
         /// </summary>
         public static ToolTip CreateToolTip(string titulo = "Guía de Uso - KioscoApp")
         {
@@ -28,8 +28,8 @@ namespace KioscoApp.Utils
             {
                 ToolTipTitle = $"ℹ️ {titulo}",
                 ToolTipIcon = ToolTipIcon.Info,
-                InitialDelay = 120,
-                ReshowDelay = 80,
+                InitialDelay = 2000,
+                ReshowDelay = 1500,
                 AutoPopDelay = 30000,
                 ShowAlways = true,
                 IsBalloon = false
